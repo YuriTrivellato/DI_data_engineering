@@ -1,0 +1,35 @@
+{
+	"name": "CommandCenterRewardsBBlackExecution",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Stopped",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "0_Rewards_Execution_PPL",
+					"type": "PipelineReference"
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Month",
+				"interval": 1,
+				"startTime": "2022-12-22T12:37:00",
+				"timeZone": "E. South America Standard Time",
+				"schedule": {
+					"minutes": [
+						0
+					],
+					"hours": [
+						1
+					],
+					"monthDays": [
+						24
+					]
+				}
+			}
+		}
+	}
+}

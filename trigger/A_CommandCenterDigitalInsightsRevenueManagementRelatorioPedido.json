@@ -1,0 +1,33 @@
+{
+	"name": "A_CommandCenterDigitalInsightsRevenueManagementRelatorioPedido",
+	"properties": {
+		"description": "Trigger baseado no horário de entrega do airflow para a camada TZ",
+		"annotations": [],
+		"runtimeState": "Stopped",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "10_DI_Revenue_RelatorioPedidoB2B_PPL",
+					"type": "PipelineReference"
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Day",
+				"interval": 1,
+				"startTime": "2023-07-06T13:19:00",
+				"timeZone": "E. South America Standard Time",
+				"schedule": {
+					"minutes": [
+						0
+					],
+					"hours": [
+						22
+					]
+				}
+			}
+		}
+	}
+}

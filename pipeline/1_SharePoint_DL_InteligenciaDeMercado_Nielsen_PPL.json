@@ -1,0 +1,123 @@
+{
+	"name": "1_SharePoint_DL_InteligenciaDeMercado_Nielsen_PPL",
+	"properties": {
+		"activities": [
+			{
+				"name": "Sharepoint_DL_Nielsen",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "SET_Data",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/Nielsen/SharePoint/Sharepoint_DL_Nielsen",
+					"baseParameters": {
+						"clientID": {
+							"value": "@pipeline().parameters.clientID",
+							"type": "Expression"
+						},
+						"sharepointURL": {
+							"value": "@pipeline().parameters.sharepointURL",
+							"type": "Expression"
+						},
+						"storagePath": {
+							"value": "@pipeline().parameters.storagePath",
+							"type": "Expression"
+						},
+						"date": {
+							"value": "@variables('Data')",
+							"type": "Expression"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "CommandCenterDatabricks",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "SET_Data_UTC",
+				"description": "Set the dataUTC variable.",
+				"type": "SetVariable",
+				"dependsOn": [],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "DataUTC",
+					"value": {
+						"value": "@convertTimeZone(utcnow(), 'UTC', 'E. South America Standard Time')",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "SET_Data",
+				"description": "Data Atual utilizado para update_date CZ",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "SET_Data_UTC",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "Data",
+					"value": {
+						"value": "@replace(substring(variables('DataUTC'),0,10), '-', '')",
+						"type": "Expression"
+					}
+				}
+			}
+		],
+		"parameters": {
+			"clientID": {
+				"type": "string",
+				"defaultValue": "6de8363c-cc0f-4b4f-9f99-e46c367a8bbf"
+			},
+			"sharepointURL": {
+				"type": "string",
+				"defaultValue": "https://anheuserbuschinbev.sharepoint.com/sites/Sales.Lab-IM/"
+			},
+			"storagePath": {
+				"type": "string",
+				"defaultValue": "/dbfs/mnt/datalake-im/Nielsen/NielsenZip/"
+			}
+		},
+		"variables": {
+			"DataUTC": {
+				"type": "String"
+			},
+			"Data": {
+				"type": "String"
+			}
+		},
+		"folder": {
+			"name": "Brazil/Nielsen"
+		},
+		"annotations": [],
+		"lastPublishTime": "2022-09-19T19:51:14Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

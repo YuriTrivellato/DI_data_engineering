@@ -1,0 +1,36 @@
+{
+	"name": "A_CommandCenterDigitalInsightsSkuPrioritizationEligibilityCriteria",
+	"properties": {
+		"description": "Monthly update eligible skus for each POC.",
+		"annotations": [],
+		"runtimeState": "Stopped",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "0_Eligibility_Criteria_Monitor_PPL",
+					"type": "PipelineReference"
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Week",
+				"interval": 1,
+				"startTime": "2022-05-09T00:00:00",
+				"timeZone": "E. South America Standard Time",
+				"schedule": {
+					"minutes": [
+						0
+					],
+					"hours": [
+						22
+					],
+					"weekDays": [
+						"Tuesday"
+					]
+				}
+			}
+		}
+	}
+}

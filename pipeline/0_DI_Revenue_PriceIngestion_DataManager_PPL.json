@@ -1,0 +1,247 @@
+{
+	"name": "0_DI_Revenue_PriceIngestion_DataManager_PPL",
+	"properties": {
+		"activities": [
+			{
+				"name": "BlobStorage_PZ_InfoPrice",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.02:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "BinarySource",
+						"storeSettings": {
+							"type": "GoogleCloudStorageReadSettings",
+							"recursive": true,
+							"deleteFilesAfterCompletion": true
+						},
+						"formatSettings": {
+							"type": "BinaryReadSettings"
+						}
+					},
+					"sink": {
+						"type": "BinarySink",
+						"storeSettings": {
+							"type": "AzureBlobFSWriteSettings"
+						}
+					},
+					"enableStaging": false
+				},
+				"inputs": [
+					{
+						"referenceName": "Sales_DI_Revenue_Price_Engine_InfoPrice_ISA_InfoPanel_DTS",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "DataLake_DIRevenue_Infoprice_DTS",
+						"type": "DatasetReference"
+					}
+				]
+			},
+			{
+				"name": "PZ_HZ_Extract_GZParquetParallelism",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "BlobStorage_PZ_InfoPrice",
+						"dependencyConditions": [
+							"Succeeded",
+							"Failed"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.03:00:00",
+					"retry": 1,
+					"retryIntervalInSeconds": 300,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/DigitalInsights/RevenueManagement/Infoprice/BLOB STORAGE/PZ_HZ_Extract_GZParquetParallelism"
+				},
+				"linkedServiceName": {
+					"referenceName": "DigitalInsightsDatabricks",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "HZ_CZ_MarketPrice_Collect",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "HZ_HZ_History_ProductsAndStores",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.01:00:00",
+					"retry": 1,
+					"retryIntervalInSeconds": 300,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/DigitalInsights/RevenueManagement/Infoprice/BLOB STORAGE/HZ_CZ_MarketPrice_Collect"
+				},
+				"linkedServiceName": {
+					"referenceName": "DigitalInsightsDatabricks",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "BlobStorage_PZ_Indexsa",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.01:30:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "BinarySource",
+						"storeSettings": {
+							"type": "AzureBlobStorageReadSettings",
+							"recursive": true,
+							"deleteFilesAfterCompletion": true
+						},
+						"formatSettings": {
+							"type": "BinaryReadSettings"
+						}
+					},
+					"sink": {
+						"type": "BinarySink",
+						"storeSettings": {
+							"type": "AzureBlobFSWriteSettings"
+						}
+					},
+					"enableStaging": false
+				},
+				"inputs": [
+					{
+						"referenceName": "BlobStorage_Indexsa_CSVFiles_DTS",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "DataLake_DIRevenue_Indexsa_DTS",
+						"type": "DatasetReference"
+					}
+				]
+			},
+			{
+				"name": "PZ_HZ_CSVIndexa_Parquet",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "BlobStorage_PZ_Indexsa",
+						"dependencyConditions": [
+							"Succeeded",
+							"Failed"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.01:00:00",
+					"retry": 1,
+					"retryIntervalInSeconds": 300,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/DigitalInsights/RevenueManagement/Infoprice/BLOB STORAGE/PZ_HZ_CSVIndexa_Parquet"
+				},
+				"linkedServiceName": {
+					"referenceName": "DigitalInsightsDatabricks",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "HZ_HZ_History_ProductsAndStores",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "PZ_HZ_CSVIndexa_Parquet",
+						"dependencyConditions": [
+							"Completed"
+						]
+					},
+					{
+						"activity": "PZ_HZ_Extract_GZParquetParallelism",
+						"dependencyConditions": [
+							"Completed"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.00:50:00",
+					"retry": 1,
+					"retryIntervalInSeconds": 300,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/DigitalInsights/RevenueManagement/Infoprice/BLOB STORAGE/HZ_HZ_History_ProductsAndStores"
+				},
+				"linkedServiceName": {
+					"referenceName": "DigitalInsightsDatabricks",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "CZ_CZ_MarketPrice_Pivot",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "HZ_CZ_MarketPrice_Collect",
+						"dependencyConditions": [
+							"Succeeded",
+							"Failed"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.00:30:00",
+					"retry": 1,
+					"retryIntervalInSeconds": 300,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/DigitalInsights/RevenueManagement/Infoprice/BLOB STORAGE/CZ_CZ_MarketPrice_Pivot"
+				},
+				"linkedServiceName": {
+					"referenceName": "DigitalInsightsDatabricks",
+					"type": "LinkedServiceReference"
+				}
+			}
+		],
+		"folder": {
+			"name": "Brazil/DigitalInsights/RevenueManagement/Imports"
+		},
+		"annotations": [],
+		"lastPublishTime": "2023-08-01T18:56:31Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

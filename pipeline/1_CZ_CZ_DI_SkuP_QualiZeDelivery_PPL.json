@@ -1,0 +1,47 @@
+{
+	"name": "1_CZ_CZ_DI_SkuP_QualiZeDelivery_PPL",
+	"properties": {
+		"activities": [
+			{
+				"name": "CZ_CZ_DI_SkuP_ZeDeliveryPocsQuali",
+				"type": "DatabricksNotebook",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/DigitalInsights/SkuPrioritization/Algorithms/QualifiedCoverage/CZ_CZ_DI_SkuP_ZeDeliveryPocsQuali"
+				},
+				"linkedServiceName": {
+					"referenceName": "DigitalInsightsDatabricks",
+					"type": "LinkedServiceReference"
+				}
+			}
+		],
+		"variables": {
+			"v_DNSName": {
+				"type": "String"
+			},
+			"v_Secret": {
+				"type": "String"
+			},
+			"v_Adb_EndPoint": {
+				"type": "String"
+			},
+			"v_Adb_JobId": {
+				"type": "String"
+			}
+		},
+		"folder": {
+			"name": "Brazil/DigitalInsights/SkuPrioritization/Algorithms/quali_ze_delivery"
+		},
+		"annotations": [],
+		"lastPublishTime": "2023-02-28T15:51:40Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

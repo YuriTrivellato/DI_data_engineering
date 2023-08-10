@@ -1,0 +1,77 @@
+{
+	"name": "1_BeesForce_UserKpis_PPL",
+	"properties": {
+		"activities": [
+			{
+				"name": "CZ_CZ_UserKpis",
+				"type": "DatabricksNotebook",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/DigitalInsights/TasksBeesForce/UserKPIs/CZ_CZ_UserKPIs",
+					"baseParameters": {
+						"current_date": {
+							"value": "@formatDateTime(pipeline().parameters.current_date, 'yyy-MM-dd')",
+							"type": "Expression"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "DigitalInsightsDatabricks",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "CZ_API_UserKpis",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "CZ_CZ_UserKpis",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/DigitalInsights/TasksBeesForce/UserKPIs/CZ_API_UserKPIs",
+					"baseParameters": {
+						"current_date": {
+							"value": "@formatDateTime(pipeline().parameters.current_date, 'yyy-MM-dd')",
+							"type": "Expression"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "DigitalInsightsDatabricks",
+					"type": "LinkedServiceReference"
+				}
+			}
+		],
+		"parameters": {
+			"current_date": {
+				"type": "string"
+			}
+		},
+		"folder": {
+			"name": "Brazil/DigitalInsights/BeesForce/UserKPIs"
+		},
+		"annotations": [],
+		"lastPublishTime": "2022-09-19T19:51:14Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

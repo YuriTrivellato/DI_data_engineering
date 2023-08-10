@@ -1,0 +1,19 @@
+{
+	"name": "DataLake_DIRevenue_Infoprice_DTS",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "DataLakePlatform",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Binary",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"folderPath": "Brazil/Sales/DigitalInsights/RevenueManagement/MarketPrice/InfoPrice/Blob",
+				"fileSystem": "prelandingzone"
+			}
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

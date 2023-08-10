@@ -1,0 +1,38 @@
+{
+	"name": "A_CommandCenterDigitalInsightsBeesForceTaskPoolUpdate",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Stopped",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "0_BeesForce_TaskPool_UpdateTaskTime_PPL",
+					"type": "PipelineReference"
+				},
+				"parameters": {
+					"current_date": "@trigger().scheduledTime"
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Month",
+				"interval": 1,
+				"startTime": "2022-12-01T17:53:00",
+				"timeZone": "E. South America Standard Time",
+				"schedule": {
+					"minutes": [
+						0
+					],
+					"hours": [
+						8
+					],
+					"monthDays": [
+						-1
+					]
+				}
+			}
+		}
+	}
+}

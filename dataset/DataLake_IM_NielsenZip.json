@@ -1,0 +1,25 @@
+{
+	"name": "DataLake_IM_NielsenZip",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "CommandCenterAzureDataLakeStorageG2CustomerExperiencePlatform",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileSystem": "datalake-im"
+			},
+			"columnDelimiter": ",",
+			"compressionCodec": "ZipDeflate",
+			"compressionLevel": "Optimal",
+			"escapeChar": "\\",
+			"firstRowAsHeader": false,
+			"quoteChar": "\""
+		},
+		"schema": []
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

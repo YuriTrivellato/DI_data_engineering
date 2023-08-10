@@ -1,0 +1,77 @@
+{
+	"name": "0_DigitalComm_Customer_Metrics_PPL",
+	"properties": {
+		"activities": [
+			{
+				"name": "2_DigitalComm_Customer_Metrics_PPL",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "2_DigitalComm_Customer_Metrics_PPL",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "PipelineStatusMonitorDatabricksCustomers",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "2_DigitalComm_Customer_Metrics_PPL",
+						"dependencyConditions": [
+							"Succeeded",
+							"Failed"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Operation/Monitor/PipelineStatusMonitorDatabricks",
+					"baseParameters": {
+						"runId": {
+							"value": "@pipeline().RunId",
+							"type": "Expression"
+						},
+						"factoryName": "adf-prod-iris-commandcenter",
+						"resourceGroup": "AMBEV-IRIS-RG-EUS-ATCS-PROD",
+						"checkChildrenOf": " "
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "DigitalInsightsDatabricks",
+					"type": "LinkedServiceReference"
+				}
+			}
+		],
+		"variables": {
+			"v_DNSName": {
+				"type": "String"
+			},
+			"v_Secret": {
+				"type": "String"
+			},
+			"v_Adb_EndPoint": {
+				"type": "String"
+			},
+			"v_Adb_JobId": {
+				"type": "String"
+			}
+		},
+		"folder": {
+			"name": "Brazil/DigitalInsights/DigitalComm/CustomerMetrics"
+		},
+		"annotations": [],
+		"lastPublishTime": "2023-07-24T16:10:37Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

@@ -1,0 +1,143 @@
+{
+	"name": "1_BeesForce_VisitsKPIs_PPL",
+	"properties": {
+		"activities": [
+			{
+				"name": "API_PZ_BeesVisits",
+				"type": "DatabricksNotebook",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/DigitalInsights/TasksBeesForce/VisitsKPIs/API_PZ_Bees_Visits",
+					"baseParameters": {
+						"ingestion_date": {
+							"value": "@formatDateTime(pipeline().parameters.ingestion_date, 'yyy-MM-dd')",
+							"type": "Expression"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "DigitalInsightsDatabricks",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "PZ_HZ_BeesVisits",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "API_PZ_BeesVisits",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/DigitalInsights/TasksBeesForce/VisitsKPIs/PZ_HZ_Bees_Visits",
+					"baseParameters": {
+						"ingestion_date": {
+							"value": "@formatDateTime(pipeline().parameters.ingestion_date, 'yyy-MM-dd')",
+							"type": "Expression"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "DigitalInsightsDatabricks",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "HZ_CZ_BeesVisits",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "PZ_HZ_BeesVisits",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/DigitalInsights/TasksBeesForce/VisitsKPIs/HZ_CZ_Bees_Visits",
+					"baseParameters": {
+						"ingestion_date": {
+							"value": "@formatDateTime(pipeline().parameters.ingestion_date, 'yyy-MM-dd')",
+							"type": "Expression"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "DigitalInsightsDatabricks",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "CZ_CZ_VisitsKPIs",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "HZ_CZ_BeesVisits",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/DigitalInsights/TasksBeesForce/VisitsKPIs/CZ_CZ_Visits_KPIs",
+					"baseParameters": {
+						"ingestion_date": {
+							"value": "@formatDateTime(pipeline().parameters.ingestion_date, 'yyy-MM-dd')",
+							"type": "Expression"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "DigitalInsightsDatabricks",
+					"type": "LinkedServiceReference"
+				}
+			}
+		],
+		"parameters": {
+			"ingestion_date": {
+				"type": "string"
+			}
+		},
+		"folder": {
+			"name": "Brazil/DigitalInsights/BeesForce/VisitsKPIs"
+		},
+		"annotations": [],
+		"lastPublishTime": "2022-09-21T16:06:45Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

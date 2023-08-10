@@ -1,0 +1,514 @@
+{
+	"name": "0_Modelagem_MixRate_Malha_PPL",
+	"properties": {
+		"activities": [
+			{
+				"name": "Uniao Origens",
+				"type": "DatabricksNotebook",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.02:00:00",
+					"retry": 2,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/SalesLabIM/Modelagem/MixRate/CZ_CZ_Aux_Uniao_Origens"
+				},
+				"linkedServiceName": {
+					"referenceName": "CommandCenterDatabricksInteligenciaMercado",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "ForEach Objeto Dimensoes PBI",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "Definindo objetos de Dimensoes PBI",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@variables('v_array')",
+						"type": "Expression"
+					},
+					"isSequential": false,
+					"activities": [
+						{
+							"name": "Atualizacao dataflows PBI",
+							"type": "ExecutePipeline",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "Generics_PBI_Refresh",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true,
+								"parameters": {
+									"id_grupo": {
+										"value": "@item().id_grupo",
+										"type": "Expression"
+									},
+									"id_objeto": {
+										"value": "@item().id_objeto",
+										"type": "Expression"
+									},
+									"is_dataflow": {
+										"value": "@item().is_dataflow",
+										"type": "Expression"
+									}
+								}
+							}
+						}
+					]
+				}
+			},
+			{
+				"name": "Definindo objetos de Dimensoes PBI",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "Wait Dimensoes",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "v_array",
+					"value": [
+						{
+							"nome": "mix_rate_de_para",
+							"id_grupo": "99d9a740-b959-49ee-93ac-593ed91cd2e9",
+							"id_objeto": "167e6d08-a95d-4e7f-b0cd-613d5b0616b7",
+							"is_dataflow": true
+						},
+						{
+							"nome": "mix_rate_grupo_embalagem",
+							"id_grupo": "99d9a740-b959-49ee-93ac-593ed91cd2e9",
+							"id_objeto": "40627744-e095-4b6b-92f8-3536ecfc8748",
+							"is_dataflow": true
+						},
+						{
+							"nome": "mix_rate_periodo",
+							"id_grupo": "99d9a740-b959-49ee-93ac-593ed91cd2e9",
+							"id_objeto": "5541f3d7-7c61-4624-ae91-7a6441ceda3d",
+							"is_dataflow": true
+						},
+						{
+							"nome": "mix_rate_produto",
+							"id_grupo": "99d9a740-b959-49ee-93ac-593ed91cd2e9",
+							"id_objeto": "592738e9-fdcc-4919-a0bb-8e088dac3664",
+							"is_dataflow": true
+						},
+						{
+							"nome": "mix_rate_segmento",
+							"id_grupo": "99d9a740-b959-49ee-93ac-593ed91cd2e9",
+							"id_objeto": "fb6453a0-8dfc-4c93-a1e3-269566dd5cf0",
+							"is_dataflow": true
+						}
+					]
+				}
+			},
+			{
+				"name": "Fato MixRateImpacts",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "Wait Dimensoes",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.02:00:00",
+					"retry": 2,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/SalesLabIM/Modelagem/MixRate/CZ_CZ_Fato_MixRateImpacts"
+				},
+				"linkedServiceName": {
+					"referenceName": "CommandCenterDatabricksInteligenciaMercado",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "Atualizacao dataset_mix_rate_impacts",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "ForEach Objeto Dimensoes PBI",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "Atualizacao Fato MixRateImpatcs",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "Generics_PBI_Refresh",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"id_grupo": {
+							"value": "99d9a740-b959-49ee-93ac-593ed91cd2e9",
+							"type": "Expression"
+						},
+						"id_objeto": {
+							"value": "a04bea68-7a50-4a98-afd0-b695ebe0b069",
+							"type": "Expression"
+						},
+						"is_dataflow": {
+							"value": "false",
+							"type": "Expression"
+						}
+					}
+				}
+			},
+			{
+				"name": "Dimensoes Periodo",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "Aux MixRateImpacts",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.02:00:00",
+					"retry": 2,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/SalesLabIM/Modelagem/MixRate/CZ_CZ_Dimensoes_MixRateImpacts_Periodo"
+				},
+				"linkedServiceName": {
+					"referenceName": "CommandCenterDatabricksInteligenciaMercado",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "Wait Dimensoes",
+				"type": "Wait",
+				"dependsOn": [
+					{
+						"activity": "Dimensoes Periodo",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "Dimensoes Grupo Embalagem",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "Dimensoes Produto",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "Dimensoes Segmento",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "Dimensoes AreaCanal",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"waitTimeInSeconds": 5
+				}
+			},
+			{
+				"name": "Atualizacao Fato MixRateImpatcs",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "Fato MixRateImpacts",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "Generics_PBI_Refresh",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"id_grupo": "99d9a740-b959-49ee-93ac-593ed91cd2e9",
+						"id_objeto": "bb2d3aac-380c-47db-8fb9-a47de9825060",
+						"is_dataflow": true
+					}
+				}
+			},
+			{
+				"name": "Uniao Origens Tratadas",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "Uniao Origens",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.02:00:00",
+					"retry": 2,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/SalesLabIM/Modelagem/MixRate/CZ_CZ_Aux_UniaoOrigensTratadas"
+				},
+				"linkedServiceName": {
+					"referenceName": "CommandCenterDatabricksInteligenciaMercado",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "Independente Ajustado",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "Uniao Origens Tratadas",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.02:00:00",
+					"retry": 2,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/SalesLabIM/Modelagem/MixRate/CZ_CZ_Aux_Independente_Ajustado"
+				},
+				"linkedServiceName": {
+					"referenceName": "CommandCenterDatabricksInteligenciaMercado",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "Scantrack Ajustado",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "Independente Ajustado",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.02:00:00",
+					"retry": 2,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/SalesLabIM/Modelagem/MixRate/CZ_CZ_Aux_Scantrack_Ajustado"
+				},
+				"linkedServiceName": {
+					"referenceName": "CommandCenterDatabricksInteligenciaMercado",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "Aux MixRateImpacts",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "Scantrack Ajustado",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.02:00:00",
+					"retry": 2,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/SalesLabIM/Modelagem/MixRate/CZ_CZ_Aux_MixRateImpacts"
+				},
+				"linkedServiceName": {
+					"referenceName": "CommandCenterDatabricksInteligenciaMercado",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "Dimensoes Grupo Embalagem",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "Aux MixRateImpacts",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.02:00:00",
+					"retry": 2,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/SalesLabIM/Modelagem/MixRate/CZ_CZ_Dimensoes_MixRateImpacts_GrupoEmbalagem"
+				},
+				"linkedServiceName": {
+					"referenceName": "CommandCenterDatabricksInteligenciaMercado",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "Dimensoes Produto",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "Aux MixRateImpacts",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.02:00:00",
+					"retry": 2,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/SalesLabIM/Modelagem/MixRate/CZ_CZ_Dimensoes_MixRateImpacts_Produto"
+				},
+				"linkedServiceName": {
+					"referenceName": "CommandCenterDatabricksInteligenciaMercado",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "Dimensoes Segmento",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "Aux MixRateImpacts",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.02:00:00",
+					"retry": 2,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/SalesLabIM/Modelagem/MixRate/CZ_CZ_Dimensoes_MixRateImpacts_Segmento"
+				},
+				"linkedServiceName": {
+					"referenceName": "CommandCenterDatabricksInteligenciaMercado",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "Dimensoes AreaCanal",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "Aux MixRateImpacts",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/SalesLabIM/Modelagem/MixRate/CZ_CZ_Dimensoes_MixRateImpacts_AreaCanal"
+				},
+				"linkedServiceName": {
+					"referenceName": "CommandCenterDatabricksInteligenciaMercado",
+					"type": "LinkedServiceReference"
+				}
+			}
+		],
+		"variables": {
+			"v_array": {
+				"type": "Array"
+			}
+		},
+		"folder": {
+			"name": "Brazil/SalesLabIM/Modelagem/MixRate"
+		},
+		"annotations": [],
+		"lastPublishTime": "2022-09-19T19:51:14Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

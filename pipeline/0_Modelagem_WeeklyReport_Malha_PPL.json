@@ -1,0 +1,660 @@
+{
+	"name": "0_Modelagem_WeeklyReport_Malha_PPL",
+	"properties": {
+		"activities": [
+			{
+				"name": "Dimensoes Categoria",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "Uniao Origens",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.02:00:00",
+					"retry": 2,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/SalesLabIM/Modelagem/Weekly/CZ_CZ_Dimensoes_Weekly_Categoria"
+				},
+				"linkedServiceName": {
+					"referenceName": "CommandCenterDatabricksInteligenciaMercado",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "Uniao Origens",
+				"type": "DatabricksNotebook",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.02:00:00",
+					"retry": 2,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/SalesLabIM/Modelagem/Weekly/CZ_CZ_Aux_Uniao_Origens"
+				},
+				"linkedServiceName": {
+					"referenceName": "CommandCenterDatabricksInteligenciaMercado",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "Fato Weekly Share 1",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "Wait Dimensoes",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.02:00:00",
+					"retry": 2,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/SalesLabIM/Modelagem/Weekly/CZ_CZ_Fato_WeeklyReport_Share_1"
+				},
+				"linkedServiceName": {
+					"referenceName": "CommandCenterDatabricksInteligenciaMercado",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "ForEach Objeto Dimensoes PBI",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "Definindo objetos de Dimensoes PBI",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@variables('v_array')",
+						"type": "Expression"
+					},
+					"isSequential": false,
+					"activities": [
+						{
+							"name": "Atualizacao dataflows PBI",
+							"type": "ExecutePipeline",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "Generics_PBI_Refresh",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true,
+								"parameters": {
+									"id_grupo": {
+										"value": "@item().id_grupo",
+										"type": "Expression"
+									},
+									"id_objeto": {
+										"value": "@item().id_objeto",
+										"type": "Expression"
+									},
+									"is_dataflow": {
+										"value": "@item().is_dataflow",
+										"type": "Expression"
+									}
+								}
+							}
+						}
+					]
+				}
+			},
+			{
+				"name": "Definindo objetos de Dimensoes PBI",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "Wait Dimensoes",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "v_array",
+					"value": [
+						{
+							"nome": "compartilhado_categoria",
+							"id_grupo": "99d9a740-b959-49ee-93ac-593ed91cd2e9",
+							"id_objeto": "0211a472-044b-49aa-b552-51d5a9ab468e",
+							"is_dataflow": true
+						},
+						{
+							"nome": "compartilhado_fonte",
+							"id_grupo": "99d9a740-b959-49ee-93ac-593ed91cd2e9",
+							"id_objeto": "afbe52a0-aed9-48c9-a447-71fc3d03c878",
+							"is_dataflow": true
+						},
+						{
+							"nome": "compartilhado_fabricante",
+							"id_grupo": "99d9a740-b959-49ee-93ac-593ed91cd2e9",
+							"id_objeto": "5f05550f-cc9f-4deb-9abb-3f161fcef4f2",
+							"is_dataflow": true
+						},
+						{
+							"nome": "compartilhado_mercado",
+							"id_grupo": "99d9a740-b959-49ee-93ac-593ed91cd2e9",
+							"id_objeto": "8620f3fc-725a-4692-a740-8ba637ec8df4",
+							"is_dataflow": true
+						},
+						{
+							"nome": "compartilhado_periodo_nielsen",
+							"id_grupo": "99d9a740-b959-49ee-93ac-593ed91cd2e9",
+							"id_objeto": "e7986884-fb94-4813-9406-3bebe1c27165",
+							"is_dataflow": true
+						},
+						{
+							"nome": "compartilhado_segmento",
+							"id_grupo": "99d9a740-b959-49ee-93ac-593ed91cd2e9",
+							"id_objeto": "95902101-f125-4d00-b8b7-2f32854f305a",
+							"is_dataflow": true
+						}
+					]
+				}
+			},
+			{
+				"name": "Atualizacao dataset_weekly_report",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "Atualizacao weekly_report_narrativa_v1",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "ForEach Objeto Dimensoes PBI",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "Atualizacao weekly_report_share",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "Generics_PBI_Refresh",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"id_grupo": {
+							"value": "99d9a740-b959-49ee-93ac-593ed91cd2e9",
+							"type": "Expression"
+						},
+						"id_objeto": {
+							"value": "bce70e41-6d90-41d4-be39-a91b454d9d52",
+							"type": "Expression"
+						},
+						"is_dataflow": {
+							"value": "false",
+							"type": "Expression"
+						}
+					}
+				}
+			},
+			{
+				"name": "Fato Weekly Share 2",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "Wait Dimensoes",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.02:00:00",
+					"retry": 2,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/SalesLabIM/Modelagem/Weekly/CZ_CZ_Fato_WeeklyReport_Share_2"
+				},
+				"linkedServiceName": {
+					"referenceName": "CommandCenterDatabricksInteligenciaMercado",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "Atualizacao dataset_weekly_report_v2",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "Atualizacao weekly_report_narrativa_v2",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "ForEach Objeto Dimensoes PBI",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "Atualizacao weekly_report_share_v2",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "Fato WeeklyReport Share_2 CloseWeek",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "Generics_PBI_Refresh",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"id_grupo": {
+							"value": "99d9a740-b959-49ee-93ac-593ed91cd2e9",
+							"type": "Expression"
+						},
+						"id_objeto": {
+							"value": "16b35bf5-ffa2-470f-bd66-30998c1c03e0",
+							"type": "Expression"
+						},
+						"is_dataflow": {
+							"value": "false",
+							"type": "Expression"
+						}
+					}
+				}
+			},
+			{
+				"name": "Dimensoes Fabricante",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "Uniao Origens",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.02:00:00",
+					"retry": 2,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/SalesLabIM/Modelagem/Weekly/CZ_CZ_Dimensoes_Weekly_Fabricante"
+				},
+				"linkedServiceName": {
+					"referenceName": "CommandCenterDatabricksInteligenciaMercado",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "Dimensoes Mercado",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "Uniao Origens",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.02:00:00",
+					"retry": 2,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/SalesLabIM/Modelagem/Weekly/CZ_CZ_Dimensoes_Weekly_Mercado"
+				},
+				"linkedServiceName": {
+					"referenceName": "CommandCenterDatabricksInteligenciaMercado",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "Dimensoes Periodo",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "Uniao Origens",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.02:00:00",
+					"retry": 2,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/SalesLabIM/Modelagem/Weekly/CZ_CZ_Dimensoes_Weekly_Periodo"
+				},
+				"linkedServiceName": {
+					"referenceName": "CommandCenterDatabricksInteligenciaMercado",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "Dimensoes Segmento",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "Uniao Origens",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.02:00:00",
+					"retry": 2,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/SalesLabIM/Modelagem/Weekly/CZ_CZ_Dimensoes_Weekly_Segmento"
+				},
+				"linkedServiceName": {
+					"referenceName": "CommandCenterDatabricksInteligenciaMercado",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "Wait Dimensoes",
+				"type": "Wait",
+				"dependsOn": [
+					{
+						"activity": "Dimensoes Segmento",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "Dimensoes Periodo",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "Dimensoes Mercado",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "Dimensoes Fabricante",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "Dimensoes Categoria",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"waitTimeInSeconds": 5
+				}
+			},
+			{
+				"name": "Auxiliar Narrativa v2",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "Fato Weekly Share 2",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.02:00:00",
+					"retry": 2,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/SalesLabIM/Modelagem/Weekly/CZ_CZ_Aux_Narrativa",
+					"baseParameters": {
+						"versao_escolhida": "v2"
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "CommandCenterDatabricksInteligenciaMercado",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "Atualizacao weekly_report_narrativa_v2",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "Auxiliar Narrativa v2",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "Generics_PBI_Refresh",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"id_grupo": "99d9a740-b959-49ee-93ac-593ed91cd2e9",
+						"id_objeto": "94d2418e-9cfd-4f40-951c-ad76c2338ef6",
+						"is_dataflow": true
+					}
+				}
+			},
+			{
+				"name": "Auxiliar Narrativa v1",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "Fato Weekly Share 1",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.02:00:00",
+					"retry": 2,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/SalesLabIM/Modelagem/Weekly/CZ_CZ_Aux_Narrativa",
+					"baseParameters": {
+						"versao_escolhida": "v1"
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "CommandCenterDatabricksInteligenciaMercado",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "Atualizacao weekly_report_narrativa_v1",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "Auxiliar Narrativa v1",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "Generics_PBI_Refresh",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"id_grupo": "99d9a740-b959-49ee-93ac-593ed91cd2e9",
+						"id_objeto": "77ac869d-90b9-47cf-b86c-30897595f611",
+						"is_dataflow": true
+					}
+				}
+			},
+			{
+				"name": "Atualizacao weekly_report_share",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "Fato Weekly Share 1",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "Generics_PBI_Refresh",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"id_grupo": "99d9a740-b959-49ee-93ac-593ed91cd2e9",
+						"id_objeto": "27841374-110d-4acc-8fcc-e4b8e85bd689",
+						"is_dataflow": true
+					}
+				}
+			},
+			{
+				"name": "Atualizacao weekly_report_share_v2",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "Fato Weekly Share 2",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "Generics_PBI_Refresh",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"id_grupo": "99d9a740-b959-49ee-93ac-593ed91cd2e9",
+						"id_objeto": "ff4e12ca-27ff-48ad-acbd-a2996382ebda",
+						"is_dataflow": true
+					}
+				}
+			},
+			{
+				"name": "Fato WeeklyReport Share_2 CloseWeek",
+				"description": "Ingestão da fato close week com as tratativas da semana fechada que deve ser ingerida no lake",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "Fato Weekly Share 2",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/SalesLabIM/Modelagem/Weekly/CZ_CZ_Fato_WeeklyReport_Share_2_CloseWeek"
+				},
+				"linkedServiceName": {
+					"referenceName": "CommandCenterDatabricksInteligenciaMercado",
+					"type": "LinkedServiceReference"
+				}
+			}
+		],
+		"variables": {
+			"v_array": {
+				"type": "Array"
+			}
+		},
+		"folder": {
+			"name": "Brazil/SalesLabIM/Modelagem/WeeklyReport"
+		},
+		"annotations": [],
+		"lastPublishTime": "2022-09-19T19:51:14Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

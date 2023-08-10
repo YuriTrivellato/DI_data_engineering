@@ -1,0 +1,18 @@
+{
+	"name": "Source_FileServer_PrxCig",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "SalesLab_FileServer_PRXCIG",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Binary",
+		"typeProperties": {
+			"location": {
+				"type": "FileServerLocation",
+				"folderPath": "CIGPRX"
+			}
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

@@ -1,0 +1,39 @@
+{
+	"name": "1_SkuPrioritization_Orders_Metrics_Monitor_PPL",
+	"properties": {
+		"activities": [
+			{
+				"name": "CZ_CZ_Orders_Metricas",
+				"type": "DatabricksNotebook",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/DigitalInsights/SkuPrioritization/Orders/CZ_CZ_Orders_Metrics",
+					"baseParameters": {
+						"current_date": {
+							"value": "@formatDateTime(utcnow(),'yyyy-MM-dd')",
+							"type": "Expression"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "DigitalInsightsDatabricks",
+					"type": "LinkedServiceReference"
+				}
+			}
+		],
+		"folder": {
+			"name": "Brazil/DigitalInsights/SkuPrioritization/orders"
+		},
+		"annotations": [],
+		"lastPublishTime": "2022-09-19T19:51:14Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

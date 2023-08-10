@@ -1,0 +1,137 @@
+{
+	"name": "0_Validacao_InteligenciaDeMercado_DemandaDpg_PPL",
+	"properties": {
+		"activities": [
+			{
+				"name": "TodayDate",
+				"type": "SetVariable",
+				"dependsOn": [],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "TodayDate",
+					"value": {
+						"value": "@replace(substring(utcnow(),0,10), '-', '')\n",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "If File uploaded between current and last trigger",
+				"type": "IfCondition",
+				"dependsOn": [
+					{
+						"activity": "Upload Verification",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@equals(activity('Upload Verification').output.runOutput, 1)",
+						"type": "Expression"
+					},
+					"ifFalseActivities": [
+						{
+							"name": "Base_Atualizada",
+							"type": "Wait",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"waitTimeInSeconds": 1
+							}
+						}
+					],
+					"ifTrueActivities": [
+						{
+							"name": "DemandaDPG_BaseDiaria",
+							"type": "ExecutePipeline",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "0_InteligenciaDeMercado_DemandaDpgBaseDiaria_PPL",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true
+							}
+						}
+					]
+				}
+			},
+			{
+				"name": "Upload Verification",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "TodayDate",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/SalesLabIM/DemandaDPG/UploadVerification/UploadVerification_DemandaDPG",
+					"baseParameters": {
+						"clientID": {
+							"value": "@variables('clientID')",
+							"type": "Expression"
+						},
+						"namePath": {
+							"value": "@variables('namePath')",
+							"type": "Expression"
+						},
+						"sharepointURL": {
+							"value": "@variables('sharepointURL')",
+							"type": "Expression"
+						},
+						"date": {
+							"value": "@variables('TodayDate')",
+							"type": "Expression"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "CommandCenterDatabricksInteligenciaMercado",
+					"type": "LinkedServiceReference"
+				}
+			}
+		],
+		"variables": {
+			"clientID": {
+				"type": "String",
+				"defaultValue": "6de8363c-cc0f-4b4f-9f99-e46c367a8bbf"
+			},
+			"namePath": {
+				"type": "String",
+				"defaultValue": "OHD_ALL_DP_KF"
+			},
+			"sharepointURL": {
+				"type": "String",
+				"defaultValue": "https://anheuserbuschinbev.sharepoint.com/sites/Sales.Lab-IM/"
+			},
+			"TodayDate": {
+				"type": "String"
+			}
+		},
+		"folder": {
+			"name": "Brazil/SalesLabIM/DemandaDPG/BaseDiaria"
+		},
+		"annotations": [],
+		"lastPublishTime": "2023-05-03T17:01:18Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

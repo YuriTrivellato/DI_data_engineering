@@ -1,0 +1,634 @@
+{
+	"name": "0_DI_Revenue_PromoEngine_Dataflow_PPL",
+	"properties": {
+		"activities": [
+			{
+				"name": "3_DI_Revenue_PromoIngestion_Cora_PPL",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "3_DI_Revenue_PromoIngestion_Cora_PPL",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "Job CZ_CZ_Promo_DataTransformV1",
+				"type": "WebActivity",
+				"dependsOn": [
+					{
+						"activity": "Get Secret from AKV",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "Get Databricks JobID from AKV",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "Get DatabricksEndPoint from AKV",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"url": {
+						"value": "@activity('Get DatabricksEndPoint from AKV').output.value",
+						"type": "Expression"
+					},
+					"connectVia": {
+						"referenceName": "AutoResolveIntegrationRuntime",
+						"type": "IntegrationRuntimeReference"
+					},
+					"method": "POST",
+					"headers": {
+						"Authorization": {
+							"value": "@concat('Bearer ',activity('Get Secret from AKV').output.value)",
+							"type": "Expression"
+						},
+						"Content-Type": "application/json"
+					},
+					"body": {
+						"value": "@concat('{\n    \"job_id\": ',activity('Get Databricks JobID from AKV').output.value,\n'}')",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "Set DNS Name",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "3_DI_Revenue_PromoIngestion_Cora_PPL",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "DNSname",
+					"value": "https://kv-prod-iris.vault.azure.net/"
+				}
+			},
+			{
+				"name": "Set Secret",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "3_DI_Revenue_PromoIngestion_Cora_PPL",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "secret",
+					"value": "DigitalInsightsSkuPrioritizationToken"
+				}
+			},
+			{
+				"name": "Get Secret from AKV",
+				"type": "WebActivity",
+				"dependsOn": [
+					{
+						"activity": "Set DNS Name",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "Set Secret",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"url": {
+						"value": "@concat(variables('DNSname'),'secrets/',variables('secret'),'/?api-version=7.0')",
+						"type": "Expression"
+					},
+					"connectVia": {
+						"referenceName": "AutoResolveIntegrationRuntime",
+						"type": "IntegrationRuntimeReference"
+					},
+					"method": "GET",
+					"body": {
+						"simple": "body"
+					},
+					"authentication": {
+						"type": "MSI",
+						"resource": "https://vault.azure.net"
+					}
+				}
+			},
+			{
+				"name": "Set DataBricks Job Run EndPoint",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "3_DI_Revenue_PromoIngestion_Cora_PPL",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "ADB_ConnString",
+					"value": "DigitalInsightsDataBricksRunJobConnectionString"
+				}
+			},
+			{
+				"name": "Set Adb JobId",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "3_DI_Revenue_PromoIngestion_Cora_PPL",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "ABD_JobID",
+					"value": "DigitalInsightsRevenuePromoEngineJobID"
+				}
+			},
+			{
+				"name": "Get Databricks JobID from AKV",
+				"type": "WebActivity",
+				"dependsOn": [
+					{
+						"activity": "Set DNS Name",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "Set Adb JobId",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"url": {
+						"value": "@concat(variables('DNSname'),'secrets/',variables('ABD_JobID'),'/?api-version=7.0')",
+						"type": "Expression"
+					},
+					"connectVia": {
+						"referenceName": "AutoResolveIntegrationRuntime",
+						"type": "IntegrationRuntimeReference"
+					},
+					"method": "GET",
+					"body": {
+						"simple": "body"
+					},
+					"authentication": {
+						"type": "MSI",
+						"resource": "https://vault.azure.net"
+					}
+				}
+			},
+			{
+				"name": "Get DatabricksEndPoint from AKV",
+				"type": "WebActivity",
+				"dependsOn": [
+					{
+						"activity": "Set DNS Name",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "Set DataBricks Job Run EndPoint",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"url": {
+						"value": "@concat(variables('DNSname'),'secrets/',variables('ADB_ConnString'),'/?api-version=7.0')",
+						"type": "Expression"
+					},
+					"connectVia": {
+						"referenceName": "AutoResolveIntegrationRuntime",
+						"type": "IntegrationRuntimeReference"
+					},
+					"method": "GET",
+					"body": {
+						"simple": "body"
+					},
+					"authentication": {
+						"type": "MSI",
+						"resource": "https://vault.azure.net"
+					}
+				}
+			},
+			{
+				"name": "Wait for Job completion",
+				"type": "Until",
+				"dependsOn": [
+					{
+						"activity": "Job CZ_CZ_Promo_DataTransformV1",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "Get DatabricksJobStatusEndPoint from AKV",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@or(equals(activity('Get Job Run Status').output.metadata.state.life_cycle_state,'TERMINATED'),equals(activity('Get Job Run Status').output.metadata.state.life_cycle_state,'INTERNAL_ERROR'))",
+						"type": "Expression"
+					},
+					"activities": [
+						{
+							"name": "Get Job Run Status",
+							"type": "WebActivity",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"url": {
+									"value": "@concat(activity('Get DatabricksJobStatusEndPoint from AKV').output.value,'?run_id=',activity('Job CZ_CZ_Promo_DataTransformV1').output.run_id)",
+									"type": "Expression"
+								},
+								"connectVia": {
+									"referenceName": "AutoResolveIntegrationRuntime",
+									"type": "IntegrationRuntimeReference"
+								},
+								"method": "GET",
+								"headers": {
+									"Authorization": {
+										"value": "@concat('Bearer ',activity('Get Secret from AKV').output.value)",
+										"type": "Expression"
+									}
+								}
+							}
+						},
+						{
+							"name": "Wait change of status",
+							"type": "Wait",
+							"dependsOn": [
+								{
+									"activity": "Get Job Run Status",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"waitTimeInSeconds": 30
+							}
+						}
+					],
+					"timeout": "0.12:00:00"
+				}
+			},
+			{
+				"name": "Set DataBricks Job Run Status EndPoint",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "3_DI_Revenue_PromoIngestion_Cora_PPL",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "ADB_ConnString_JobRunStatus",
+					"value": "DigitalInsightsDataBricksJobStatusConnectionString"
+				}
+			},
+			{
+				"name": "Get DatabricksJobStatusEndPoint from AKV",
+				"type": "WebActivity",
+				"dependsOn": [
+					{
+						"activity": "Set DNS Name",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "Set DataBricks Job Run Status EndPoint",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"url": {
+						"value": "@concat(variables('DNSname'),'secrets/',variables('ADB_ConnString_JobRunStatus'),'/?api-version=7.0')",
+						"type": "Expression"
+					},
+					"connectVia": {
+						"referenceName": "AutoResolveIntegrationRuntime",
+						"type": "IntegrationRuntimeReference"
+					},
+					"method": "GET",
+					"body": {
+						"simple": "body"
+					},
+					"authentication": {
+						"type": "MSI",
+						"resource": "https://vault.azure.net"
+					}
+				}
+			},
+			{
+				"name": "Test CZ_CZ_Promo_DataTransformV1",
+				"type": "IfCondition",
+				"dependsOn": [
+					{
+						"activity": "Wait for Job completion",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@equals(activity('Get Job Run Status').output.metadata.state.result_state,'SUCCESS')",
+						"type": "Expression"
+					},
+					"ifFalseActivities": [
+						{
+							"name": "2_DI_Revenue_PromoEngine_Global_PPL",
+							"type": "ExecutePipeline",
+							"dependsOn": [
+								{
+									"activity": "CZ_CZ_Promo_DataTransformV0",
+									"dependencyConditions": [
+										"Succeeded",
+										"Failed"
+									]
+								},
+								{
+									"activity": "CZ_CZ_Yesterday_Data",
+									"dependencyConditions": [
+										"Succeeded",
+										"Skipped"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "2_DI_Revenue_PromoEngine_Global_PPL",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true
+							}
+						},
+						{
+							"name": "CZ_CZ_Promo_DataTransformV0",
+							"type": "DatabricksNotebook",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "0.01:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"notebookPath": "/Brazil/DigitalInsights/RevenueManagement/PROMO/CZ_CZ_Promo_DataTransformV0Prod"
+							},
+							"linkedServiceName": {
+								"referenceName": "DigitalInsightsDatabricks",
+								"type": "LinkedServiceReference"
+							}
+						},
+						{
+							"name": "CZ_CZ_Yesterday_Data",
+							"type": "Copy",
+							"dependsOn": [
+								{
+									"activity": "CZ_CZ_DeleteCurrentOutput",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "0.00:30:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 600,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "ParquetSource",
+									"storeSettings": {
+										"type": "AzureBlobFSReadSettings",
+										"recursive": true,
+										"wildcardFolderPath": {
+											"value": "@concat('ambev/recommendation/v1/geo=BR/use_case=DEAL_SORT/recommendation_date=',substring(addDays(addHours(utcNow(),-3),-1),0,10))",
+											"type": "Expression"
+										},
+										"wildcardFileName": "*.parquet",
+										"enablePartitionDiscovery": false
+									}
+								},
+								"sink": {
+									"type": "ParquetSink",
+									"storeSettings": {
+										"type": "AzureBlobFSWriteSettings",
+										"copyBehavior": "FlattenHierarchy"
+									},
+									"formatSettings": {
+										"type": "ParquetWriteSettings"
+									}
+								},
+								"enableStaging": false,
+								"translator": {
+									"type": "TabularTranslator",
+									"typeConversion": true,
+									"typeConversionSettings": {
+										"allowDataTruncation": true,
+										"treatBooleanAsNumber": false
+									}
+								}
+							},
+							"inputs": [
+								{
+									"referenceName": "Sink_Global_Revenue_PromoEngine_Recomendations_DTS",
+									"type": "DatasetReference"
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "DataLake_Revenue_PromoEngine_Now_DTS",
+									"type": "DatasetReference"
+								}
+							]
+						},
+						{
+							"name": "CZ_CZ_DeleteCurrentOutput",
+							"type": "Delete",
+							"dependsOn": [
+								{
+									"activity": "CZ_CZ_Promo_DataTransformV0",
+									"dependencyConditions": [
+										"Failed"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "0.00:10:00",
+								"retry": 2,
+								"retryIntervalInSeconds": 600,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"dataset": {
+									"referenceName": "DataLake_Revenue_PromoEngine_DTS",
+									"type": "DatasetReference"
+								},
+								"enableLogging": false,
+								"storeSettings": {
+									"type": "AzureBlobFSReadSettings",
+									"recursive": true,
+									"enablePartitionDiscovery": false
+								}
+							}
+						}
+					],
+					"ifTrueActivities": [
+						{
+							"name": "V1 2_DI_Revenue_PromoEngine_Global_PPL",
+							"type": "ExecutePipeline",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "2_DI_Revenue_PromoEngine_Global_PPL",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true
+							}
+						}
+					]
+				}
+			}
+		],
+		"variables": {
+			"secret": {
+				"type": "String"
+			},
+			"DNSname": {
+				"type": "String"
+			},
+			"ADB_ConnString": {
+				"type": "String"
+			},
+			"ABD_JobID": {
+				"type": "String"
+			},
+			"ADB_ConnString_JobRunStatus": {
+				"type": "String"
+			}
+		},
+		"folder": {
+			"name": "Brazil/DigitalInsights/RevenueManagement/PromoEngine"
+		},
+		"annotations": [],
+		"lastPublishTime": "2023-03-30T17:50:19Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

@@ -1,0 +1,33 @@
+{
+	"name": "1_Rewards_ChallengesSkusDisponibility_PPL",
+	"properties": {
+		"activities": [
+			{
+				"name": "CZ_CZ_ChallengesSkusDisponibility",
+				"type": "DatabricksNotebook",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/DigitalInsights/Rewards/Algo_Challenge/Orchestrator/CZ_CZ_Rewards_ChallengesSkusDisponibility"
+				},
+				"linkedServiceName": {
+					"referenceName": "DigitalInsightsDatabricks",
+					"type": "LinkedServiceReference"
+				}
+			}
+		],
+		"folder": {
+			"name": "Brazil/DigitalInsights/Rewards/AlgoChallenge/Skus Disponibility"
+		},
+		"annotations": [],
+		"lastPublishTime": "2023-02-16T19:38:56Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

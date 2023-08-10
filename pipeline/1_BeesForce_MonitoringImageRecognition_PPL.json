@@ -1,0 +1,33 @@
+{
+	"name": "1_BeesForce_MonitoringImageRecognition_PPL",
+	"properties": {
+		"activities": [
+			{
+				"name": "CZ_CZ_ImageRecognitionMonitor",
+				"type": "DatabricksNotebook",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/DigitalInsights/TasksBeesForce/Monitoramento/CZ_CZ_ImageRecognitionMonitor"
+				},
+				"linkedServiceName": {
+					"referenceName": "DigitalInsightsDatabricks",
+					"type": "LinkedServiceReference"
+				}
+			}
+		],
+		"folder": {
+			"name": "Brazil/DigitalInsights/BeesForce/Monitoring/MonitoringImageRecognition"
+		},
+		"annotations": [],
+		"lastPublishTime": "2023-07-27T16:05:35Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

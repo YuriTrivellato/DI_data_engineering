@@ -1,0 +1,33 @@
+{
+	"name": "1_Rewards_AlgoChallenge_ChallengesEligiblePdvs_PPL",
+	"properties": {
+		"activities": [
+			{
+				"name": "CZ_CZ_ChallengesEligiblePdvs",
+				"type": "DatabricksNotebook",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/DigitalInsights/Rewards/Algo_Challenge/Orchestrator/CZ_CZ_Rewards_ChallengesEligiblePdvs"
+				},
+				"linkedServiceName": {
+					"referenceName": "DigitalInsightsDatabricks",
+					"type": "LinkedServiceReference"
+				}
+			}
+		],
+		"folder": {
+			"name": "Brazil/DigitalInsights/Rewards/AlgoChallenge"
+		},
+		"annotations": [],
+		"lastPublishTime": "2022-12-13T16:44:53Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

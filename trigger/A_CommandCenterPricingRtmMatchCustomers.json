@@ -1,0 +1,32 @@
+{
+	"name": "A_CommandCenterPricingRtmMatchCustomers",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Stopped",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "0_Match_Customers_PPL",
+					"type": "PipelineReference"
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Week",
+				"interval": 1,
+				"startTime": "2023-05-10T17:30:00",
+				"timeZone": "E. South America Standard Time",
+				"schedule": {
+					"hours": [
+						7
+					],
+					"weekDays": [
+						"Saturday"
+					]
+				}
+			}
+		}
+	}
+}

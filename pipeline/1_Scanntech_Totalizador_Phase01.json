@@ -1,0 +1,179 @@
+{
+	"name": "1_Scanntech_Totalizador_Phase01",
+	"properties": {
+		"activities": [
+			{
+				"name": "CZ_CZ_Scanntech_Totalizador",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "SET_Data",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/Scanntech/SellOutEvolutionTotalizadorV01/CZ_CZ_Scanntech_Totalizador",
+					"baseParameters": {
+						"date": {
+							"value": "@variables('date')",
+							"type": "Expression"
+						},
+						"path_cz": {
+							"value": "@pipeline().parameters.path_cz",
+							"type": "Expression"
+						},
+						"path_sellout": {
+							"value": "@pipeline().parameters.path_sellout",
+							"type": "Expression"
+						},
+						"table_name": {
+							"value": "@pipeline().parameters.table_name",
+							"type": "Expression"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "CommandCenterDatabricksInteligenciaMercado",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "CZ_CZ_Scanntech_TotalizadorArea",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "SET_Data",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/Scanntech/SellOutEvolutionTotalizadorV01/CZ_CZ_Scanntech_TotalizadorArea",
+					"baseParameters": {
+						"date": {
+							"value": "@variables('date')",
+							"type": "Expression"
+						},
+						"path_cz_area": {
+							"value": "@pipeline().parameters.path_cz_area",
+							"type": "Expression"
+						},
+						"table_name_area": {
+							"value": "@pipeline().parameters.table_name_area",
+							"type": "Expression"
+						},
+						"path_sellout": {
+							"value": "@pipeline().parameters.path_sellout",
+							"type": "Expression"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "CommandCenterDatabricksInteligenciaMercado",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "SET_Data_UTC",
+				"description": "Set the variable \"dataUTC\" with the value from current date. ",
+				"type": "SetVariable",
+				"dependsOn": [],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "dateUTC",
+					"value": {
+						"value": "@utcnow()",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "SET_Data",
+				"description": "Set the variable \"data\" with the first 10 characters from dataUTC and replace the dashes with null spaces.",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "SET_Data_UTC",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "date",
+					"value": {
+						"value": "@replace(substring(variables('dateUTC'),0,10), '-', '')",
+						"type": "Expression"
+					}
+				}
+			}
+		],
+		"parameters": {
+			"path_cz": {
+				"type": "string",
+				"defaultValue": "Sales/InteligenciaDeMercado/Scanntech/SellOut/Totalizador"
+			},
+			"path_sellout": {
+				"type": "string",
+				"defaultValue": "Sales/InteligenciaDeMercado/Scanntech/SellOut/Fsellout"
+			},
+			"table_name": {
+				"type": "string",
+				"defaultValue": "scanntech_exp_gerencial_01"
+			},
+			"path_cz_area": {
+				"type": "string",
+				"defaultValue": "Sales/InteligenciaDeMercado/Scanntech/SellOut/TotalizadorArea"
+			},
+			"table_name_area": {
+				"type": "string",
+				"defaultValue": "scanntech_exp_gerencial_area_01"
+			}
+		},
+		"variables": {
+			"weeks": {
+				"type": "String"
+			},
+			"dateUTC": {
+				"type": "String"
+			},
+			"date": {
+				"type": "String"
+			}
+		},
+		"folder": {
+			"name": "Brazil/Scanntech"
+		},
+		"annotations": [],
+		"lastPublishTime": "2022-11-16T16:37:53Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

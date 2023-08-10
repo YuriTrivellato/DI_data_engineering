@@ -1,0 +1,193 @@
+{
+	"name": "MonitorQueries_VendaCerta_Semanal",
+	"properties": {
+		"activities": [
+			{
+				"name": "EstruturaComercialMonitorQuery",
+				"type": "DatabricksNotebook",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Operation/Brazil/BigData/Internalizacao_VendaCerta/VendaCerta_Semanal/EstruturaComercialQueryMonitor"
+				},
+				"linkedServiceName": {
+					"referenceName": "CommandCenterDatabricksGov",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "EstruturaEquipeMonitorQuery",
+				"type": "DatabricksNotebook",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Operation/Brazil/BigData/Internalizacao_VendaCerta/VendaCerta_Semanal/EstruturaEquipeQueryMonitor"
+				},
+				"linkedServiceName": {
+					"referenceName": "CommandCenterDatabricksGov",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "EstruturaSetorMonitorQuery",
+				"type": "DatabricksNotebook",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Operation/Brazil/BigData/Internalizacao_VendaCerta/VendaCerta_Semanal/EstruturaSetorQueryMonitor"
+				},
+				"linkedServiceName": {
+					"referenceName": "CommandCenterDatabricksGov",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "PDVCondPgto",
+				"type": "DatabricksNotebook",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Operation/Brazil/BigData/Internalizacao_VendaCerta/VendaCerta_Semanal/PDVCondPgtoQueryMonitor"
+				},
+				"linkedServiceName": {
+					"referenceName": "CommandCenterDatabricksGov",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "PDVLatLong",
+				"type": "DatabricksNotebook",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Operation/Brazil/BigData/Internalizacao_VendaCerta/VendaCerta_Semanal/PDVLatLongQueryMonitor"
+				},
+				"linkedServiceName": {
+					"referenceName": "CommandCenterDatabricksGov",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "PDVMatchSetor",
+				"type": "DatabricksNotebook",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Operation/Brazil/BigData/Internalizacao_VendaCerta/VendaCerta_Semanal/PDVMatchSetorQueryMonitor"
+				},
+				"linkedServiceName": {
+					"referenceName": "CommandCenterDatabricksGov",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "PesquisaSv",
+				"type": "DatabricksNotebook",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Operation/Brazil/BigData/Internalizacao_VendaCerta/VendaCerta_Semanal/PesquisaSVQueryMonitor"
+				},
+				"linkedServiceName": {
+					"referenceName": "CommandCenterDatabricksGov",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "Produto",
+				"type": "DatabricksNotebook",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Operation/Brazil/BigData/Internalizacao_VendaCerta/VendaCerta_Semanal/ProdutoQueryMonitor"
+				},
+				"linkedServiceName": {
+					"referenceName": "CommandCenterDatabricksGov",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "Rota",
+				"type": "DatabricksNotebook",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Operation/Brazil/BigData/Internalizacao_VendaCerta/VendaCerta_Semanal/RotaQueryMonitor"
+				},
+				"linkedServiceName": {
+					"referenceName": "CommandCenterDatabricksGov",
+					"type": "LinkedServiceReference"
+				}
+			}
+		],
+		"folder": {
+			"name": "Brazil/BigData/Internalizacao_VendaCerta/VendaCerta_Semanal"
+		},
+		"annotations": [],
+		"lastPublishTime": "2022-09-19T19:51:14Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

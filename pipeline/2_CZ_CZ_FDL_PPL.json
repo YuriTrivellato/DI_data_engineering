@@ -1,0 +1,355 @@
+{
+	"name": "2_CZ_CZ_FDL_PPL",
+	"properties": {
+		"activities": [
+			{
+				"name": "Aux Origem",
+				"type": "DatabricksNotebook",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.02:00:00",
+					"retry": 2,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/SalesLabIM/Modelagem/FDL/CZ_CZ_FDL_AuxOrigem"
+				},
+				"linkedServiceName": {
+					"referenceName": "CommandCenterDatabricks",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "Dimensao Canal",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "Aux Origem",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.02:00:00",
+					"retry": 2,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/SalesLabIM/Modelagem/FDL/CZ_CZ_FDL_DimCanal"
+				},
+				"linkedServiceName": {
+					"referenceName": "CommandCenterDatabricks",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "Dimensao Categoria",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "Aux Origem",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.02:00:00",
+					"retry": 2,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/SalesLabIM/Modelagem/FDL/CZ_CZ_FDL_DimCategoria"
+				},
+				"linkedServiceName": {
+					"referenceName": "CommandCenterDatabricks",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "Dimensao Fabricante",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "Aux Origem",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.02:00:00",
+					"retry": 2,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/SalesLabIM/Modelagem/FDL/CZ_CZ_FDL_DimFabricante"
+				},
+				"linkedServiceName": {
+					"referenceName": "CommandCenterDatabricks",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "Dimensao Mercado",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "Aux Origem",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.02:00:00",
+					"retry": 2,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/SalesLabIM/Modelagem/FDL/CZ_CZ_FDL_DimMercado"
+				},
+				"linkedServiceName": {
+					"referenceName": "CommandCenterDatabricks",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "Dimensao Periodo",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "Aux Origem",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.02:00:00",
+					"retry": 2,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/SalesLabIM/Modelagem/FDL/CZ_CZ_FDL_DimPeriodo"
+				},
+				"linkedServiceName": {
+					"referenceName": "CommandCenterDatabricks",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "Dimensao Produto",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "Aux Origem",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.02:00:00",
+					"retry": 2,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/SalesLabIM/Modelagem/FDL/CZ_CZ_FDL_DimProduto"
+				},
+				"linkedServiceName": {
+					"referenceName": "CommandCenterDatabricks",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "Wait Dimensoes",
+				"type": "Wait",
+				"dependsOn": [
+					{
+						"activity": "Dimensao Canal",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "Dimensao Categoria",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "Dimensao Fabricante",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "Dimensao Mercado",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "Dimensao Periodo",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "Dimensao Produto",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"waitTimeInSeconds": 5
+				}
+			},
+			{
+				"name": "Fato FDL",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "Wait Dimensoes",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.02:00:00",
+					"retry": 2,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/SalesLabIM/Modelagem/FDL/CZ_CZ_FDL_Fato"
+				},
+				"linkedServiceName": {
+					"referenceName": "CommandCenterDatabricks",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "Atualizacao PBI - dimensoes",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "Wait Dimensoes",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "Generics_PBI_Refresh",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"id_grupo": "99d9a740-b959-49ee-93ac-593ed91cd2e9",
+						"id_objeto": "25eeda4a-133c-4ac9-9dad-939aca8e0167",
+						"is_dataflow": true
+					}
+				}
+			},
+			{
+				"name": "Atualizacao PBI - Fato",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "Fato FDL",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "Generics_PBI_Refresh",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"id_grupo": "99d9a740-b959-49ee-93ac-593ed91cd2e9",
+						"id_objeto": "bdcf3eb1-8b96-4284-bb91-2b1f1324182f",
+						"is_dataflow": true
+					}
+				}
+			},
+			{
+				"name": "Atualizacao PBI - Dataset",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "Atualizacao PBI - dimensoes",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "Atualizacao PBI - Fato",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "Generics_PBI_Refresh",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"id_grupo": {
+							"value": "99d9a740-b959-49ee-93ac-593ed91cd2e9",
+							"type": "Expression"
+						},
+						"id_objeto": "bc6ecd61-2dd2-4940-bbcb-181f5104ad74",
+						"is_dataflow": {
+							"value": "false",
+							"type": "Expression"
+						}
+					}
+				}
+			}
+		],
+		"folder": {
+			"name": "Brazil/SalesLabIM/Modelagem/FDL"
+		},
+		"annotations": [],
+		"lastPublishTime": "2022-09-29T17:28:06Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

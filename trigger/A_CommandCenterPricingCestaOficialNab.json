@@ -1,0 +1,36 @@
+{
+	"name": "A_CommandCenterPricingCestaOficialNab",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Stopped",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "0_CestaOficialNab_PPL",
+					"type": "PipelineReference"
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Day",
+				"interval": 1,
+				"startTime": "2021-07-23T16:55:00",
+				"timeZone": "E. South America Standard Time",
+				"schedule": {
+					"minutes": [
+						0
+					],
+					"hours": [
+						6,
+						9,
+						12,
+						15,
+						18
+					]
+				}
+			}
+		}
+	}
+}

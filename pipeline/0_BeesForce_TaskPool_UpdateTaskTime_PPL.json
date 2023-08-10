@@ -1,0 +1,44 @@
+{
+	"name": "0_BeesForce_TaskPool_UpdateTaskTime_PPL",
+	"properties": {
+		"activities": [
+			{
+				"name": "HZ_HZ_Update_Task_Time",
+				"type": "DatabricksNotebook",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/DigitalInsights/TasksBeesForce/UpdateTaskTime/HZ_HZ_Update_Task_Time",
+					"baseParameters": {
+						"current_date": {
+							"value": "@formatDateTime(pipeline().parameters.current_date, 'yyy-MM-dd')",
+							"type": "Expression"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "DigitalInsightsDatabricks",
+					"type": "LinkedServiceReference"
+				}
+			}
+		],
+		"parameters": {
+			"current_date": {
+				"type": "string"
+			}
+		},
+		"folder": {
+			"name": "Brazil/DigitalInsights/BeesForce/TaskPool"
+		},
+		"annotations": [],
+		"lastPublishTime": "2022-12-06T17:01:43Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

@@ -1,0 +1,265 @@
+{
+	"name": "0_GPRO_InvestimentoAs_PPL",
+	"properties": {
+		"description": "Main pipeline.",
+		"activities": [
+			{
+				"name": "DL_to_PZ",
+				"description": "",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "DL_DL",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/GPRO/InvestimentoAs/DL_PZ_GPRO_InvestimentoAs"
+				},
+				"linkedServiceName": {
+					"referenceName": "CommandCenterDatabricksPricing",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "PZ_to_HZ",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "DL_to_PZ",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/GPRO/InvestimentoAs/PZ_HZ_GPRO_InvestimentoAs",
+					"baseParameters": {
+						"control_fields": "file, path, insert_date, folder_date"
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "CommandCenterDatabricksPricing",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "HZ_to_CZ",
+				"description": "History Zone to Consumer Zone.",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "PZ_to_HZ",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/GPRO/InvestimentoAs/HZ_CZ_GPRO_InvestimentoAs"
+				},
+				"linkedServiceName": {
+					"referenceName": "CommandCenterDatabricksPricing",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "DL_DL",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "loopThroughAllTheFiles",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "DelimitedTextSource",
+						"storeSettings": {
+							"type": "AzureBlobStorageReadSettings",
+							"recursive": true,
+							"wildcardFolderPath": {
+								"value": "@variables('maxFolder')",
+								"type": "Expression"
+							},
+							"wildcardFileName": "*.csv",
+							"enablePartitionDiscovery": false
+						},
+						"formatSettings": {
+							"type": "DelimitedTextReadSettings"
+						}
+					},
+					"sink": {
+						"type": "DelimitedTextSink",
+						"storeSettings": {
+							"type": "AzureBlobFSWriteSettings"
+						},
+						"formatSettings": {
+							"type": "DelimitedTextWriteSettings",
+							"quoteAllText": true,
+							"fileExtension": ".txt"
+						}
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "Source_BlobStorage_InvestimentoAS",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "Sink_BlobStorage_InvestimentoAS",
+						"type": "DatasetReference",
+						"parameters": {
+							"maxFolder": {
+								"value": "@variables('maxFolder')",
+								"type": "Expression"
+							}
+						}
+					}
+				]
+			},
+			{
+				"name": "getListOfFolderNames",
+				"type": "GetMetadata",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataset": {
+						"referenceName": "Source_BlobStorage_InvestimentoAS",
+						"type": "DatasetReference"
+					},
+					"fieldList": [
+						"childItems"
+					],
+					"storeSettings": {
+						"type": "AzureBlobStorageReadSettings",
+						"recursive": true,
+						"enablePartitionDiscovery": false
+					},
+					"formatSettings": {
+						"type": "DelimitedTextReadSettings"
+					}
+				}
+			},
+			{
+				"name": "loopThroughAllTheFiles",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "getListOfFolderNames",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@activity('getListOfFolderNames').output.childItems",
+						"type": "Expression"
+					},
+					"isSequential": true,
+					"activities": [
+						{
+							"name": "conditionToCheckIfFileDateGreaterThanSetDate",
+							"type": "IfCondition",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"expression": {
+									"value": "@if(equals(item().type, 'Folder'), \ngreater(item().name, variables('maxFolder')),\nfalse)",
+									"type": "Expression"
+								},
+								"ifTrueActivities": [
+									{
+										"name": "maxFolder",
+										"type": "SetVariable",
+										"dependsOn": [],
+										"policy": {
+											"secureOutput": false,
+											"secureInput": false
+										},
+										"userProperties": [],
+										"typeProperties": {
+											"variableName": "maxFolder",
+											"value": {
+												"value": "@item().name",
+												"type": "Expression"
+											}
+										}
+									}
+								]
+							}
+						}
+					]
+				}
+			}
+		],
+		"variables": {
+			"maxFolder": {
+				"type": "String",
+				"defaultValue": "1900-01-01"
+			}
+		},
+		"folder": {
+			"name": "Brazil/GPRO/InvestimentoAs"
+		},
+		"annotations": [],
+		"lastPublishTime": "2022-09-19T19:51:18Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

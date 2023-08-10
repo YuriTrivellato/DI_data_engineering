@@ -1,0 +1,36 @@
+{
+	"name": "A_CommandCenterPricingGeoSulDeParaProdIm",
+	"properties": {
+		"description": "Trigger de execução pipeline 0_GeoSulDeParaProdIm_PPL toda quarta às 21h do horário de Brasília.",
+		"annotations": [],
+		"runtimeState": "Stopped",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "0_GeoSulDeParaProdIm_PPL",
+					"type": "PipelineReference"
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Week",
+				"interval": 1,
+				"startTime": "2022-04-26T19:07:00",
+				"timeZone": "E. South America Standard Time",
+				"schedule": {
+					"minutes": [
+						0
+					],
+					"hours": [
+						21
+					],
+					"weekDays": [
+						"Wednesday"
+					]
+				}
+			}
+		}
+	}
+}

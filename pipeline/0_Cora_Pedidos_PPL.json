@@ -1,0 +1,131 @@
+{
+	"name": "0_Cora_Pedidos_PPL",
+	"properties": {
+		"activities": [
+			{
+				"name": "Truzted_CZ",
+				"type": "DatabricksNotebook",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/Cora/JornadaPedidos/TrustedZone_CZ_Cora_Pedidos"
+				},
+				"linkedServiceName": {
+					"referenceName": "CommandCenterDatabricks",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "PipelineStatusMonitor",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "CZ_PR",
+						"dependencyConditions": [
+							"Skipped"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Operation/Monitor/PipelineStatusMonitorDatabricks",
+					"baseParameters": {
+						"runId": {
+							"value": "@pipeline().RunId",
+							"type": "Expression"
+						},
+						"factoryName": "adf-prod-iris-commandcenter",
+						"resourceGroup": "AMBEV-IRIS-RG-EUS-ATCS-PROD",
+						"checkChildrenOf": " "
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "CommandCenterDatabricksGov",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "JornadaPedidosQueryMonitor",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "CZ_PR",
+						"dependencyConditions": [
+							"Skipped"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Operation/Brazil/Cora/JornadaPedidos/JornadaPedidosQueryMonitor"
+				},
+				"linkedServiceName": {
+					"referenceName": "CommandCenterDatabricksGov",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "CZ_PR",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "Truzted_CZ",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/Cora/JornadaPedidos/CZ_PR_Cora_Pedidos"
+				},
+				"linkedServiceName": {
+					"referenceName": "CommandCenterDatabricks",
+					"type": "LinkedServiceReference"
+				}
+			}
+		],
+		"variables": {
+			"dataUTC": {
+				"type": "String"
+			},
+			"dataMenosUmDia": {
+				"type": "String"
+			}
+		},
+		"folder": {
+			"name": "Brazil/Cora/JornadaPedidos"
+		},
+		"annotations": [],
+		"lastPublishTime": "2022-11-29T16:13:41Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

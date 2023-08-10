@@ -1,0 +1,107 @@
+{
+	"name": "0_Customers_IntermediateSegmentation_Monitor_PPL",
+	"properties": {
+		"activities": [
+			{
+				"name": "PipelineStatusMonitor",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "1_Customers_IntermediateSegmentation_PPL",
+						"dependencyConditions": [
+							"Completed"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Operation/Monitor/PipelineStatusMonitorDatabricks",
+					"baseParameters": {
+						"runId": {
+							"value": "@pipeline().RunId",
+							"type": "Expression"
+						},
+						"factoryName": "adf-prod-iris-commandcenter",
+						"resourceGroup": "AMBEV-IRIS-RG-EUS-ATCS-PROD",
+						"checkChildrenOf": " "
+					},
+					"libraries": [
+						{
+							"pypi": {
+								"package": "azure.mgmt.datafactory"
+							}
+						}
+					]
+				},
+				"linkedServiceName": {
+					"referenceName": "DigitalInsightsDatabricksTribo3",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "QueryMonitor",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "1_Customers_IntermediateSegmentation_PPL",
+						"dependencyConditions": [
+							"Completed"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "di_rtm_customers_intermediate_segmentation_count_lines",
+					"baseParameters": {
+						"cz_path": "Sales/DigitalInsights/Rtm/Segmentation/Tags/CustomersIntermediateSegmentation",
+						"typemetric": "di_rtm_customers_intermediate_segmentation_count_lines"
+					},
+					"libraries": [
+						{
+							"pypi": {
+								"package": "azure.mgmt.datafactory"
+							}
+						}
+					]
+				},
+				"linkedServiceName": {
+					"referenceName": "DigitalInsightsDatabricksTribo3",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "1_Customers_IntermediateSegmentation_PPL",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "1_Customers_IntermediateSegmentation_PPL",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			}
+		],
+		"folder": {
+			"name": "Brazil/DigitalInsights/RTM/Segmentation/CustomersIntermediateSegmentation"
+		},
+		"annotations": [],
+		"lastPublishTime": "2023-08-09T19:31:19Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

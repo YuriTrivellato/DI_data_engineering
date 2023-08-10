@@ -1,0 +1,150 @@
+{
+	"name": "0_CZ_PR_CCTTV_Malha_PPL",
+	"properties": {
+		"activities": [
+			{
+				"name": "CZ_CZ_Fato_CCTTV",
+				"type": "DatabricksNotebook",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/SalesLabRM/CCTTV/CZ_CZ_Fato_CCTTV"
+				},
+				"linkedServiceName": {
+					"referenceName": "CommandCenterDatabricks",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "DF_CCTTV",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "CZ_CZ_Fato_CCTTV",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "Generics_PBI_Refresh",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"id_grupo": "70779b28-0cdc-4f2a-9236-23ebe341099c",
+						"id_objeto": "3bf6622b-0149-4db0-97ea-677bd1ed0720",
+						"is_dataflow": true
+					}
+				}
+			},
+			{
+				"name": "DS_CCTTV",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "Aguardar DataFlow",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "Generics_PBI_Refresh",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"id_grupo": "70779b28-0cdc-4f2a-9236-23ebe341099c",
+						"id_objeto": "4fd83faa-d7fe-47b9-a601-9d0a8d102307",
+						"is_dataflow": false
+					}
+				}
+			},
+			{
+				"name": "CZ_CZ_DimPdv",
+				"type": "DatabricksNotebook",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/SalesLabRM/CCTTV/CZ_CZ_DimPdvRevenda"
+				},
+				"linkedServiceName": {
+					"referenceName": "CommandCenterDatabricks",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "DF_PDV",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "CZ_CZ_DimPdv",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "Generics_PBI_Refresh",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"id_grupo": "70779b28-0cdc-4f2a-9236-23ebe341099c",
+						"id_objeto": "26d7c3d8-8127-42d0-989a-9b6a6d0ae31c",
+						"is_dataflow": true
+					}
+				}
+			},
+			{
+				"name": "Aguardar DataFlow",
+				"type": "Wait",
+				"dependsOn": [
+					{
+						"activity": "DF_CCTTV",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "DF_PDV",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"waitTimeInSeconds": 1
+				}
+			}
+		],
+		"folder": {
+			"name": "Brazil/SalesLabRevenue/Modelagem/CCTTV"
+		},
+		"annotations": [],
+		"lastPublishTime": "2023-06-29T18:36:31Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

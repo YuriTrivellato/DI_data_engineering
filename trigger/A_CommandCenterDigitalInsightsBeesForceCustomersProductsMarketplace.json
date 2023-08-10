@@ -1,0 +1,25 @@
+{
+	"name": "A_CommandCenterDigitalInsightsBeesForceCustomersProductsMarketplace",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Stopped",
+		"pipelines": [],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Day",
+				"interval": 1,
+				"startTime": "2022-05-26T12:10:00",
+				"timeZone": "E. South America Standard Time",
+				"schedule": {
+					"minutes": [
+						40
+					],
+					"hours": [
+						13
+					]
+				}
+			}
+		}
+	}
+}

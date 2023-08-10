@@ -1,0 +1,13 @@
+{
+	"name": "Source_CommandCenterOpigServer_DTS",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "CommandCenterOpigServer",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "SqlServerTable",
+		"schema": []
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

@@ -1,0 +1,91 @@
+{
+	"name": "0_BeesForce_Weekly_Task_Passive_Monitor_PPL",
+	"properties": {
+		"activities": [
+			{
+				"name": "BeesForce_Weekly_Task_Passive_PPL",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "1_BeesForce_Weekly_Task_Passive_Monitor_PPL",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "PipelineStatusMonitor",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "BeesForce_Weekly_Task_Passive_PPL",
+						"dependencyConditions": [
+							"Succeeded",
+							"Failed"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Operation/Monitor/PipelineStatusMonitorDatabricks",
+					"baseParameters": {
+						"runId": {
+							"value": "@pipeline().RunId",
+							"type": "Expression"
+						},
+						"factoryName": "adf-prod-iris-commandcenter",
+						"resourceGroup": "AMBEV-IRIS-RG-EUS-ATCS-PROD",
+						"checkChildrenOf": " "
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "DigitalInsightsDatabricks",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "TasksDailyQueryMonitor",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "BeesForce_Weekly_Task_Passive_PPL",
+						"dependencyConditions": [
+							"Failed",
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Operation/Brazil/DigitalInsights/BeesForce/Tasks/TasksDailyQueryMonitor"
+				},
+				"linkedServiceName": {
+					"referenceName": "DigitalInsightsDatabricks",
+					"type": "LinkedServiceReference"
+				}
+			}
+		],
+		"folder": {
+			"name": "Brazil/DigitalInsights/BeesForce/TasksPassivo"
+		},
+		"annotations": [],
+		"lastPublishTime": "2022-12-26T17:28:27Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

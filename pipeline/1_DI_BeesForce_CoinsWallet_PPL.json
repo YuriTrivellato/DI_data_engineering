@@ -1,0 +1,77 @@
+{
+	"name": "1_DI_BeesForce_CoinsWallet_PPL",
+	"properties": {
+		"activities": [
+			{
+				"name": "CZ_CZ_CoinsWallet",
+				"type": "DatabricksNotebook",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.2:00:00",
+					"retry": 5,
+					"retryIntervalInSeconds": 60,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/DigitalInsights/TasksBeesForce/CoinsWallet/CZ_CZ_CoinsWallet",
+					"baseParameters": {
+						"current_date": {
+							"value": "@formatDateTime(pipeline().parameters.current_date, 'yyy-MM-dd')",
+							"type": "Expression"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "DigitalInsightsDatabricks",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "CZ_API_CoinsWallet",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "CZ_CZ_CoinsWallet",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.2:00:00",
+					"retry": 5,
+					"retryIntervalInSeconds": 60,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/DigitalInsights/TasksBeesForce/CoinsWallet/CZ_API_CoinsWallet",
+					"baseParameters": {
+						"current_date": {
+							"value": "@formatDateTime(pipeline().parameters.current_date, 'yyy-MM-dd')",
+							"type": "Expression"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "DigitalInsightsDatabricks",
+					"type": "LinkedServiceReference"
+				}
+			}
+		],
+		"parameters": {
+			"current_date": {
+				"type": "string"
+			}
+		},
+		"folder": {
+			"name": "Brazil/DigitalInsights/BeesForce/CoinsWallet"
+		},
+		"annotations": [],
+		"lastPublishTime": "2023-06-27T20:44:40Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

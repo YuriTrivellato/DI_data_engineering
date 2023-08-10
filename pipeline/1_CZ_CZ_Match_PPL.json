@@ -1,0 +1,415 @@
+{
+	"name": "1_CZ_CZ_Match_PPL",
+	"properties": {
+		"activities": [
+			{
+				"name": "Dimensoes Categoria",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "Uniao Origens",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.02:00:00",
+					"retry": 2,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/SalesLabIM/Modelagem/Match/CZ_CZ_Match_DimCategoria"
+				},
+				"linkedServiceName": {
+					"referenceName": "CommandCenterDatabricks",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "Uniao Origens",
+				"type": "DatabricksNotebook",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.02:00:00",
+					"retry": 2,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/SalesLabIM/Modelagem/Match/CZ_CZ_Match_AuxUniaoOrigens"
+				},
+				"linkedServiceName": {
+					"referenceName": "CommandCenterDatabricks",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "Fato Match",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "Auxiliar Peso",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.02:00:00",
+					"retry": 2,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/SalesLabIM/Modelagem/Match/CZ_CZ_Match_Fato"
+				},
+				"linkedServiceName": {
+					"referenceName": "CommandCenterDatabricks",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "Atualizacao PBI - Dataset",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "Atualizacao PBI - narrativa",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "Atualizacao PBI - Fato",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "Atualizacao PBI - dimensoes",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "Generics_PBI_Refresh",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"id_grupo": {
+							"value": "99d9a740-b959-49ee-93ac-593ed91cd2e9",
+							"type": "Expression"
+						},
+						"id_objeto": "fbb33e93-2847-4396-aa82-1cec7e48cadf",
+						"is_dataflow": {
+							"value": "false",
+							"type": "Expression"
+						}
+					}
+				}
+			},
+			{
+				"name": "Dimensoes Fabricante",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "Uniao Origens",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.02:00:00",
+					"retry": 2,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/SalesLabIM/Modelagem/Match/CZ_CZ_Match_DimFabricante"
+				},
+				"linkedServiceName": {
+					"referenceName": "CommandCenterDatabricks",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "Dimensoes Mercado",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "Uniao Origens",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.02:00:00",
+					"retry": 2,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/SalesLabIM/Modelagem/Match/CZ_CZ_Match_DimMercado"
+				},
+				"linkedServiceName": {
+					"referenceName": "CommandCenterDatabricks",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "Dimensoes Periodo",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "Uniao Origens",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.02:00:00",
+					"retry": 2,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/SalesLabIM/Modelagem/Match/CZ_CZ_Match_DimPeriodo"
+				},
+				"linkedServiceName": {
+					"referenceName": "CommandCenterDatabricks",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "Dimensoes Segmento",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "Uniao Origens",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.02:00:00",
+					"retry": 2,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/SalesLabIM/Modelagem/Match/CZ_CZ_Match_DimSegmento"
+				},
+				"linkedServiceName": {
+					"referenceName": "CommandCenterDatabricks",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "Wait Dimensoes",
+				"type": "Wait",
+				"dependsOn": [
+					{
+						"activity": "Dimensoes Segmento",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "Dimensoes Periodo",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "Dimensoes Mercado",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "Dimensoes Fabricante",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "Dimensoes Categoria",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"waitTimeInSeconds": 5
+				}
+			},
+			{
+				"name": "Fato Narrativa",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "Fato Match",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.02:00:00",
+					"retry": 2,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/SalesLabIM/Modelagem/Match/CZ_CZ_Match_FatoNarrativa",
+					"baseParameters": {
+						"versao_escolhida": "v1"
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "CommandCenterDatabricks",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "Atualizacao PBI - narrativa",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "Fato Narrativa",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "Generics_PBI_Refresh",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"id_grupo": "99d9a740-b959-49ee-93ac-593ed91cd2e9",
+						"id_objeto": "9be560d5-3d96-4564-b2c4-1f870f522d7a",
+						"is_dataflow": true
+					}
+				}
+			},
+			{
+				"name": "Atualizacao PBI - Fato",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "Fato Match",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "Generics_PBI_Refresh",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"id_grupo": "99d9a740-b959-49ee-93ac-593ed91cd2e9",
+						"id_objeto": "b0c28fbd-c54e-4579-8be1-27c029a9aca4",
+						"is_dataflow": true
+					}
+				}
+			},
+			{
+				"name": "Atualizacao PBI - dimensoes",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "Auxiliar Peso",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "Generics_PBI_Refresh",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"id_grupo": "99d9a740-b959-49ee-93ac-593ed91cd2e9",
+						"id_objeto": "7020b04f-4e64-40b9-968f-673cd4896a7e",
+						"is_dataflow": true
+					}
+				}
+			},
+			{
+				"name": "Auxiliar Peso",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "Wait Dimensoes",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.02:00:00",
+					"retry": 2,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/SalesLabIM/Modelagem/Match/CZ_CZ_Match_AuxPeso"
+				},
+				"linkedServiceName": {
+					"referenceName": "CommandCenterDatabricks",
+					"type": "LinkedServiceReference"
+				}
+			}
+		],
+		"variables": {
+			"v_array": {
+				"type": "Array"
+			}
+		},
+		"folder": {
+			"name": "Brazil/SalesLabIM/Modelagem/Match"
+		},
+		"annotations": [],
+		"lastPublishTime": "2022-11-17T16:51:44Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

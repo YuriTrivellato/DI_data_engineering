@@ -1,0 +1,548 @@
+{
+	"name": "1_CZ_CZ_Sales_InteligenciaDeMercado_RetailToolEvolution_PPL",
+	"properties": {
+		"activities": [
+			{
+				"name": "Origens",
+				"type": "DatabricksNotebook",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/SalesLabIM/Modelagem/RetailToolEvolution/CZ_CZ_RetailToolEvolution_Origens"
+				},
+				"linkedServiceName": {
+					"referenceName": "CommandCenterDatabricksInteligenciaMercado",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "DimMercado",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "Uniao Origens Tratadas",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/SalesLabIM/Modelagem/RetailToolEvolution/CZ_CZ_RetailToolEvolution_DimMercado"
+				},
+				"linkedServiceName": {
+					"referenceName": "CommandCenterDatabricksInteligenciaMercado",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "DimPeriodo",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "Uniao Origens Tratadas",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/SalesLabIM/Modelagem/RetailToolEvolution/CZ_CZ_RetailToolEvolution_DimPeriodo"
+				},
+				"linkedServiceName": {
+					"referenceName": "CommandCenterDatabricksInteligenciaMercado",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "DimHierarquia",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "Uniao Origens Tratadas",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/SalesLabIM/Modelagem/RetailToolEvolution/CZ_CZ_RetailToolEvolution_DimHierarquia"
+				},
+				"linkedServiceName": {
+					"referenceName": "CommandCenterDatabricksInteligenciaMercado",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "DimFabricante",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "Uniao Origens Tratadas",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/SalesLabIM/Modelagem/RetailToolEvolution/CZ_CZ_RetailToolEvolution_DimFabricante"
+				},
+				"linkedServiceName": {
+					"referenceName": "CommandCenterDatabricksInteligenciaMercado",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "DimSegmento",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "Uniao Origens Tratadas",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/SalesLabIM/Modelagem/RetailToolEvolution/CZ_CZ_RetailToolEvolution_DimSegmento"
+				},
+				"linkedServiceName": {
+					"referenceName": "CommandCenterDatabricksInteligenciaMercado",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "Wait Dimensoes",
+				"type": "Wait",
+				"dependsOn": [
+					{
+						"activity": "DimMercado",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "DimPeriodo",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "DimHierarquia",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "DimFabricante",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "DimSegmento",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "DimCanal",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"waitTimeInSeconds": 6
+				}
+			},
+			{
+				"name": "Objetos Dimensoes PBI",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "Wait Produto",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "v_array",
+					"value": [
+						{
+							"nome": "retail_tool_dimensoes",
+							"id_grupo": "99d9a740-b959-49ee-93ac-593ed91cd2e9",
+							"id_objeto": "0affac75-d49c-40f8-8c04-b3e46bd74381",
+							"is_dataflow": true
+						}
+					]
+				}
+			},
+			{
+				"name": "Fato RetailTool",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "Wait Produto",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/SalesLabIM/Modelagem/RetailToolEvolution/CZ_CZ_RetailToolEvolution_Fato"
+				},
+				"linkedServiceName": {
+					"referenceName": "CommandCenterDatabricksInteligenciaMercado",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "ForEach Objeto Dimensoes PBI",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "Objetos Dimensoes PBI",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@variables('v_array')",
+						"type": "Expression"
+					},
+					"isSequential": false,
+					"activities": [
+						{
+							"name": "Atualizacao dataflows PBI",
+							"type": "ExecutePipeline",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "Generics_PBI_Refresh",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true,
+								"parameters": {
+									"id_grupo": {
+										"value": "@item().id_grupo",
+										"type": "Expression"
+									},
+									"id_objeto": {
+										"value": "@item().id_objeto",
+										"type": "Expression"
+									},
+									"is_dataflow": {
+										"value": "@item().is_dataflow",
+										"type": "Expression"
+									}
+								}
+							}
+						}
+					]
+				}
+			},
+			{
+				"name": "Atualizacao Fato RetailTool",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "Fato RetailTool",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "Generics_PBI_Refresh",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"id_grupo": {
+							"value": "99d9a740-b959-49ee-93ac-593ed91cd2e9",
+							"type": "Expression"
+						},
+						"id_objeto": {
+							"value": "49fbbfe5-e422-4755-8724-14d0d6b99ff0",
+							"type": "Expression"
+						},
+						"is_dataflow": {
+							"value": "true",
+							"type": "Expression"
+						}
+					}
+				}
+			},
+			{
+				"name": "Atualizacao Dataset Retail Tool",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "ForEach Objeto Dimensoes PBI",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "Atualizacao Fato RetailTool",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "Generics_PBI_Refresh",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"id_grupo": {
+							"value": "99d9a740-b959-49ee-93ac-593ed91cd2e9",
+							"type": "Expression"
+						},
+						"id_objeto": {
+							"value": "aaa22886-6919-4c95-94a8-71fd319e0fef",
+							"type": "Expression"
+						},
+						"is_dataflow": {
+							"value": "false",
+							"type": "Expression"
+						}
+					}
+				}
+			},
+			{
+				"name": "DimProduto",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "Wait Dimensoes",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/SalesLabIM/Modelagem/RetailToolEvolution/CZ_CZ_RetailToolEvolution_DimProduto"
+				},
+				"linkedServiceName": {
+					"referenceName": "CommandCenterDatabricksInteligenciaMercado",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "DimCanal",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "Uniao Origens Tratadas",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/SalesLabIM/Modelagem/RetailToolEvolution/CZ_CZ_RetailToolEvolution_DimCanal"
+				},
+				"linkedServiceName": {
+					"referenceName": "CommandCenterDatabricksInteligenciaMercado",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "Calculo OFF",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "Origens",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/SalesLabIM/Modelagem/RetailToolEvolution/CZ_CZ_RetailToolEvolution_Off"
+				},
+				"linkedServiceName": {
+					"referenceName": "CommandCenterDatabricksInteligenciaMercado",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "Calculo ON",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "Calculo OFF",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/SalesLabIM/Modelagem/RetailToolEvolution/CZ_CZ_RetailToolEvolution_On"
+				},
+				"linkedServiceName": {
+					"referenceName": "CommandCenterDatabricksInteligenciaMercado",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "Uniao Origens Tratadas",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "Calculo ON",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/SalesLabIM/Modelagem/RetailToolEvolution/CZ_CZ_RetailToolEvolution_UniaoOrigensTratadas"
+				},
+				"linkedServiceName": {
+					"referenceName": "CommandCenterDatabricksInteligenciaMercado",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "Wait Produto",
+				"type": "Wait",
+				"dependsOn": [
+					{
+						"activity": "DimProduto",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"waitTimeInSeconds": 6
+				}
+			}
+		],
+		"variables": {
+			"v_array": {
+				"type": "Array"
+			}
+		},
+		"folder": {
+			"name": "Brazil/SalesLabIM/Modelagem/RetailTool-Evolution"
+		},
+		"annotations": [],
+		"lastPublishTime": "2023-01-10T15:43:06Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

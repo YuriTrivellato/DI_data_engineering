@@ -1,0 +1,303 @@
+{
+	"name": "1_DigitalComm_Smart_Journeys_PPL",
+	"properties": {
+		"activities": [
+			{
+				"name": "CZ_CZ_DI_Coexistence_Matrix",
+				"type": "DatabricksNotebook",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/DigitalInsights/DigitalComm/Algorithms/SmartJourneys/CZ_CZ_DI_Coexistence_Matrix"
+				},
+				"linkedServiceName": {
+					"referenceName": "DigitalInsightsDatabricks",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "CZ_CZ_DI_MN01",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "CZ_CZ_DI_Coexistence_Matrix",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/DigitalInsights/DigitalComm/Algorithms/SmartJourneys/CZ_CZ_DI_MN01"
+				},
+				"linkedServiceName": {
+					"referenceName": "DigitalInsightsDatabricks",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "CZ_CZ_DI_Inad",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "CZ_CZ_DI_Coexistence_Matrix",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/DigitalInsights/DigitalComm/Algorithms/SmartJourneys/CZ_CZ_DI_Inad"
+				},
+				"linkedServiceName": {
+					"referenceName": "DigitalInsightsDatabricks",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "CZ_CZ_MNJourney",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "CZ_CZ_DI_MN01",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/DigitalInsights/DigitalComm/CalendarAutomation/CZ_CZ_MNJourney"
+				},
+				"linkedServiceName": {
+					"referenceName": "DigitalInsightsDatabricks",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "CZ_CZ_InadJourney",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "CZ_CZ_DI_Inad",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/DigitalInsights/DigitalComm/CalendarAutomation/CZ_CZ_InadJourney"
+				},
+				"linkedServiceName": {
+					"referenceName": "DigitalInsightsDatabricks",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "CZ_CZ_MN02Journey",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "CZ_CZ_DI_MN02",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/DigitalInsights/DigitalComm/CalendarAutomation/CZ_CZ_MN02Journey"
+				},
+				"linkedServiceName": {
+					"referenceName": "DigitalInsightsDatabricks",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "CZ_CZ_DI_MN02",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "CZ_CZ_DI_Coexistence_Matrix",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/DigitalInsights/DigitalComm/Algorithms/SmartJourneys/CZ_CZ_DI_MN02"
+				},
+				"linkedServiceName": {
+					"referenceName": "DigitalInsightsDatabricks",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "CZ_CZ_DI_Churn_Desafios",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "CZ_CZ_DI_Coexistence_Matrix",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/DigitalInsights/DigitalComm/Algorithms/SmartJourneys/CZ_CZ_DI_Churn_Desafios"
+				},
+				"linkedServiceName": {
+					"referenceName": "DigitalInsightsDatabricks",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "CZ_CZ_DI_B2O",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "CZ_CZ_DI_Coexistence_Matrix",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/DigitalInsights/DigitalComm/Algorithms/SmartJourneys/CZ_CZ_DI_B2O"
+				},
+				"linkedServiceName": {
+					"referenceName": "DigitalInsightsDatabricks",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "CZ_CZ_ChurnDesafiosJourney",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "CZ_CZ_DI_Churn_Desafios",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/DigitalInsights/DigitalComm/CalendarAutomation/CZ_CZ_ChurnDesafiosJourney"
+				},
+				"linkedServiceName": {
+					"referenceName": "DigitalInsightsDatabricks",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "CZ_CZ_B2OJourney",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "CZ_CZ_DI_B2O",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/DigitalInsights/DigitalComm/CalendarAutomation/CZ_CZ_B2OJourney"
+				},
+				"linkedServiceName": {
+					"referenceName": "DigitalInsightsDatabricks",
+					"type": "LinkedServiceReference"
+				}
+			}
+		],
+		"folder": {
+			"name": "Brazil/DigitalInsights/DigitalComm/SmartJourney"
+		},
+		"annotations": [],
+		"lastPublishTime": "2023-07-24T16:10:37Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

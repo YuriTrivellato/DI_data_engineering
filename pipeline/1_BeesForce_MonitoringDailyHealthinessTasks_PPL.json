@@ -1,0 +1,33 @@
+{
+	"name": "1_BeesForce_MonitoringDailyHealthinessTasks_PPL",
+	"properties": {
+		"activities": [
+			{
+				"name": "CZ_CZ_MonitoringDailyHealthinessTasksV1",
+				"type": "DatabricksNotebook",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/DigitalInsights/TasksBeesForce/Monitoring/CZ_CZ_MonitoringDailyHealthinessTasksV1"
+				},
+				"linkedServiceName": {
+					"referenceName": "DigitalInsightsDatabricks",
+					"type": "LinkedServiceReference"
+				}
+			}
+		],
+		"folder": {
+			"name": "Brazil/DigitalInsights/BeesForce/Monitoring/MonitoringDailyHealthinessTasks"
+		},
+		"annotations": [],
+		"lastPublishTime": "2023-04-11T16:02:49Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

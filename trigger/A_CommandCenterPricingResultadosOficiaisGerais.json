@@ -1,0 +1,33 @@
+{
+	"name": "A_CommandCenterPricingResultadosOficiaisGerais",
+	"properties": {
+		"description": "Trigger de ativação do pipeline de Resultados Oficiais Gerais extraídos do cubo SDG.",
+		"annotations": [],
+		"runtimeState": "Stopped",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "0_CuboSDG_ResultadosOficiaisGerais_Monitor_PPL",
+					"type": "PipelineReference"
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Day",
+				"interval": 1,
+				"startTime": "2021-03-09T17:16:00",
+				"timeZone": "E. South America Standard Time",
+				"schedule": {
+					"minutes": [
+						0
+					],
+					"hours": [
+						6
+					]
+				}
+			}
+		}
+	}
+}

@@ -1,0 +1,295 @@
+{
+	"name": "1_CZ_CZ_Sales_InteligenciaDeMercado_ClimaIBM_PPL",
+	"properties": {
+		"activities": [
+			{
+				"name": "DimCidades",
+				"type": "DatabricksNotebook",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/SalesLabIM/Modelagem/ClimaIbm/CZ_CZ_ClimaIbmDimCidades"
+				},
+				"linkedServiceName": {
+					"referenceName": "CommandCenterDatabricksInteligenciaMercado",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "DimPeriodo",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "DimCidades",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/SalesLabIM/Modelagem/ClimaIbm/CZ_CZ_ClimaIbmDimPeriodo"
+				},
+				"linkedServiceName": {
+					"referenceName": "CommandCenterDatabricksInteligenciaMercado",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "FatoRetail",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "DimPeriodo",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/SalesLabIM/Modelagem/ClimaIbm/CZ_CZ_ClimaIbmFatoRetail"
+				},
+				"linkedServiceName": {
+					"referenceName": "CommandCenterDatabricksInteligenciaMercado",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "FatoClimaCorrente",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "DimPeriodo",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/SalesLabIM/Modelagem/ClimaIbm/CZ_CZ_ClimaIbmFatoCorrente"
+				},
+				"linkedServiceName": {
+					"referenceName": "CommandCenterDatabricksInteligenciaMercado",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "Wait Notebooks",
+				"type": "Wait",
+				"dependsOn": [
+					{
+						"activity": "FatoRetail",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "FatoClimaCorrente",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"waitTimeInSeconds": 6
+				}
+			},
+			{
+				"name": "Dataflow climaibm_dimensoes",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "Wait Notebooks",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "Generics_PBI_Refresh",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"id_grupo": "99d9a740-b959-49ee-93ac-593ed91cd2e9",
+						"id_objeto": "35007862-58d3-49ea-9e03-f9d312fdde2d",
+						"is_dataflow": true
+					}
+				}
+			},
+			{
+				"name": "Dataflow climaibm_retail",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "Wait Notebooks",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "Generics_PBI_Refresh",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"id_grupo": "99d9a740-b959-49ee-93ac-593ed91cd2e9",
+						"id_objeto": "01fa223a-de2e-4b8e-b6e4-f61c1a9d5933",
+						"is_dataflow": true
+					}
+				}
+			},
+			{
+				"name": "Dataflow climaibm_fatocorrente",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "Wait Notebooks",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "Generics_PBI_Refresh",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"id_grupo": "99d9a740-b959-49ee-93ac-593ed91cd2e9",
+						"id_objeto": "4b799ce1-7ba7-4f8b-b1e3-6387345aae19",
+						"is_dataflow": true
+					}
+				}
+			},
+			{
+				"name": "Wait Dataflow",
+				"type": "Wait",
+				"dependsOn": [
+					{
+						"activity": "Dataflow climaibm_dimensoes",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "Dataflow climaibm_retail",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "Dataflow climaibm_fatocorrente",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "Dataflow climaibm_sellin",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"waitTimeInSeconds": 6
+				}
+			},
+			{
+				"name": "dataset_climaibm",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "Wait Dataflow",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "Generics_PBI_Refresh",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"id_grupo": "99d9a740-b959-49ee-93ac-593ed91cd2e9",
+						"id_objeto": "87fe15e7-394c-4fd9-bce3-62f7580876ab",
+						"is_dataflow": false
+					}
+				}
+			},
+			{
+				"name": "Dataflow climaibm_sellin",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "Wait Notebooks",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "Generics_PBI_Refresh",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"id_grupo": "99d9a740-b959-49ee-93ac-593ed91cd2e9",
+						"id_objeto": "0a9c15af-3c55-4761-a6cf-c4f142c3408d",
+						"is_dataflow": true
+					}
+				}
+			}
+		],
+		"folder": {
+			"name": "Brazil/SalesLabIM/Modelagem/ClimaIBM"
+		},
+		"annotations": [],
+		"lastPublishTime": "2023-04-17T15:51:19Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

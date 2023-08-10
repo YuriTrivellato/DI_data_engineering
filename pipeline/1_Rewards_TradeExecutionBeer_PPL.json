@@ -1,0 +1,33 @@
+{
+	"name": "1_Rewards_TradeExecutionBeer_PPL",
+	"properties": {
+		"activities": [
+			{
+				"name": "CZ_CZ_Trade_Execution_Beer",
+				"type": "DatabricksNotebook",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 1,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/DigitalInsights/Rewards/Trade_Execution/CZ_CZ_Rewards_TradeExecutionBeer"
+				},
+				"linkedServiceName": {
+					"referenceName": "DigitalInsightsDatabricks",
+					"type": "LinkedServiceReference"
+				}
+			}
+		],
+		"folder": {
+			"name": "Brazil/DigitalInsights/Rewards/TradeExecution"
+		},
+		"annotations": [],
+		"lastPublishTime": "2023-01-03T16:11:03Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

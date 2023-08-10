@@ -1,0 +1,154 @@
+{
+	"name": "1_SkuPrioritization_RecommendationFlowScores_PPL",
+	"properties": {
+		"activities": [
+			{
+				"name": "CZ_CZ_join_prob_and_brand_momentum",
+				"type": "DatabricksNotebook",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/DigitalInsights/SkuPrioritization/Algorithms/RecommendationFlow/CZ_CZ_join_prob_and_brand_momentum"
+				},
+				"linkedServiceName": {
+					"referenceName": "DigitalInsightsDatabricks",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "CZ_CZ_nielsen_dn_ontrade",
+				"type": "DatabricksNotebook",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/DigitalInsights/SkuPrioritization/Algorithms/RecommendationFlow/CZ_CZ_nielsen_dn_ontrade"
+				},
+				"linkedServiceName": {
+					"referenceName": "DigitalInsightsDatabricks",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "CZ_CZ_join_cannibalization",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "CZ_CZ_join_prob_and_brand_momentum",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "CZ_CZ_nielsen_dn_ontrade",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/DigitalInsights/SkuPrioritization/Algorithms/RecommendationFlow/CZ_CZ_join_cannibalization"
+				},
+				"linkedServiceName": {
+					"referenceName": "DigitalInsightsDatabricks",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "CZ_CZ_DI_SkuP_BasketSimilarity",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "CZ_CZ_join_cannibalization",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/DigitalInsights/SkuPrioritization/Algorithms/RecommendationFlow/Fluxo Similaridade/CZ_CZ_DI_SkuP_BasketSimilarity"
+				},
+				"linkedServiceName": {
+					"referenceName": "DigitalInsightsDatabricks",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "CZ_CZ_DI_SkuP_PackPrioritizationScore",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "CZ_CZ_DI_SkuP_BasketSimilarity",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/DigitalInsights/SkuPrioritization/Algorithms/RecommendationFlow/CZ_CZ_DI_SkuP_PackPrioritizationScore"
+				},
+				"linkedServiceName": {
+					"referenceName": "DigitalInsightsDatabricks",
+					"type": "LinkedServiceReference"
+				}
+			}
+		],
+		"variables": {
+			"v_DNSName": {
+				"type": "String"
+			},
+			"v_Secret": {
+				"type": "String"
+			},
+			"v_Adb_EndPoint": {
+				"type": "String"
+			},
+			"v_Adb_JobId": {
+				"type": "String"
+			}
+		},
+		"folder": {
+			"name": "Brazil/DigitalInsights/SkuPrioritization/Algorithms/recommendation_flow_join_scores"
+		},
+		"annotations": [],
+		"lastPublishTime": "2023-03-07T16:04:36Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

@@ -1,0 +1,1347 @@
+{
+	"name": "1_S3_PZ_Foursquare_Places_PPL",
+	"properties": {
+		"activities": [
+			{
+				"name": "Get Metadata Foursquare",
+				"type": "GetMetadata",
+				"dependsOn": [
+					{
+						"activity": "Delete Foursquare",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataset": {
+						"referenceName": "Source_Foursquare_Places_DTS",
+						"type": "DatasetReference"
+					},
+					"fieldList": [
+						"childItems"
+					],
+					"storeSettings": {
+						"type": "AmazonS3ReadSettings",
+						"recursive": true,
+						"enablePartitionDiscovery": false
+					},
+					"formatSettings": {
+						"type": "DelimitedTextReadSettings"
+					}
+				}
+			},
+			{
+				"name": "ForEach Folder",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "Get Metadata Foursquare",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@activity('Get Metadata Foursquare').output.childItems",
+						"type": "Expression"
+					},
+					"activities": [
+						{
+							"name": "Append variable1",
+							"type": "AppendVariable",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "item_name",
+								"value": {
+									"value": "@item().name",
+									"type": "Expression"
+								}
+							}
+						}
+					]
+				}
+			},
+			{
+				"name": "Copy data S3 - Blob",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "Set variable last_item_name",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "DelimitedTextSource",
+						"storeSettings": {
+							"type": "AmazonS3ReadSettings",
+							"recursive": false,
+							"wildcardFolderPath": {
+								"value": "@concat('ABInBev/ABInBev_Standard_Global/dt=', variables('last_item_name'))",
+								"type": "Expression"
+							},
+							"wildcardFileName": "places_br.tsv.gz",
+							"enablePartitionDiscovery": false
+						},
+						"formatSettings": {
+							"type": "DelimitedTextReadSettings"
+						}
+					},
+					"sink": {
+						"type": "AvroSink",
+						"storeSettings": {
+							"type": "AzureBlobStorageWriteSettings",
+							"copyBehavior": "MergeFiles"
+						},
+						"formatSettings": {
+							"type": "AvroWriteSettings"
+						}
+					},
+					"enableStaging": false
+				},
+				"inputs": [
+					{
+						"referenceName": "Source_Foursquare_Places_DTS",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "Sink_Foursquare_Places_DTS",
+						"type": "DatasetReference"
+					}
+				]
+			},
+			{
+				"name": "Copy data Blob - PZ",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "Copy data S3 - Blob",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AvroSource",
+						"storeSettings": {
+							"type": "AzureBlobStorageReadSettings",
+							"recursive": true,
+							"enablePartitionDiscovery": false
+						}
+					},
+					"sink": {
+						"type": "AvroSink",
+						"storeSettings": {
+							"type": "AzureBlobFSWriteSettings"
+						},
+						"formatSettings": {
+							"type": "AvroWriteSettings"
+						}
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"name": "fsq_id",
+									"physicalType": "string | null"
+								},
+								"sink": {
+									"name": "fsq_id"
+								}
+							},
+							{
+								"source": {
+									"name": "name",
+									"physicalType": "string | null"
+								},
+								"sink": {
+									"name": "name"
+								}
+							},
+							{
+								"source": {
+									"name": "name_translated",
+									"physicalType": "string | null"
+								},
+								"sink": {
+									"name": "name_translated"
+								}
+							},
+							{
+								"source": {
+									"name": "latitude",
+									"physicalType": "string | null"
+								},
+								"sink": {
+									"name": "latitude"
+								}
+							},
+							{
+								"source": {
+									"name": "longitude",
+									"physicalType": "string | null"
+								},
+								"sink": {
+									"name": "longitude"
+								}
+							},
+							{
+								"source": {
+									"name": "geocodes",
+									"physicalType": "string | null"
+								},
+								"sink": {
+									"name": "geocodes"
+								}
+							},
+							{
+								"source": {
+									"name": "address",
+									"physicalType": "string | null"
+								},
+								"sink": {
+									"name": "address"
+								}
+							},
+							{
+								"source": {
+									"name": "address_extended",
+									"physicalType": "string | null"
+								},
+								"sink": {
+									"name": "address_extended"
+								}
+							},
+							{
+								"source": {
+									"name": "locality",
+									"physicalType": "string | null"
+								},
+								"sink": {
+									"name": "locality"
+								}
+							},
+							{
+								"source": {
+									"name": "dma",
+									"physicalType": "string | null"
+								},
+								"sink": {
+									"name": "dma"
+								}
+							},
+							{
+								"source": {
+									"name": "region",
+									"physicalType": "string | null"
+								},
+								"sink": {
+									"name": "region"
+								}
+							},
+							{
+								"source": {
+									"name": "postcode",
+									"physicalType": "string | null"
+								},
+								"sink": {
+									"name": "postcode"
+								}
+							},
+							{
+								"source": {
+									"name": "country",
+									"physicalType": "string | null"
+								},
+								"sink": {
+									"name": "country"
+								}
+							},
+							{
+								"source": {
+									"name": "admin_region",
+									"physicalType": "string | null"
+								},
+								"sink": {
+									"name": "admin_region"
+								}
+							},
+							{
+								"source": {
+									"name": "post_town",
+									"physicalType": "string | null"
+								},
+								"sink": {
+									"name": "post_town"
+								}
+							},
+							{
+								"source": {
+									"name": "neighborhood",
+									"physicalType": "string | null"
+								},
+								"sink": {
+									"name": "neighborhood"
+								}
+							},
+							{
+								"source": {
+									"name": "po_box",
+									"physicalType": "string | null"
+								},
+								"sink": {
+									"name": "po_box"
+								}
+							},
+							{
+								"source": {
+									"name": "date_created",
+									"physicalType": "string | null"
+								},
+								"sink": {
+									"name": "date_created"
+								}
+							},
+							{
+								"source": {
+									"name": "date_refreshed",
+									"physicalType": "string | null"
+								},
+								"sink": {
+									"name": "date_refreshed"
+								}
+							},
+							{
+								"source": {
+									"name": "fsq_category_ids",
+									"physicalType": "string | null"
+								},
+								"sink": {
+									"name": "fsq_category_ids"
+								}
+							},
+							{
+								"source": {
+									"name": "fsq_category_labels",
+									"physicalType": "string | null"
+								},
+								"sink": {
+									"name": "fsq_category_labels"
+								}
+							},
+							{
+								"source": {
+									"name": "fsq_chain_id",
+									"physicalType": "string | null"
+								},
+								"sink": {
+									"name": "fsq_chain_id"
+								}
+							},
+							{
+								"source": {
+									"name": "fsq_chain_name",
+									"physicalType": "string | null"
+								},
+								"sink": {
+									"name": "fsq_chain_name"
+								}
+							},
+							{
+								"source": {
+									"name": "parent_id",
+									"physicalType": "string | null"
+								},
+								"sink": {
+									"name": "parent_id"
+								}
+							},
+							{
+								"source": {
+									"name": "subvenue_count",
+									"physicalType": "string | null"
+								},
+								"sink": {
+									"name": "subvenue_count"
+								}
+							},
+							{
+								"source": {
+									"name": "total_tips",
+									"physicalType": "string | null"
+								},
+								"sink": {
+									"name": "total_tips"
+								}
+							},
+							{
+								"source": {
+									"name": "tips",
+									"physicalType": "string | null"
+								},
+								"sink": {
+									"name": "tips"
+								}
+							},
+							{
+								"source": {
+									"name": "tastes",
+									"physicalType": "string | null"
+								},
+								"sink": {
+									"name": "tastes"
+								}
+							},
+							{
+								"source": {
+									"name": "popularity",
+									"physicalType": "string | null"
+								},
+								"sink": {
+									"name": "popularity"
+								}
+							},
+							{
+								"source": {
+									"name": "venue_reality_bucket",
+									"physicalType": "string | null"
+								},
+								"sink": {
+									"name": "venue_reality_bucket"
+								}
+							},
+							{
+								"source": {
+									"name": "provenance_rating",
+									"physicalType": "string | null"
+								},
+								"sink": {
+									"name": "provenance_rating"
+								}
+							},
+							{
+								"source": {
+									"name": "date_closed",
+									"physicalType": "string | null"
+								},
+								"sink": {
+									"name": "date_closed"
+								}
+							},
+							{
+								"source": {
+									"name": "closed_bucket",
+									"physicalType": "string | null"
+								},
+								"sink": {
+									"name": "closed_bucket"
+								}
+							},
+							{
+								"source": {
+									"name": "hours",
+									"physicalType": "string | null"
+								},
+								"sink": {
+									"name": "hours"
+								}
+							},
+							{
+								"source": {
+									"name": "hours_popular",
+									"physicalType": "string | null"
+								},
+								"sink": {
+									"name": "hours_popular"
+								}
+							},
+							{
+								"source": {
+									"name": "hours_display",
+									"physicalType": "string | null"
+								},
+								"sink": {
+									"name": "hours_display"
+								}
+							},
+							{
+								"source": {
+									"name": "tel",
+									"physicalType": "string | null"
+								},
+								"sink": {
+									"name": "tel"
+								}
+							},
+							{
+								"source": {
+									"name": "website",
+									"physicalType": "string | null"
+								},
+								"sink": {
+									"name": "website"
+								}
+							},
+							{
+								"source": {
+									"name": "fax",
+									"physicalType": "string | null"
+								},
+								"sink": {
+									"name": "fax"
+								}
+							},
+							{
+								"source": {
+									"name": "email",
+									"physicalType": "string | null"
+								},
+								"sink": {
+									"name": "email"
+								}
+							},
+							{
+								"source": {
+									"name": "facebook_id",
+									"physicalType": "string | null"
+								},
+								"sink": {
+									"name": "facebook_id"
+								}
+							},
+							{
+								"source": {
+									"name": "instagram",
+									"physicalType": "string | null"
+								},
+								"sink": {
+									"name": "instagram"
+								}
+							},
+							{
+								"source": {
+									"name": "twitter",
+									"physicalType": "string | null"
+								},
+								"sink": {
+									"name": "twitter"
+								}
+							},
+							{
+								"source": {
+									"name": "rating",
+									"physicalType": "string | null"
+								},
+								"sink": {
+									"name": "rating"
+								}
+							},
+							{
+								"source": {
+									"name": "description",
+									"physicalType": "string | null"
+								},
+								"sink": {
+									"name": "description"
+								}
+							},
+							{
+								"source": {
+									"name": "price",
+									"physicalType": "string | null"
+								},
+								"sink": {
+									"name": "price"
+								}
+							},
+							{
+								"source": {
+									"name": "total_photos",
+									"physicalType": "string | null"
+								},
+								"sink": {
+									"name": "total_photos"
+								}
+							},
+							{
+								"source": {
+									"name": "photos",
+									"physicalType": "string | null"
+								},
+								"sink": {
+									"name": "photos"
+								}
+							},
+							{
+								"source": {
+									"name": "atm",
+									"physicalType": "string | null"
+								},
+								"sink": {
+									"name": "atm"
+								}
+							},
+							{
+								"source": {
+									"name": "barservice",
+									"physicalType": "string | null"
+								},
+								"sink": {
+									"name": "barservice"
+								}
+							},
+							{
+								"source": {
+									"name": "delivery",
+									"physicalType": "string | null"
+								},
+								"sink": {
+									"name": "delivery"
+								}
+							},
+							{
+								"source": {
+									"name": "drivethrough",
+									"physicalType": "string | null"
+								},
+								"sink": {
+									"name": "drivethrough"
+								}
+							},
+							{
+								"source": {
+									"name": "essentialreservations",
+									"physicalType": "string | null"
+								},
+								"sink": {
+									"name": "essentialreservations"
+								}
+							},
+							{
+								"source": {
+									"name": "fullbar",
+									"physicalType": "string | null"
+								},
+								"sink": {
+									"name": "fullbar"
+								}
+							},
+							{
+								"source": {
+									"name": "hasparking",
+									"physicalType": "string | null"
+								},
+								"sink": {
+									"name": "hasparking"
+								}
+							},
+							{
+								"source": {
+									"name": "onlinereservations",
+									"physicalType": "string | null"
+								},
+								"sink": {
+									"name": "onlinereservations"
+								}
+							},
+							{
+								"source": {
+									"name": "outdoorseating",
+									"physicalType": "string | null"
+								},
+								"sink": {
+									"name": "outdoorseating"
+								}
+							},
+							{
+								"source": {
+									"name": "privatelot",
+									"physicalType": "string | null"
+								},
+								"sink": {
+									"name": "privatelot"
+								}
+							},
+							{
+								"source": {
+									"name": "privateroom",
+									"physicalType": "string | null"
+								},
+								"sink": {
+									"name": "privateroom"
+								}
+							},
+							{
+								"source": {
+									"name": "publiclot",
+									"physicalType": "string | null"
+								},
+								"sink": {
+									"name": "publiclot"
+								}
+							},
+							{
+								"source": {
+									"name": "reservations",
+									"physicalType": "string | null"
+								},
+								"sink": {
+									"name": "reservations"
+								}
+							},
+							{
+								"source": {
+									"name": "restroom",
+									"physicalType": "string | null"
+								},
+								"sink": {
+									"name": "restroom"
+								}
+							},
+							{
+								"source": {
+									"name": "sitdowndining",
+									"physicalType": "string | null"
+								},
+								"sink": {
+									"name": "sitdowndining"
+								}
+							},
+							{
+								"source": {
+									"name": "smoking",
+									"physicalType": "string | null"
+								},
+								"sink": {
+									"name": "smoking"
+								}
+							},
+							{
+								"source": {
+									"name": "streetparking",
+									"physicalType": "string | null"
+								},
+								"sink": {
+									"name": "streetparking"
+								}
+							},
+							{
+								"source": {
+									"name": "takeout",
+									"physicalType": "string | null"
+								},
+								"sink": {
+									"name": "takeout"
+								}
+							},
+							{
+								"source": {
+									"name": "takesamex",
+									"physicalType": "string | null"
+								},
+								"sink": {
+									"name": "takesamex"
+								}
+							},
+							{
+								"source": {
+									"name": "takescreditcards",
+									"physicalType": "string | null"
+								},
+								"sink": {
+									"name": "takescreditcards"
+								}
+							},
+							{
+								"source": {
+									"name": "takesdinersclub",
+									"physicalType": "string | null"
+								},
+								"sink": {
+									"name": "takesdinersclub"
+								}
+							},
+							{
+								"source": {
+									"name": "takesdiscover",
+									"physicalType": "string | null"
+								},
+								"sink": {
+									"name": "takesdiscover"
+								}
+							},
+							{
+								"source": {
+									"name": "takesmastercard",
+									"physicalType": "string | null"
+								},
+								"sink": {
+									"name": "takesmastercard"
+								}
+							},
+							{
+								"source": {
+									"name": "takesnfc",
+									"physicalType": "string | null"
+								},
+								"sink": {
+									"name": "takesnfc"
+								}
+							},
+							{
+								"source": {
+									"name": "takesunionpay",
+									"physicalType": "string | null"
+								},
+								"sink": {
+									"name": "takesunionpay"
+								}
+							},
+							{
+								"source": {
+									"name": "takesvisa",
+									"physicalType": "string | null"
+								},
+								"sink": {
+									"name": "takesvisa"
+								}
+							},
+							{
+								"source": {
+									"name": "valetparking",
+									"physicalType": "string | null"
+								},
+								"sink": {
+									"name": "valetparking"
+								}
+							},
+							{
+								"source": {
+									"name": "wheelchairaccessible",
+									"physicalType": "string | null"
+								},
+								"sink": {
+									"name": "wheelchairaccessible"
+								}
+							},
+							{
+								"source": {
+									"name": "wifi",
+									"physicalType": "string | null"
+								},
+								"sink": {
+									"name": "wifi"
+								}
+							},
+							{
+								"source": {
+									"name": "beer",
+									"physicalType": "string | null"
+								},
+								"sink": {
+									"name": "beer"
+								}
+							},
+							{
+								"source": {
+									"name": "businessmeeting",
+									"physicalType": "string | null"
+								},
+								"sink": {
+									"name": "businessmeeting"
+								}
+							},
+							{
+								"source": {
+									"name": "byo",
+									"physicalType": "string | null"
+								},
+								"sink": {
+									"name": "byo"
+								}
+							},
+							{
+								"source": {
+									"name": "clean",
+									"physicalType": "string | null"
+								},
+								"sink": {
+									"name": "clean"
+								}
+							},
+							{
+								"source": {
+									"name": "coatcheck",
+									"physicalType": "string | null"
+								},
+								"sink": {
+									"name": "coatcheck"
+								}
+							},
+							{
+								"source": {
+									"name": "cocktails",
+									"physicalType": "string | null"
+								},
+								"sink": {
+									"name": "cocktails"
+								}
+							},
+							{
+								"source": {
+									"name": "crowded",
+									"physicalType": "string | null"
+								},
+								"sink": {
+									"name": "crowded"
+								}
+							},
+							{
+								"source": {
+									"name": "datespopular",
+									"physicalType": "string | null"
+								},
+								"sink": {
+									"name": "datespopular"
+								}
+							},
+							{
+								"source": {
+									"name": "dressy",
+									"physicalType": "string | null"
+								},
+								"sink": {
+									"name": "dressy"
+								}
+							},
+							{
+								"source": {
+									"name": "familiespopular",
+									"physicalType": "string | null"
+								},
+								"sink": {
+									"name": "familiespopular"
+								}
+							},
+							{
+								"source": {
+									"name": "glutenfreediet",
+									"physicalType": "string | null"
+								},
+								"sink": {
+									"name": "glutenfreediet"
+								}
+							},
+							{
+								"source": {
+									"name": "goodfordogs",
+									"physicalType": "string | null"
+								},
+								"sink": {
+									"name": "goodfordogs"
+								}
+							},
+							{
+								"source": {
+									"name": "groupsonlyreservations",
+									"physicalType": "string | null"
+								},
+								"sink": {
+									"name": "groupsonlyreservations"
+								}
+							},
+							{
+								"source": {
+									"name": "groupspopular",
+									"physicalType": "string | null"
+								},
+								"sink": {
+									"name": "groupspopular"
+								}
+							},
+							{
+								"source": {
+									"name": "hasmusic",
+									"physicalType": "string | null"
+								},
+								"sink": {
+									"name": "hasmusic"
+								}
+							},
+							{
+								"source": {
+									"name": "healthydiet",
+									"physicalType": "string | null"
+								},
+								"sink": {
+									"name": "healthydiet"
+								}
+							},
+							{
+								"source": {
+									"name": "jukeboxmusic",
+									"physicalType": "string | null"
+								},
+								"sink": {
+									"name": "jukeboxmusic"
+								}
+							},
+							{
+								"source": {
+									"name": "latenight",
+									"physicalType": "string | null"
+								},
+								"sink": {
+									"name": "latenight"
+								}
+							},
+							{
+								"source": {
+									"name": "livemusic",
+									"physicalType": "string | null"
+								},
+								"sink": {
+									"name": "livemusic"
+								}
+							},
+							{
+								"source": {
+									"name": "noisy",
+									"physicalType": "string | null"
+								},
+								"sink": {
+									"name": "noisy"
+								}
+							},
+							{
+								"source": {
+									"name": "quickbite",
+									"physicalType": "string | null"
+								},
+								"sink": {
+									"name": "quickbite"
+								}
+							},
+							{
+								"source": {
+									"name": "romantic",
+									"physicalType": "string | null"
+								},
+								"sink": {
+									"name": "romantic"
+								}
+							},
+							{
+								"source": {
+									"name": "servesbarsnacks",
+									"physicalType": "string | null"
+								},
+								"sink": {
+									"name": "servesbarsnacks"
+								}
+							},
+							{
+								"source": {
+									"name": "servesbreakfast",
+									"physicalType": "string | null"
+								},
+								"sink": {
+									"name": "servesbreakfast"
+								}
+							},
+							{
+								"source": {
+									"name": "servesbrunch",
+									"physicalType": "string | null"
+								},
+								"sink": {
+									"name": "servesbrunch"
+								}
+							},
+							{
+								"source": {
+									"name": "servesdessert",
+									"physicalType": "string | null"
+								},
+								"sink": {
+									"name": "servesdessert"
+								}
+							},
+							{
+								"source": {
+									"name": "servesdinner",
+									"physicalType": "string | null"
+								},
+								"sink": {
+									"name": "servesdinner"
+								}
+							},
+							{
+								"source": {
+									"name": "serveshappyhour",
+									"physicalType": "string | null"
+								},
+								"sink": {
+									"name": "serveshappyhour"
+								}
+							},
+							{
+								"source": {
+									"name": "serveslunch",
+									"physicalType": "string | null"
+								},
+								"sink": {
+									"name": "serveslunch"
+								}
+							},
+							{
+								"source": {
+									"name": "servestastingmenu",
+									"physicalType": "string | null"
+								},
+								"sink": {
+									"name": "servestastingmenu"
+								}
+							},
+							{
+								"source": {
+									"name": "servicequality",
+									"physicalType": "string | null"
+								},
+								"sink": {
+									"name": "servicequality"
+								}
+							},
+							{
+								"source": {
+									"name": "singlespopular",
+									"physicalType": "string | null"
+								},
+								"sink": {
+									"name": "singlespopular"
+								}
+							},
+							{
+								"source": {
+									"name": "specialoccasion",
+									"physicalType": "string | null"
+								},
+								"sink": {
+									"name": "specialoccasion"
+								}
+							},
+							{
+								"source": {
+									"name": "trendy",
+									"physicalType": "string | null"
+								},
+								"sink": {
+									"name": "trendy"
+								}
+							},
+							{
+								"source": {
+									"name": "tvs",
+									"physicalType": "string | null"
+								},
+								"sink": {
+									"name": "tvs"
+								}
+							},
+							{
+								"source": {
+									"name": "valueformoney",
+									"physicalType": "string | null"
+								},
+								"sink": {
+									"name": "valueformoney"
+								}
+							},
+							{
+								"source": {
+									"name": "vegandiet",
+									"physicalType": "string | null"
+								},
+								"sink": {
+									"name": "vegandiet"
+								}
+							},
+							{
+								"source": {
+									"name": "vegetariandiet",
+									"physicalType": "string | null"
+								},
+								"sink": {
+									"name": "vegetariandiet"
+								}
+							},
+							{
+								"source": {
+									"name": "wine",
+									"physicalType": "string | null"
+								},
+								"sink": {
+									"name": "wine"
+								}
+							}
+						],
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "Sink_Foursquare_Places_DTS",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "Sink_Foursquare_Places2_DTS",
+						"type": "DatasetReference"
+					}
+				]
+			},
+			{
+				"name": "S3_PZ_Foursquare_Places_DB",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "ForEach Folder",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/DigitalInsights/Rtm/ExternalBases/Foursquare/S3_PZ_Foursquare_Places_DB",
+					"baseParameters": {
+						"adf_input_value": {
+							"value": "@join(variables('item_name'), ';')",
+							"type": "Expression"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "DigitalInsightsDatabricks",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "Set variable last_item_name",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "S3_PZ_Foursquare_Places_DB",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "last_item_name",
+					"value": {
+						"value": "@activity('S3_PZ_Foursquare_Places_DB').output.runOutput.adf_output_value",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "Delete Foursquare",
+				"type": "Delete",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataset": {
+						"referenceName": "Sink_Foursquare_Places_DTS",
+						"type": "DatasetReference"
+					},
+					"logStorageSettings": {
+						"linkedServiceName": {
+							"referenceName": "DigitalInsightsRtmBlobStorage",
+							"type": "LinkedServiceReference"
+						}
+					},
+					"enableLogging": true,
+					"storeSettings": {
+						"type": "AzureBlobStorageReadSettings",
+						"recursive": false,
+						"enablePartitionDiscovery": false
+					}
+				}
+			}
+		],
+		"variables": {
+			"last_item_name": {
+				"type": "String"
+			},
+			"item_name": {
+				"type": "Array"
+			}
+		},
+		"folder": {
+			"name": "Brazil/DigitalInsights/RTM/ExternalBases/Foursquare"
+		},
+		"annotations": [],
+		"lastPublishTime": "2023-03-20T20:24:28Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

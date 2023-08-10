@@ -1,0 +1,54 @@
+{
+	"name": "1_VendaCerta_Diaria_PPL",
+	"properties": {
+		"activities": [
+			{
+				"name": "RelatorioVendas",
+				"type": "DatabricksNotebook",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/BigData/PostgresBigData/bigdata_relatorio_vendas"
+				},
+				"linkedServiceName": {
+					"referenceName": "CommandCenterDatabricksPricing",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "VendaProcessada",
+				"description": ".",
+				"type": "DatabricksNotebook",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/BigData/PostgresBigData/bigdata_venda_processada_diaria"
+				},
+				"linkedServiceName": {
+					"referenceName": "CommandCenterDatabricksPricing",
+					"type": "LinkedServiceReference"
+				}
+			}
+		],
+		"folder": {
+			"name": "Brazil/BigData/Internalizacao_VendaCerta/VendaCerta_Diaria"
+		},
+		"annotations": [],
+		"lastPublishTime": "2022-09-19T19:51:16Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

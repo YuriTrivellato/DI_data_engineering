@@ -1,0 +1,33 @@
+{
+	"name": "A_CommandCenterPricingBdrAccounts",
+	"properties": {
+		"description": "Fluxo de atualização de Bdr Accounts diariamente, às 2h.",
+		"annotations": [],
+		"runtimeState": "Stopped",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "0_BeesForce_Bdr_Accounts_Monitor_PPL",
+					"type": "PipelineReference"
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Day",
+				"interval": 1,
+				"startTime": "2022-02-23T08:00:00",
+				"timeZone": "E. South America Standard Time",
+				"schedule": {
+					"minutes": [
+						25
+					],
+					"hours": [
+						2
+					]
+				}
+			}
+		}
+	}
+}

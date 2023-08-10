@@ -1,0 +1,22 @@
+{
+	"name": "Sink_BlobStorage_PrxCig",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "CommandCenterAzureDataLakeStorageG2CustomerExperiencePlatform",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Binary",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"folderPath": {
+					"value": "@concat('Prx/',formatDateTime(utcNow(),'yyyyMMdd'))",
+					"type": "Expression"
+				},
+				"fileSystem": "datalake-rm"
+			}
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

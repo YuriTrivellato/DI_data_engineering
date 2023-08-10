@@ -1,0 +1,29 @@
+{
+	"name": "FtpRPM",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"description": "Linked service criado para consumir arquivos csvs enviados pela empresa RPM, contendo dados referentes ao bolão da copa de 2022.",
+		"annotations": [],
+		"type": "FtpServer",
+		"typeProperties": {
+			"host": "ftp.rpm.com.br",
+			"port": 21,
+			"enableSsl": false,
+			"enableServerCertificateValidation": false,
+			"authenticationType": "Basic",
+			"userName": "relatorios@promobees.com.br",
+			"password": {
+				"type": "AzureKeyVaultSecret",
+				"store": {
+					"referenceName": "KeyVault",
+					"type": "LinkedServiceReference"
+				},
+				"secretName": "DigitalInsightsFtpRpmPassword"
+			}
+		},
+		"connectVia": {
+			"referenceName": "AutoResolveIntegrationRuntime",
+			"type": "IntegrationRuntimeReference"
+		}
+	}
+}

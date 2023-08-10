@@ -1,0 +1,42 @@
+{
+	"name": "A_CommandCenterDigitalInsightsSkuPrioritizationRecommendationFlow",
+	"properties": {
+		"description": "Run all the recommendation flow os SKU Prioritization.",
+		"annotations": [],
+		"runtimeState": "Stopped",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "0_SkuPrioritization_RecommendationFlow_Monitor_PPL",
+					"type": "PipelineReference"
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Month",
+				"interval": 1,
+				"startTime": "2022-06-18T00:55:00",
+				"timeZone": "E. South America Standard Time",
+				"schedule": {
+					"minutes": [
+						0
+					],
+					"hours": [
+						14
+					],
+					"monthDays": [
+						2,
+						10,
+						18,
+						26,
+						5,
+						13,
+						21
+					]
+				}
+			}
+		}
+	}
+}

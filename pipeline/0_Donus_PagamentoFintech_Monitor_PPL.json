@@ -1,0 +1,138 @@
+{
+	"name": "0_Donus_PagamentoFintech_Monitor_PPL",
+	"properties": {
+		"description": "Pipeline de monitoramento",
+		"activities": [
+			{
+				"name": "Donus_PagamentoFintech_PPL",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "0_Donus_PagamentoFintech_PPL",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "PipelineStatusMonitor",
+				"description": "Notebook de monitoramento de métricas",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "Donus_PagamentoFintech_PPL",
+						"dependencyConditions": [
+							"Succeeded",
+							"Failed"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 120,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Operation/Monitor/PipelineStatusMonitorDatabricks",
+					"baseParameters": {
+						"runId": {
+							"value": "@pipeline().RunId",
+							"type": "Expression"
+						},
+						"factoryName": {
+							"value": "adf-prod-iris-commandcenter",
+							"type": "Expression"
+						},
+						"resourceGroup": {
+							"value": "AMBEV-IRIS-RG-EUS-ATCS-PROD",
+							"type": "Expression"
+						},
+						"checkChildrenOf": "Donus_PagamentoFintech_PPL"
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "CommandCenterDatabricksGov",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "MonitorQuery",
+				"description": "Notebook de monitoramento de queries do pipeline PagamentoFintech.",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "Donus_PagamentoFintech_PPL",
+						"dependencyConditions": [
+							"Failed",
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 120,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Operation/Brazil/Donus/PagamentoFintechQueryMonitor",
+					"baseParameters": {
+						"runId": {
+							"value": "@pipeline().RunId",
+							"type": "Expression"
+						},
+						"factoryName": {
+							"value": "adf-prod-iris-commandcenter",
+							"type": "Expression"
+						},
+						"resourceGroup": {
+							"value": "AMBEV-IRIS-RG-EUS-ATCS-PROD",
+							"type": "Expression"
+						},
+						"checkChildrenOf": {
+							"value": "0_Donus_PagamentoFintech_PPL",
+							"type": "Expression"
+						},
+						"pathRanges": {
+							"value": "/mnt/consumezone/Brazil/RevenueManagement/Arquiteturadeprecos/MonitoramentoRangeQualidade/",
+							"type": "Expression"
+						},
+						"biName": {
+							"value": "Nenhum",
+							"type": "Expression"
+						},
+						"tableName": {
+							"value": "compartilhado_pagamento_fintech",
+							"type": "Expression"
+						},
+						"malhaName": {
+							"value": "trigger própria",
+							"type": "Expression"
+						},
+						"notebookList": {
+							"value": "DL_PZ, PZ_HZ, HZ_CZ",
+							"type": "Expression"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "CommandCenterDatabricksGov",
+					"type": "LinkedServiceReference"
+				}
+			}
+		],
+		"folder": {
+			"name": "Brazil/Donus/PagamentoFintech"
+		},
+		"annotations": [],
+		"lastPublishTime": "2022-09-19T19:51:23Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

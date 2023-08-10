@@ -1,0 +1,177 @@
+{
+	"name": "Generics_CZ_CZ_DW",
+	"properties": {
+		"activities": [
+			{
+				"name": "Notebook",
+				"type": "DatabricksNotebook",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.03:00:00",
+					"retry": 1,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": {
+						"value": "@pipeline().parameters.path_notebook",
+						"type": "Expression"
+					},
+					"baseParameters": {
+						"flag_processamento_full": {
+							"value": "@pipeline().parameters.flag_processamento_full",
+							"type": "Expression"
+						},
+						"dias_processamento": {
+							"value": "@pipeline().parameters.dias_processamento",
+							"type": "Expression"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "CommandCenterDatabricksPricing",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "Atualiza ou nao o Power BI",
+				"description": "Checa se o pedido veio para atualizar também no serviço executando ou não a atualização do dataflow/dataset do Power BI.",
+				"type": "IfCondition",
+				"dependsOn": [
+					{
+						"activity": "Exporta ou nao o SQLDW",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@pipeline().parameters.flag_atualizacao_pbi",
+						"type": "Expression"
+					},
+					"ifTrueActivities": [
+						{
+							"name": "Atualiza servico Power BI",
+							"type": "ExecutePipeline",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "Generics_PBI_Refresh",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true,
+								"parameters": {
+									"id_grupo": {
+										"value": "@pipeline().parameters.id_grupo",
+										"type": "Expression"
+									},
+									"id_objeto": {
+										"value": "@pipeline().parameters.id_objeto",
+										"type": "Expression"
+									},
+									"is_dataflow": {
+										"value": "@pipeline().parameters.is_dataflow",
+										"type": "Expression"
+									}
+								}
+							}
+						}
+					]
+				}
+			},
+			{
+				"name": "Exporta ou nao o SQLDW",
+				"type": "IfCondition",
+				"dependsOn": [
+					{
+						"activity": "Notebook",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@if( not( empty(pipeline().parameters.tabela_sqldw) ) , true , false )",
+						"type": "Expression"
+					},
+					"ifTrueActivities": [
+						{
+							"name": "Exporta para SQLDW",
+							"type": "ExecutePipeline",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "Generics_CZ_DW",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true,
+								"parameters": {
+									"flag_processamento_full": {
+										"value": "@pipeline().parameters.flag_processamento_full",
+										"type": "Expression"
+									},
+									"dias_processamento": {
+										"value": "@pipeline().parameters.dias_processamento",
+										"type": "Expression"
+									},
+									"path_exportacao": {
+										"value": "@pipeline().parameters.path_exportacao",
+										"type": "Expression"
+									},
+									"path_sqldw": {
+										"value": "@pipeline().parameters.tabela_sqldw",
+										"type": "Expression"
+									}
+								}
+							}
+						}
+					]
+				}
+			}
+		],
+		"parameters": {
+			"path_notebook": {
+				"type": "string"
+			},
+			"flag_processamento_full": {
+				"type": "string"
+			},
+			"dias_processamento": {
+				"type": "string"
+			},
+			"path_exportacao": {
+				"type": "string"
+			},
+			"tabela_sqldw": {
+				"type": "string"
+			},
+			"flag_atualizacao_pbi": {
+				"type": "bool",
+				"defaultValue": false
+			},
+			"id_grupo": {
+				"type": "string"
+			},
+			"id_objeto": {
+				"type": "string"
+			},
+			"is_dataflow": {
+				"type": "bool"
+			}
+		},
+		"folder": {
+			"name": "Brazil/SalesLabRevenue/Modelagem/Generics"
+		},
+		"annotations": [],
+		"lastPublishTime": "2022-09-19T19:51:21Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

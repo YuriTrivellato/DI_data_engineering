@@ -1,0 +1,25 @@
+{
+	"name": "Source_BlobStorage_InvestimentoAS",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "CommandCenterAzureBlobStorageSalesLabRevenue",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "Brazil/GPRO/InvestimentoAS"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"container": "investimento-as"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"quoteChar": "\""
+		},
+		"schema": []
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

@@ -1,0 +1,90 @@
+{
+	"name": "0_FrequenciaVisita_Monitor_PPL",
+	"properties": {
+		"activities": [
+			{
+				"name": "1_Frequencia_Visita_PPL",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "1_Frequencia_Visita_PPL",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "PipelineStatusMonitor",
+				"description": "Notebook de monitoramento de métricas",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "1_Frequencia_Visita_PPL",
+						"dependencyConditions": [
+							"Skipped"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Operation/Monitor/PipelineStatusMonitorDatabricks",
+					"baseParameters": {
+						"runId": {
+							"value": "@pipeline().RunId",
+							"type": "Expression"
+						},
+						"factoryName": "adf-prod-iris-commandcenter",
+						"resourceGroup": "AMBEV-IRIS-RG-EUS-ATCS-PROD",
+						"checkChildrenOf": "1_Frequencia_Visita_PPL"
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "CommandCenterDatabricksGov",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "MonitorQuery",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "1_Frequencia_Visita_PPL",
+						"dependencyConditions": [
+							"Skipped"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Operation/Brazil/Promax/Frequencia_Visita/FrequenciaVisitaQueryMonitor"
+				},
+				"linkedServiceName": {
+					"referenceName": "CommandCenterDatabricksGov",
+					"type": "LinkedServiceReference"
+				}
+			}
+		],
+		"folder": {
+			"name": "Brazil/Promax/Frequencia_Visita"
+		},
+		"annotations": [],
+		"lastPublishTime": "2022-10-04T16:27:52Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

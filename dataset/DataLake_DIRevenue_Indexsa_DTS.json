@@ -1,0 +1,19 @@
+{
+	"name": "DataLake_DIRevenue_Indexsa_DTS",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "DataLakePlatform",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Binary",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"folderPath": "Brazil/Sales/DigitalInsights/RevenueManagement/MarketPrice/Indexsa/Blob",
+				"fileSystem": "prelandingzone"
+			}
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

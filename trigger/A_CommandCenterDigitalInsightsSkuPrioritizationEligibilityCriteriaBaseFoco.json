@@ -1,0 +1,33 @@
+{
+	"name": "A_CommandCenterDigitalInsightsSkuPrioritizationEligibilityCriteriaBaseFoco",
+	"properties": {
+		"description": "Monthly update eligible skus for each POC on focus base.",
+		"annotations": [],
+		"runtimeState": "Stopped",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "0_Eligibility_Criteria_Base_Foco_Monitor_PPL",
+					"type": "PipelineReference"
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Day",
+				"interval": 1,
+				"startTime": "2023-01-24T13:00:00",
+				"timeZone": "E. South America Standard Time",
+				"schedule": {
+					"minutes": [
+						15
+					],
+					"hours": [
+						19
+					]
+				}
+			}
+		}
+	}
+}

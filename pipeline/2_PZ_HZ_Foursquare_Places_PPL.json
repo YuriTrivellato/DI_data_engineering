@@ -1,0 +1,33 @@
+{
+	"name": "2_PZ_HZ_Foursquare_Places_PPL",
+	"properties": {
+		"activities": [
+			{
+				"name": "PZ_HZ_Foursquare_Places_DB",
+				"type": "DatabricksNotebook",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/DigitalInsights/Rtm/ExternalBases/Foursquare/PZ_HZ_Foursquare_Places_DB"
+				},
+				"linkedServiceName": {
+					"referenceName": "DigitalInsightsDatabricks",
+					"type": "LinkedServiceReference"
+				}
+			}
+		],
+		"folder": {
+			"name": "Brazil/DigitalInsights/RTM/ExternalBases/Foursquare"
+		},
+		"annotations": [],
+		"lastPublishTime": "2022-10-27T17:38:57Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

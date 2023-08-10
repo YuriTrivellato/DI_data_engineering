@@ -1,0 +1,33 @@
+{
+	"name": "0_PrecoVigente_PPL",
+	"properties": {
+		"activities": [
+			{
+				"name": "CZ_CZ_Cora_PrecoVigente",
+				"type": "DatabricksNotebook",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/Modelagem_Precos/PrecoVigente/CZ_CZ_Cora_PrecoVigente"
+				},
+				"linkedServiceName": {
+					"referenceName": "CommandCenterDatabricks2",
+					"type": "LinkedServiceReference"
+				}
+			}
+		],
+		"folder": {
+			"name": "Brazil/PrecoVigente"
+		},
+		"annotations": [],
+		"lastPublishTime": "2023-07-05T16:26:48Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

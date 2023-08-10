@@ -1,0 +1,33 @@
+{
+	"name": "A_CommandCenterDigitalInsightsRevenueManagementIBMDaily",
+	"properties": {
+		"description": "Trigger de aquisição diária de dados climáticos da IBM",
+		"annotations": [],
+		"runtimeState": "Stopped",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "4_DI_Revenue_Ibm_PPL",
+					"type": "PipelineReference"
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Day",
+				"interval": 1,
+				"startTime": "2023-01-18T20:01:00",
+				"timeZone": "E. South America Standard Time",
+				"schedule": {
+					"minutes": [
+						30
+					],
+					"hours": [
+						0
+					]
+				}
+			}
+		}
+	}
+}

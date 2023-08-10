@@ -1,0 +1,153 @@
+{
+	"name": "0_RelatorioPedidoB2B_PPL",
+	"properties": {
+		"activities": [
+			{
+				"name": "TZ_to_HZ",
+				"description": "TrustedZone to History Zone.",
+				"type": "DatabricksNotebook",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 1,
+					"retryIntervalInSeconds": 300,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/Promax/RelatorioPedidoB2B/TZ_HZ_Promax_RelatorioPedidoB2B"
+				},
+				"linkedServiceName": {
+					"referenceName": "DigitalInsightsDatabricks",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "HZ_to_CZ",
+				"description": "History Zone to Transformed Zone.",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "TZ_to_HZ",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "TrustedZone_CZ_Cora",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 2,
+					"retryIntervalInSeconds": 120,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/Promax/RelatorioPedidoB2B/HZ_CZ_Promax_RelatorioPedidoB2B"
+				},
+				"linkedServiceName": {
+					"referenceName": "DigitalInsightsDatabricks",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "CZ_to_PR",
+				"description": "Consume Zone to DW SQL",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "HZ_to_CZ",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 3,
+					"retryIntervalInSeconds": 120,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/Promax/RelatorioPedidoB2B/CZ_PR_Promax_RelatorioPedidoB2B",
+					"baseParameters": {
+						"tzPath": "/mnt/consumezone/Brazil/Public/Promax/Relatorio_Pedido_B2B_NEW",
+						"dwTable": "PRX.FT_PROMAX_RELATORIO_PEDIDO_B2B_NEW"
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "DigitalInsightsDatabricks",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "TrustedZone_CZ_Cora",
+				"description": "Trusted Zone (arquitetura 2.0) to Consume Zone.",
+				"type": "DatabricksNotebook",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 1,
+					"retryIntervalInSeconds": 300,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/Cora/JornadaPedidos/TrustedZone_CZ_Cora_Pedidos"
+				},
+				"linkedServiceName": {
+					"referenceName": "DigitalInsightsDatabricks",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "5_DI_Revenue_Copy_B2B_DW_PPL",
+				"type": "ExecutePipeline",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
+				"dependsOn": [
+					{
+						"activity": "HZ_to_CZ",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "5_DI_Revenue_Copy_B2B_DW_PPL",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			}
+		],
+		"variables": {
+			"dataUTC": {
+				"type": "String",
+				"defaultValue": "0000-00-00T00:00:00.0000000Z"
+			},
+			"data": {
+				"type": "String",
+				"defaultValue": "00000000"
+			}
+		},
+		"folder": {
+			"name": "Brazil/DigitalInsights/RevenueManagement/RelatorioPedidoB2B"
+		},
+		"annotations": [],
+		"lastPublishTime": "2023-07-26T17:32:45Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

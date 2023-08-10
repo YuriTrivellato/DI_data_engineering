@@ -1,0 +1,33 @@
+{
+	"name": "1_Rewards_ReversionChallenges_PPL",
+	"properties": {
+		"activities": [
+			{
+				"name": "CZ_CZ_Rewards_ChallengesReversion",
+				"type": "DatabricksNotebook",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "1.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/DigitalInsights/Rewards/Reengagement/CZ_CZ_Rewards_BeerReversion"
+				},
+				"linkedServiceName": {
+					"referenceName": "DigitalInsightsDatabricks",
+					"type": "LinkedServiceReference"
+				}
+			}
+		],
+		"folder": {
+			"name": "Brazil/DigitalInsights/Rewards/Reengagement/BEER"
+		},
+		"annotations": [],
+		"lastPublishTime": "2023-01-12T18:45:00Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

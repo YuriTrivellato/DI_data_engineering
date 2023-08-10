@@ -1,0 +1,74 @@
+{
+	"name": "0_BeesForce_CokpitTasks_PPL",
+	"properties": {
+		"activities": [
+			{
+				"name": "1_Cokpit_PPL",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "1_BeesForce_CokpitTasks_PPL",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"ingestion_date": {
+							"value": "@pipeline().parameters.ingestion_date",
+							"type": "Expression"
+						}
+					}
+				}
+			},
+			{
+				"name": "PipelineStatusMonitor",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "1_Cokpit_PPL",
+						"dependencyConditions": [
+							"Succeeded",
+							"Failed"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Operation/Monitor/PipelineStatusMonitorDatabricks",
+					"baseParameters": {
+						"runId": {
+							"value": "@pipeline().RunId",
+							"type": "Expression"
+						},
+						"factoryName": "adf-prod-iris-commandcenter",
+						"resourceGroup": "AMBEV-IRIS-RG-EUS-ATCS-PROD",
+						"checkChildrenOf": " "
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "DigitalInsightsDatabricks",
+					"type": "LinkedServiceReference"
+				}
+			}
+		],
+		"parameters": {
+			"ingestion_date": {
+				"type": "string"
+			}
+		},
+		"folder": {
+			"name": "Brazil/DigitalInsights/BeesForce/Cokpit"
+		},
+		"annotations": [],
+		"lastPublishTime": "2022-09-28T17:39:20Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

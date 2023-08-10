@@ -1,0 +1,101 @@
+{
+	"name": "0_Frequencia_Visita_Complemento_Monitor_PPL",
+	"properties": {
+		"activities": [
+			{
+				"name": "1_Frequencia_Visita_Complemento",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "1_Frequencia_Visita_Complemento_PPL",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "PipelineStatusMonitor",
+				"description": "Notebook de monitoramento de métricas.",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "1_Frequencia_Visita_Complemento",
+						"dependencyConditions": [
+							"Skipped"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 20,
+					"retryIntervalInSeconds": 120,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Operation/Monitor/PipelineStatusMonitor",
+					"baseParameters": {
+						"runId": {
+							"value": "@pipeline().RunId",
+							"type": "Expression"
+						},
+						"factoryName": {
+							"value": "adf-prod-iris-commandcenter",
+							"type": "Expression"
+						},
+						"resourceGroup": {
+							"value": "AMBEV-IRIS-RG-EUS-ATCS-PROD",
+							"type": "Expression"
+						},
+						"checkChildrenOf": {
+							"value": "PZ_HZ_Frequencia_Visita_Complemento_PPL, HZ_CZ_Frequencia_Visita_Complemento_PPL, FrequenciaVisitaComplemento",
+							"type": "Expression"
+						},
+						"pipelineName": "1_Frequencia_Visita_Complemento"
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "CommandCenterDatabricksGov",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "MonitorQuery",
+				"description": "Notebook de monitoramento de queries.",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "1_Frequencia_Visita_Complemento",
+						"dependencyConditions": [
+							"Skipped"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 20,
+					"retryIntervalInSeconds": 120,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Operation/Brazil/Promax/Frequencia_Visita_Complemento/FrequenciaVisitaComplementoQueryMonitor"
+				},
+				"linkedServiceName": {
+					"referenceName": "CommandCenterDatabricksGov",
+					"type": "LinkedServiceReference"
+				}
+			}
+		],
+		"folder": {
+			"name": "Brazil/Promax/Frequencia_Visita_Complemento"
+		},
+		"annotations": [],
+		"lastPublishTime": "2022-10-04T16:27:52Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

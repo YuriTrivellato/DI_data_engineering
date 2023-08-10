@@ -1,0 +1,24 @@
+{
+	"name": "Sink_Global_AlgoSelling_RecommendationsV1_DTS",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "CommandCenterAzureBlobStorageGlobalStorageRecommendationsBees",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "Brazil/BEES"
+		},
+		"annotations": [],
+		"type": "Parquet",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"folderPath": "ambev/recommendation/v1",
+				"fileSystem": "landing"
+			},
+			"compressionCodec": "snappy"
+		},
+		"schema": []
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

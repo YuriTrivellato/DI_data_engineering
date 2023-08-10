@@ -1,0 +1,93 @@
+{
+	"name": "0_ApuracaoDescontos_PPL",
+	"properties": {
+		"activities": [
+			{
+				"name": "CZ_CZ_ApuracaoDescontos_BaseAcob",
+				"type": "DatabricksNotebook",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/Modelagem_Precos/ApuracaoDescontos/Base_Acob/CZ_CZ_ApuracaoDescontos_BaseAcob"
+				},
+				"linkedServiceName": {
+					"referenceName": "CommandCenterDatabricks2",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "CZ_CZ_ApuracaoDescontos_BaseBonificacao",
+				"type": "DatabricksNotebook",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/Modelagem_Precos/ApuracaoDescontos/Base_bonificacao/CZ_CZ_ApuracaoDescontos_BaseBonificacao"
+				},
+				"linkedServiceName": {
+					"referenceName": "CommandCenterDatabricks2",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "CZ_CZ_ApuracaoDescontos_PadronizacaoIniciativa",
+				"type": "DatabricksNotebook",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/Modelagem_Precos/ApuracaoDescontos/Padonizacao_iniciativa/CZ_CZ_ApuracaoDescontos_PadronizacaoIniciativa"
+				},
+				"linkedServiceName": {
+					"referenceName": "CommandCenterDatabricks2",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "CZ_CZ_ApuracaoDescontos_PromocoesAtivas",
+				"type": "DatabricksNotebook",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/Modelagem_Precos/ApuracaoDescontos/Promocoes_ativas/CZ_CZ_ApuracaoDescontos_PromocoesAtivas"
+				},
+				"linkedServiceName": {
+					"referenceName": "CommandCenterDatabricks2",
+					"type": "LinkedServiceReference"
+				}
+			}
+		],
+		"folder": {
+			"name": "Brazil/ApuracaoDescontos"
+		},
+		"annotations": [],
+		"lastPublishTime": "2023-07-18T15:08:36Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

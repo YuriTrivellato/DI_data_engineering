@@ -1,0 +1,131 @@
+{
+	"name": "0_BeesForce_Nps_Metricas_Monitor_PPL",
+	"properties": {
+		"activities": [
+			{
+				"name": "Run_Dataset_Nps_PPL",
+				"type": "DatabricksNotebook",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/DigitalInsights/TasksBeesForce/NPS/Run_Dataset_Nps"
+				},
+				"linkedServiceName": {
+					"referenceName": "DigitalInsightsDatabricks",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "PipelineStatusMonitor",
+				"description": "Notebook de monitoramento de métricas",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "CZ_CZ_NpsDataSubMotives",
+						"dependencyConditions": [
+							"Succeeded",
+							"Failed"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 120,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Operation/Monitor/PipelineStatusMonitorDatabricks",
+					"baseParameters": {
+						"runId": {
+							"value": "@pipeline().RunId",
+							"type": "Expression"
+						},
+						"factoryName": {
+							"value": "adf-prod-iris-commandcenter",
+							"type": "Expression"
+						},
+						"resourceGroup": {
+							"value": "AMBEV-IRIS-RG-EUS-ATCS-PROD",
+							"type": "Expression"
+						},
+						"checkChildrenOf": "Donus_PagamentoFintech_PPL"
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "DigitalInsightsDatabricks",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "Nps_Metrics_Full_Customers_PPL",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "Run_Dataset_Nps_PPL",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/DigitalInsights/TasksBeesForce/NPS/CZ_CZ_Dataset_NPS_Metricas_Full_Base"
+				},
+				"linkedServiceName": {
+					"referenceName": "DigitalInsightsDatabricks",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "CZ_CZ_NpsDataSubMotives",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "Nps_Metrics_Full_Customers_PPL",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/DigitalInsights/TasksBeesForce/NPS/CZ_CZ_NpsDataSubMotives"
+				},
+				"linkedServiceName": {
+					"referenceName": "DigitalInsightsDatabricks",
+					"type": "LinkedServiceReference"
+				}
+			}
+		],
+		"folder": {
+			"name": "Brazil/DigitalInsights/BeesForce/NPS"
+		},
+		"annotations": [],
+		"lastPublishTime": "2023-08-01T20:09:53Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

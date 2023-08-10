@@ -1,0 +1,417 @@
+{
+	"name": "2_BeesForce_TasksKpis_PPL",
+	"properties": {
+		"activities": [
+			{
+				"name": "CZ_CZ_Kpis",
+				"type": "WebActivity",
+				"dependsOn": [
+					{
+						"activity": "Get Secret from AKV",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "Get DatabricksEndPoint from AKV",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "Get Databricks JobID from AKV",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"url": {
+						"value": "@activity('Get DatabricksEndPoint from AKV').output.value",
+						"type": "Expression"
+					},
+					"connectVia": {
+						"referenceName": "AutoResolveIntegrationRuntime",
+						"type": "IntegrationRuntimeReference"
+					},
+					"method": "POST",
+					"headers": {
+						"Authorization": {
+							"value": "@concat('Bearer ',activity('Get Secret from AKV').output.value)",
+							"type": "Expression"
+						},
+						"Content-Type": "application/json"
+					},
+					"body": {
+						"value": "@concat('{\n    \"job_id\": ',activity('Get Databricks JobID from AKV').output.value,\n',\"notebook_params\": {\"notebook\": \"tasks_kpis\"}}')",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "Set DNS Name",
+				"type": "SetVariable",
+				"dependsOn": [],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "v_DNSName",
+					"value": "https://kv-prod-iris.vault.azure.net/"
+				}
+			},
+			{
+				"name": "Set Secret",
+				"type": "SetVariable",
+				"dependsOn": [],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "v_Secret",
+					"value": "DigitalInsightsSkuPrioritizationToken"
+				}
+			},
+			{
+				"name": "Get Secret from AKV",
+				"type": "WebActivity",
+				"dependsOn": [
+					{
+						"activity": "Set Secret",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "Set DNS Name",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "Set Adb EndPoint",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "Set Adb JobId",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"url": {
+						"value": "@concat(variables('v_DNSName'),'secrets/',variables('v_Secret'),'/?api-version=7.0')",
+						"type": "Expression"
+					},
+					"connectVia": {
+						"referenceName": "AutoResolveIntegrationRuntime",
+						"type": "IntegrationRuntimeReference"
+					},
+					"method": "GET",
+					"body": {
+						"simple": "body"
+					},
+					"authentication": {
+						"type": "MSI",
+						"resource": "https://vault.azure.net"
+					}
+				}
+			},
+			{
+				"name": "Set Adb EndPoint",
+				"type": "SetVariable",
+				"dependsOn": [],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "v_Adb_EndPoint",
+					"value": "DigitalInsightsDataBricksRunJobConnectionString"
+				}
+			},
+			{
+				"name": "Set Adb JobId",
+				"type": "SetVariable",
+				"dependsOn": [],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "v_Adb_JobId",
+					"value": "DigitalInsightsDataBricksTaskBeesForceKpisJobID"
+				}
+			},
+			{
+				"name": "Get Databricks JobID from AKV",
+				"type": "WebActivity",
+				"dependsOn": [
+					{
+						"activity": "Set Secret",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "Set DNS Name",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "Set Adb EndPoint",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "Set Adb JobId",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"url": {
+						"value": "@concat(variables('v_DNSName'),'secrets/',variables('v_Adb_JobId'),'/?api-version=7.0')",
+						"type": "Expression"
+					},
+					"connectVia": {
+						"referenceName": "AutoResolveIntegrationRuntime",
+						"type": "IntegrationRuntimeReference"
+					},
+					"method": "GET",
+					"body": {
+						"simple": "body"
+					},
+					"authentication": {
+						"type": "MSI",
+						"resource": "https://vault.azure.net"
+					}
+				}
+			},
+			{
+				"name": "Get DatabricksEndPoint from AKV",
+				"type": "WebActivity",
+				"dependsOn": [
+					{
+						"activity": "Set Secret",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "Set DNS Name",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "Set Adb EndPoint",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "Set Adb JobId",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"url": {
+						"value": "@concat(variables('v_DNSName'),'secrets/',variables('v_Adb_EndPoint'),'/?api-version=7.0')",
+						"type": "Expression"
+					},
+					"connectVia": {
+						"referenceName": "AutoResolveIntegrationRuntime",
+						"type": "IntegrationRuntimeReference"
+					},
+					"method": "GET",
+					"body": {
+						"simple": "body"
+					},
+					"authentication": {
+						"type": "MSI",
+						"resource": "https://vault.azure.net"
+					}
+				}
+			},
+			{
+				"name": "Until Job Cluster Terminate",
+				"type": "Until",
+				"dependsOn": [
+					{
+						"activity": "CZ_CZ_Kpis",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "Get Secret from AKV",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "Get DatabricksEndPoint from AKV",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@or(or(equals(activity('Get JobCluster Status').output.state.life_cycle_state, 'TERMINATED'), equals(activity('Get JobCluster Status').output.state.life_cycle_state, 'SKIPPED')), equals(activity('Get JobCluster Status').output.state.life_cycle_state, 'INTERNAL_ERROR'))",
+						"type": "Expression"
+					},
+					"activities": [
+						{
+							"name": "Get JobCluster Status",
+							"type": "WebActivity",
+							"dependsOn": [
+								{
+									"activity": "Wait 120s",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"url": {
+									"value": "@concat(replace(activity('Get DatabricksEndPoint from AKV').output.value, 'run-now', 'runs/get?run_id='), activity('CZ_CZ_Kpis').output.run_id)",
+									"type": "Expression"
+								},
+								"connectVia": {
+									"referenceName": "AutoResolveIntegrationRuntime",
+									"type": "IntegrationRuntimeReference"
+								},
+								"method": "GET",
+								"headers": {
+									"Authorization": {
+										"value": "@concat('Bearer ',activity('Get Secret from AKV').output.value)",
+										"type": "Expression"
+									},
+									"Content-Type": "application/json"
+								}
+							}
+						},
+						{
+							"name": "Wait 120s",
+							"type": "Wait",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"waitTimeInSeconds": 120
+							}
+						}
+					],
+					"timeout": "0.12:00:00"
+				}
+			},
+			{
+				"name": "Conditional to Fail PPL",
+				"type": "IfCondition",
+				"dependsOn": [
+					{
+						"activity": "Until Job Cluster Terminate",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@equals(activity('Get JobCluster Status').output.state.result_state, 'SUCCESS')",
+						"type": "Expression"
+					},
+					"ifFalseActivities": [
+						{
+							"name": "Falha",
+							"type": "Fail",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"message": "Falha na execução do job cluster",
+								"errorCode": "500"
+							}
+						}
+					]
+				}
+			}
+		],
+		"variables": {
+			"v_Secret": {
+				"type": "String"
+			},
+			"v_DNSName": {
+				"type": "String"
+			},
+			"v_Adb_EndPoint": {
+				"type": "String"
+			},
+			"v_Adb_JobId": {
+				"type": "String"
+			}
+		},
+		"folder": {
+			"name": "Brazil/DigitalInsights/BeesForce/TasksKPIs"
+		},
+		"annotations": [],
+		"lastPublishTime": "2023-02-28T15:51:40Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

@@ -1,0 +1,99 @@
+{
+	"name": "Malha_SalesLabRevenue_Discounts",
+	"properties": {
+		"activities": [
+			{
+				"name": "Executa OffTrade",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "Executa Classificacao Desconto",
+						"dependencyConditions": [
+							"Completed"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "Generics_CZ_CZ_DW",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"path_notebook": "/Brazil/Modelagem_Precos/Discounts/OffTrade",
+						"flag_processamento_full": "0",
+						"dias_processamento": "130",
+						"path_exportacao": "",
+						"tabela_sqldw": "",
+						"flag_atualizacao_pbi": true,
+						"id_grupo": "70779b28-0cdc-4f2a-9236-23ebe341099c",
+						"id_objeto": "de89aca1-d8b8-4ae1-a5cb-5e883a8f6b9d",
+						"is_dataflow": true
+					}
+				}
+			},
+			{
+				"name": "Executa Classificacao Desconto",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "Generics_CZ_CZ_DW",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"path_notebook": "/Brazil/Modelagem_Precos/Discounts/ClassificacaoDesconto",
+						"flag_processamento_full": "1",
+						"dias_processamento": "1",
+						"path_exportacao": "",
+						"tabela_sqldw": "",
+						"flag_atualizacao_pbi": true,
+						"id_grupo": "70779b28-0cdc-4f2a-9236-23ebe341099c",
+						"id_objeto": "7316ca39-8f75-4449-8d2c-de7907f8972f",
+						"is_dataflow": true
+					}
+				}
+			},
+			{
+				"name": "Executa OnTrade",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "Executa Classificacao Desconto",
+						"dependencyConditions": [
+							"Completed"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "Generics_CZ_CZ_DW",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"path_notebook": "/Brazil/Modelagem_Precos/Discounts/OnTrade",
+						"flag_processamento_full": "0",
+						"dias_processamento": "60",
+						"path_exportacao": "/mnt/consumezone/Brazil/Sales/RevenueManagement/SelfService/Descontos/OnTrade/",
+						"tabela_sqldw": "sales_rm_selfservice.descontos_ontrade",
+						"flag_atualizacao_pbi": true,
+						"id_grupo": "70779b28-0cdc-4f2a-9236-23ebe341099c",
+						"id_objeto": "939739cc-6bdc-4494-8f4f-28db3e0bb701",
+						"is_dataflow": true
+					}
+				}
+			}
+		],
+		"folder": {
+			"name": "Brazil/SalesLabRevenue/Modelagem/Discounts"
+		},
+		"annotations": [],
+		"lastPublishTime": "2022-09-19T19:51:24Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

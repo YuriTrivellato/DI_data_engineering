@@ -1,0 +1,68 @@
+{
+	"name": "0_ManualDiscounts_Monitor_PPL",
+	"properties": {
+		"activities": [
+			{
+				"name": "ManualDiscounts_PPL",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "0_ManualDiscounts_PPL",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "PipelineStatusMonitor",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "ManualDiscounts_PPL",
+						"dependencyConditions": [
+							"Skipped"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Operation/Monitor/PipelineStatusMonitor",
+					"baseParameters": {
+						"runId": {
+							"value": "@pipeline().RunId",
+							"type": "Expression"
+						},
+						"factoryName": {
+							"value": "adf-prod-iris-commandcenter",
+							"type": "Expression"
+						},
+						"resourceGroup": {
+							"value": "AMBEV-IRIS-RG-EUS-ATCS-PROD",
+							"type": "Expression"
+						},
+						"checkChildrenOf": "0_ManualDiscounts_PPL"
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "CommandCenterDatabricksGov",
+					"type": "LinkedServiceReference"
+				}
+			}
+		],
+		"folder": {
+			"name": "Brazil/Manual/ManuaisDiscounts"
+		},
+		"annotations": [],
+		"lastPublishTime": "2022-10-04T16:27:52Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

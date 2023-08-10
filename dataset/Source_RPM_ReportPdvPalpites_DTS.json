@@ -1,0 +1,63 @@
+{
+	"name": "Source_RPM_ReportPdvPalpites_DTS",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "FtpRPM",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "Brazil/RPM/BolaoCopa22"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "FtpServerLocation",
+				"fileName": "report_2.csv"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": [
+			{
+				"name": "documento",
+				"type": "String"
+			},
+			{
+				"name": "jogo_palpitado",
+				"type": "String"
+			},
+			{
+				"name": "placar_palpitado",
+				"type": "String"
+			},
+			{
+				"name": "placar_real",
+				"type": "String"
+			},
+			{
+				"name": "status",
+				"type": "String"
+			},
+			{
+				"name": "dia_do_palpite",
+				"type": "String"
+			},
+			{
+				"name": "premio_ganhado",
+				"type": "String"
+			},
+			{
+				"name": "data_do_jogo",
+				"type": "String"
+			},
+			{
+				"name": "fase_da_copa",
+				"type": "String"
+			}
+		]
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

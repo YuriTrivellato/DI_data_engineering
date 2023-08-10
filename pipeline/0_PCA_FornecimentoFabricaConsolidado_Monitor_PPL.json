@@ -1,0 +1,114 @@
+{
+	"name": "0_PCA_FornecimentoFabricaConsolidado_Monitor_PPL",
+	"properties": {
+		"description": "Pipeline de monitoramento",
+		"activities": [
+			{
+				"name": "PCA_FornecimentoFabricaConsolidado_PPL",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "0_PCA_FornecimentoFabricaConsolidado_PPL",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "PipelineStatusMonitor",
+				"description": "Notebook de monitoramento de métricas",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "PCA_FornecimentoFabricaConsolidado_PPL",
+						"dependencyConditions": [
+							"Succeeded",
+							"Failed"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 20,
+					"retryIntervalInSeconds": 120,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Operation/Monitor/PipelineStatusMonitorDatabricks",
+					"baseParameters": {
+						"runId": {
+							"value": "@pipeline().RunId",
+							"type": "Expression"
+						},
+						"factoryName": {
+							"value": "adf-prod-iris-commandcenter",
+							"type": "Expression"
+						},
+						"resourceGroup": {
+							"value": "AMBEV-IRIS-RG-EUS-ATCS-PROD",
+							"type": "Expression"
+						},
+						"checkChildrenOf": "0_PCA_FornecimentoFabricaConsolidado_PPL"
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "CommandCenterDatabricksGov",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "MonitorQuery",
+				"description": "Notebook de monitoramento de queries do pipeline Fornecimento Fábrica Consolidado.",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "PCA_FornecimentoFabricaConsolidado_PPL",
+						"dependencyConditions": [
+							"Failed",
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 20,
+					"retryIntervalInSeconds": 120,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Operation/Brazil/PCA/FornecimentoFabricaConsolidado/FornecimentoFabricaConsolidadoQueryMonitor",
+					"baseParameters": {
+						"runId": {
+							"value": "@pipeline().RunId",
+							"type": "Expression"
+						},
+						"factoryName": "adf-prod-iris-commandcenter",
+						"resourceGroup": "AMBEV-IRIS-RG-EUS-ATCS-PROD",
+						"checkChildrenOf": "0_PCA_FornecimentoFabricaConsolidado_PPL",
+						"pathRanges": "/mnt/consumezone/Brazil/RevenueManagement/Arquiteturadeprecos/MonitoramentoRangeQualidade/",
+						"biName": "Discounts",
+						"tableName": "compartilhado_fornecimento_consolidado",
+						"malhaName": "trigger própria",
+						"notebookList": "CZ_CZ_FornecimentoFabricaRevenda, CZ_CZ_FornecimentoFabricaRota, CZ_CZ_FornecimentoFabricaDireta, CZ_CZ_FornecimentoFabricaConsolidado"
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "CommandCenterDatabricksGov",
+					"type": "LinkedServiceReference"
+				}
+			}
+		],
+		"folder": {
+			"name": "Brazil/PCA/FornecimentoFabricaConsolidado"
+		},
+		"annotations": [],
+		"lastPublishTime": "2022-07-19T18:58:36Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

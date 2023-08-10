@@ -1,0 +1,132 @@
+{
+	"name": "0_SalesLabIM_Input_Manual",
+	"properties": {
+		"activities": [
+			{
+				"name": "Input_Manual_Dict",
+				"description": "Cria um dicionário com o path e o table_name do dataset a ser atualizado",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "SET_Data",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/SalesLabIM/Manual/Dict_Input_Manual_IM",
+					"baseParameters": {
+						"date": {
+							"value": "@variables('date')",
+							"type": "Expression"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "CommandCenterDatabricksInteligenciaMercado",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "SET_Data_UTC",
+				"description": "Set the variable \"dataUTC\" with the value from current date. ",
+				"type": "SetVariable",
+				"dependsOn": [],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "dateUTC",
+					"value": {
+						"value": "@utcnow()",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "SET_Data",
+				"description": "Set the variable \"data\" with the first 10 characters from dataUTC and replace the dashes with null spaces.",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "SET_Data_UTC",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "date",
+					"value": {
+						"value": "@replace(substring(variables('DateUTC'),0,10), '-', '')",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "CZ_Presto_Input_Manual",
+				"description": "Espenha o notebook de input_manual no shema 'inteligencia_mercado_selfservice'",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "Input_Manual_Dict",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/SalesLabIM/Manual/CZ_Presto_SalesLabIM_Input_Manual",
+					"baseParameters": {
+						"dict_input": {
+							"value": "@string(activity('Input_Manual_Dict').output.runOutput)",
+							"type": "Expression"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "CommandCenterDatabricksInteligenciaMercado",
+					"type": "LinkedServiceReference"
+				}
+			}
+		],
+		"variables": {
+			"dateUTC": {
+				"type": "String"
+			},
+			"date": {
+				"type": "String"
+			}
+		},
+		"folder": {
+			"name": "Brazil/SalesLabIM/Manual"
+		},
+		"annotations": [],
+		"lastPublishTime": "2022-09-19T19:51:14Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

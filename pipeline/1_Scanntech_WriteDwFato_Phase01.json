@@ -1,0 +1,33 @@
+{
+	"name": "1_Scanntech_WriteDwFato_Phase01",
+	"properties": {
+		"activities": [
+			{
+				"name": "CZ_DW_Scanntech",
+				"type": "DatabricksNotebook",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 3,
+					"retryIntervalInSeconds": 1800,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/Scanntech/SellOutEvolutionPhase01V01/CZ_DW_Scanntech_Fsellout"
+				},
+				"linkedServiceName": {
+					"referenceName": "CommandCenterDatabricksInteligenciaMercado",
+					"type": "LinkedServiceReference"
+				}
+			}
+		],
+		"folder": {
+			"name": "Brazil/Scanntech"
+		},
+		"annotations": [],
+		"lastPublishTime": "2022-11-30T16:11:26Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

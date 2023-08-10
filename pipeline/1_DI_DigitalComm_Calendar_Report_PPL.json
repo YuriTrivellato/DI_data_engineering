@@ -1,0 +1,33 @@
+{
+	"name": "1_DI_DigitalComm_Calendar_Report_PPL",
+	"properties": {
+		"activities": [
+			{
+				"name": "CZ_CZ_CalendarAutomationReport",
+				"type": "DatabricksNotebook",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/DigitalInsights/DigitalComm/CalendarAutomation/CZ_CZ_CalendarAutomationReport"
+				},
+				"linkedServiceName": {
+					"referenceName": "DigitalInsightsDatabricks",
+					"type": "LinkedServiceReference"
+				}
+			}
+		],
+		"folder": {
+			"name": "Brazil/DigitalInsights/DigitalComm/CalendarAutomation/CalendarAutomationReport"
+		},
+		"annotations": [],
+		"lastPublishTime": "2023-04-10T17:35:36Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

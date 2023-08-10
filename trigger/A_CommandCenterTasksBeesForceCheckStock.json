@@ -1,0 +1,33 @@
+{
+	"name": "A_CommandCenterTasksBeesForceCheckStock",
+	"properties": {
+		"description": "Executa fluxo de verificação e organização de estoque dos skus para tasks",
+		"annotations": [],
+		"runtimeState": "Stopped",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "0_BeesForce_CheckStock_PPL",
+					"type": "PipelineReference"
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Day",
+				"interval": 1,
+				"startTime": "2023-01-03T11:56:00",
+				"timeZone": "E. South America Standard Time",
+				"schedule": {
+					"minutes": [
+						20
+					],
+					"hours": [
+						22
+					]
+				}
+			}
+		}
+	}
+}

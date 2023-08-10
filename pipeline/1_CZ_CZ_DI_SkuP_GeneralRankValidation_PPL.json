@@ -1,0 +1,400 @@
+{
+	"name": "1_CZ_CZ_DI_SkuP_GeneralRankValidation_PPL",
+	"properties": {
+		"activities": [
+			{
+				"name": "CZ_CZ_DI_SkuP_GeneralRankValidation",
+				"type": "DatabricksNotebook",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/DigitalInsights/SkuPrioritization/Algorithms/RecommendationFlow/CZ_CZ_DI_SkuP_GeneralRankValidation"
+				},
+				"linkedServiceName": {
+					"referenceName": "DigitalInsightsDatabricksTribo4",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "CZ_CZ_DI_SkuP_GeneralRankPilot_Call_DB_ClusterJob",
+				"type": "WebActivity",
+				"dependsOn": [
+					{
+						"activity": "Get Secret from AKV",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "Get Databricks JobID from AKV",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "Get DatabricksEndPoint from AKV",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"url": {
+						"value": "@activity('Get DatabricksEndPoint from AKV').output.value",
+						"type": "Expression"
+					},
+					"connectVia": {
+						"referenceName": "AutoResolveIntegrationRuntime",
+						"type": "IntegrationRuntimeReference"
+					},
+					"method": "POST",
+					"headers": {
+						"Authorization": {
+							"value": "@concat('Bearer ',activity('Get Secret from AKV').output.value)",
+							"type": "Expression"
+						},
+						"Content-Type": "application/json"
+					},
+					"body": {
+						"value": "@concat('{\n    \"job_id\": ',activity('Get Databricks JobID from AKV').output.value,\n'}')",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "Set DNS Name",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "CZ_CZ_Cut_analysis_GeneralRank",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "v_DNSName",
+					"value": "https://kv-prod-iris.vault.azure.net/"
+				}
+			},
+			{
+				"name": "Set Secret",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "CZ_CZ_Cut_analysis_GeneralRank",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "v_Secret",
+					"value": "DigitalInsightsSkuPrioritizationToken"
+				}
+			},
+			{
+				"name": "Get Secret from AKV",
+				"type": "WebActivity",
+				"dependsOn": [
+					{
+						"activity": "Set DNS Name",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "Set Secret",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "Set Adb EndPoint",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "Set Adb JobId",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"url": {
+						"value": "@concat(variables('v_DNSName'),'secrets/',variables('v_Secret'),'/?api-version=7.0')",
+						"type": "Expression"
+					},
+					"connectVia": {
+						"referenceName": "AutoResolveIntegrationRuntime",
+						"type": "IntegrationRuntimeReference"
+					},
+					"method": "GET",
+					"body": {
+						"simple": "body"
+					},
+					"authentication": {
+						"type": "MSI",
+						"resource": "https://vault.azure.net"
+					}
+				}
+			},
+			{
+				"name": "Set Adb EndPoint",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "CZ_CZ_Cut_analysis_GeneralRank",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "v_Adb_EndPoint",
+					"value": "DigitalInsightsDataBricksRunJobConnectionString"
+				}
+			},
+			{
+				"name": "Set Adb JobId",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "CZ_CZ_Cut_analysis_GeneralRank",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "v_Adb_JobId",
+					"value": "DigitalInsightsDatabricksWaysOfWorkingB2OID"
+				}
+			},
+			{
+				"name": "Get Databricks JobID from AKV",
+				"type": "WebActivity",
+				"dependsOn": [
+					{
+						"activity": "Set DNS Name",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "Set Secret",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "Set Adb EndPoint",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "Set Adb JobId",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"url": {
+						"value": "@concat(variables('v_DNSName'),'secrets/',variables('v_Adb_JobId'),'/?api-version=7.0')",
+						"type": "Expression"
+					},
+					"connectVia": {
+						"referenceName": "AutoResolveIntegrationRuntime",
+						"type": "IntegrationRuntimeReference"
+					},
+					"method": "GET",
+					"body": {
+						"simple": "body"
+					},
+					"authentication": {
+						"type": "MSI",
+						"resource": "https://vault.azure.net"
+					}
+				}
+			},
+			{
+				"name": "Get DatabricksEndPoint from AKV",
+				"type": "WebActivity",
+				"dependsOn": [
+					{
+						"activity": "Set DNS Name",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "Set Secret",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "Set Adb EndPoint",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "Set Adb JobId",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"url": {
+						"value": "@concat(variables('v_DNSName'),'secrets/',variables('v_Adb_EndPoint'),'/?api-version=7.0')",
+						"type": "Expression"
+					},
+					"connectVia": {
+						"referenceName": "AutoResolveIntegrationRuntime",
+						"type": "IntegrationRuntimeReference"
+					},
+					"method": "GET",
+					"body": {
+						"simple": "body"
+					},
+					"authentication": {
+						"type": "MSI",
+						"resource": "https://vault.azure.net"
+					}
+				}
+			},
+			{
+				"name": "CZ_CZ_Cut_analysis_GeneralRank",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "CZ_CZ_DI_SkuP_GeneralRankValidation",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/DigitalInsights/SkuPrioritization/Output/CZ_CZ_Cut_analysis_GeneralRank"
+				},
+				"linkedServiceName": {
+					"referenceName": "DigitalInsightsDatabricksTribo4",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "CZ_CZ_DI_SkuP_GeneralRankBusinessRules",
+				"type": "DatabricksNotebook",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/DigitalInsights/SkuPrioritization/Algorithms/RecommendationFlow/CZ_CZ_DI_SkuP_GeneralRankBusinessRules"
+				},
+				"linkedServiceName": {
+					"referenceName": "DigitalInsightsDatabricksTribo4",
+					"type": "LinkedServiceReference"
+				}
+			}
+		],
+		"variables": {
+			"v_DNSName": {
+				"type": "String"
+			},
+			"v_Secret": {
+				"type": "String"
+			},
+			"v_Adb_EndPoint": {
+				"type": "String"
+			},
+			"v_Adb_JobId": {
+				"type": "String"
+			}
+		},
+		"folder": {
+			"name": "Brazil/DigitalInsights/SkuPrioritization/Algorithms/general_rank_validation"
+		},
+		"annotations": [],
+		"lastPublishTime": "2023-08-09T19:31:18Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

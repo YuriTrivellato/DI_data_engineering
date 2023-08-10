@@ -1,0 +1,25 @@
+{
+	"name": "CommandCenterFileServer_GPRO",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"description": "LinkedService para extração de dados diretamente do servidor do GPRO.",
+		"annotations": [],
+		"type": "FileServer",
+		"typeProperties": {
+			"host": "\\\\172.22.4.50\\Integ\\",
+			"userId": "BRAHMA\\srv_cig",
+			"password": {
+				"type": "AzureKeyVaultSecret",
+				"store": {
+					"referenceName": "KeyVault",
+					"type": "LinkedServiceReference"
+				},
+				"secretName": "CXCServPassword"
+			}
+		},
+		"connectVia": {
+			"referenceName": "IntegrationRTPlatform",
+			"type": "IntegrationRuntimeReference"
+		}
+	}
+}

@@ -1,0 +1,35 @@
+{
+	"name": "A_CommandCenterPricingScanntechIM",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Stopped",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "0_Scanntech_Phase01_PPL",
+					"type": "PipelineReference"
+				},
+				"parameters": {
+					"diferenca_data_var": 0
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Day",
+				"interval": 1,
+				"startTime": "2022-02-03T18:02:00",
+				"timeZone": "E. South America Standard Time",
+				"schedule": {
+					"minutes": [
+						30
+					],
+					"hours": [
+						20
+					]
+				}
+			}
+		}
+	}
+}

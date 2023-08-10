@@ -1,0 +1,35 @@
+{
+	"name": "A_CommandCenterPricingDigitalCommDquScanCZVisits",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Stopped",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "0_DigitalComm_DataQuality_Scan_CZ_Visits_PPL",
+					"type": "PipelineReference"
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Week",
+				"interval": 1,
+				"startTime": "2022-10-14T13:59:00",
+				"timeZone": "E. South America Standard Time",
+				"schedule": {
+					"minutes": [
+						15
+					],
+					"hours": [
+						10
+					],
+					"weekDays": [
+						"Sunday"
+					]
+				}
+			}
+		}
+	}
+}

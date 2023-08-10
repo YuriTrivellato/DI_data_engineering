@@ -1,0 +1,33 @@
+{
+	"name": "1_Rewards_Execution_PPL",
+	"properties": {
+		"activities": [
+			{
+				"name": "CZ_CZ_Rewards_BblackOnExecution",
+				"type": "DatabricksNotebook",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/DigitalInsights/Rewards/Bblack/BblackOn_Execution/CZ_CZ_Rewards_BblackOnExecution"
+				},
+				"linkedServiceName": {
+					"referenceName": "DigitalInsightsDatabricks",
+					"type": "LinkedServiceReference"
+				}
+			}
+		],
+		"folder": {
+			"name": "Brazil/DigitalInsights/Rewards/Bblack/Execution"
+		},
+		"annotations": [],
+		"lastPublishTime": "2022-12-27T15:52:08Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

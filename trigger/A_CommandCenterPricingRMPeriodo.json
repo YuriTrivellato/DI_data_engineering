@@ -1,0 +1,36 @@
+{
+	"name": "A_CommandCenterPricingRMPeriodo",
+	"properties": {
+		"description": "Trigger que dispara 1x/ano para atualizar a tabela de período.",
+		"annotations": [],
+		"runtimeState": "Stopped",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "1_CZ_CZ_DW_Periodo",
+					"type": "PipelineReference"
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Month",
+				"interval": 12,
+				"startTime": "2022-01-01T01:00:00Z",
+				"timeZone": "UTC",
+				"schedule": {
+					"minutes": [
+						30
+					],
+					"hours": [
+						4
+					],
+					"monthDays": [
+						1
+					]
+				}
+			}
+		}
+	}
+}

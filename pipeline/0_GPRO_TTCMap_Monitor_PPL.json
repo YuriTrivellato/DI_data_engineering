@@ -1,0 +1,136 @@
+{
+	"name": "0_GPRO_TTCMap_Monitor_PPL",
+	"properties": {
+		"description": "Pipeline de monitoramento",
+		"activities": [
+			{
+				"name": "GPRO_TTCMap_PPL",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "0_GPRO_TTCMap_PPL",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "PipelineStatusMonitor",
+				"description": "Notebook de monitoramento de métricas",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "GPRO_TTCMap_PPL",
+						"dependencyConditions": [
+							"Skipped"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 120,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Operation/Monitor/PipelineStatusMonitorDatabricks",
+					"baseParameters": {
+						"runId": {
+							"value": "@pipeline().RunId",
+							"type": "Expression"
+						},
+						"factoryName": {
+							"value": "adf-prod-iris-commandcenter",
+							"type": "Expression"
+						},
+						"resourceGroup": {
+							"value": "AMBEV-IRIS-RG-EUS-ATCS-PROD",
+							"type": "Expression"
+						},
+						"checkChildrenOf": "GPRO_TTCMap_PPL"
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "CommandCenterDatabricksGov",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "MonitorQuery",
+				"description": "Notebook de monitoramento de queries do pipeline TTCMap.",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "GPRO_TTCMap_PPL",
+						"dependencyConditions": [
+							"Skipped"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 120,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Operation/Brazil/GPRO/TTCMap/TTCMapQueryMonitor",
+					"baseParameters": {
+						"runId": {
+							"value": "@pipeline().RunId",
+							"type": "Expression"
+						},
+						"factoryName": {
+							"value": "adf-prod-iris-commandcenter",
+							"type": "Expression"
+						},
+						"resourceGroup": {
+							"value": "AMBEV-IRIS-RG-EUS-ATCS-PROD",
+							"type": "Expression"
+						},
+						"checkChildrenOf": {
+							"value": "0_GPRO_TTCMap_PPL",
+							"type": "Expression"
+						},
+						"pathRanges": {
+							"value": "/mnt/consumezone/Brazil/RevenueManagement/Arquiteturadeprecos/MonitoramentoRangeQualidade/",
+							"type": "Expression"
+						},
+						"biName": {
+							"value": "Nenhum",
+							"type": "Expression"
+						},
+						"tableName": {
+							"value": "compartilhado_ttc_map",
+							"type": "Expression"
+						},
+						"malhaName": {
+							"value": "trigger própria",
+							"type": "Expression"
+						},
+						"notebookList": {
+							"value": "CZ_CZ",
+							"type": "Expression"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "CommandCenterDatabricksGov",
+					"type": "LinkedServiceReference"
+				}
+			}
+		],
+		"folder": {
+			"name": "Brazil/GPRO/TTCMap"
+		},
+		"annotations": [],
+		"lastPublishTime": "2022-10-04T16:27:52Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

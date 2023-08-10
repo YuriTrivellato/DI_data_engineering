@@ -1,0 +1,43 @@
+{
+	"name": "A_CommandCenterDiscounts_CargaFull",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Stopped",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "0_CZ_PR_Discounts_Malha_PPL",
+					"type": "PipelineReference"
+				},
+				"parameters": {
+					"FatoDiscounts_flag_processamento_full": "1",
+					"FatoVolumeTotal_FlagFull": "1",
+					"ano_processamento_discounts": "2023",
+					"flag_processamento_full_consolidado": "0",
+					"flag_processamento_full_volumeconsolidado": "0",
+					"ano_processamento_volume": "2023"
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Month",
+				"interval": 12,
+				"startTime": "2024-01-01T10:00:00",
+				"timeZone": "E. South America Standard Time",
+				"schedule": {
+					"minutes": [
+						15
+					],
+					"hours": [
+						13
+					],
+					"monthDays": [
+						1
+					]
+				}
+			}
+		}
+	}
+}

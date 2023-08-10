@@ -1,0 +1,19 @@
+{
+	"name": "Sales_DI_Revenue_Price_Engine_InfoPrice_ISA_InfoPanel_DTS",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "Sales_DI_Revenue_Price_Engine_InfoPrice_GoogleCloudBucket",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Binary",
+		"typeProperties": {
+			"location": {
+				"type": "GoogleCloudStorageLocation",
+				"bucketName": "ip-integration-service-ambev",
+				"folderPath": "output/ISA-InfoPanel"
+			}
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

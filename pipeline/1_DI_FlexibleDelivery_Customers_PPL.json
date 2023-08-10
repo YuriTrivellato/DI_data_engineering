@@ -1,0 +1,87 @@
+{
+	"name": "1_DI_FlexibleDelivery_Customers_PPL",
+	"properties": {
+		"activities": [
+			{
+				"name": "CZ_CZ_ActiveCustomersHistory",
+				"type": "DatabricksNotebook",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/DigitalInsights/FlexibleDelivery/DynamicFeeMov/CZ_CZ_Active_CustomersHistory"
+				},
+				"linkedServiceName": {
+					"referenceName": "DigitalInsightsDatabricks",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "CZ_CZ_MonthlyDeliveriesWeightCustomers",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "CZ_CZ_ActiveCustomersHistory",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/DigitalInsights/FlexibleDelivery/DynamicFeeMov/DeliveriesEstimative/Estimative/CZ_CZ_Monthly_DeliveriesWeightCustomers"
+				},
+				"linkedServiceName": {
+					"referenceName": "DigitalInsightsDatabricks",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "CZ_CZ_MonthlyVolumeWeightCustomers",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "CZ_CZ_ActiveCustomersHistory",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/DigitalInsights/FlexibleDelivery/DynamicFeeMov/VolumeEstimative/Estimative/CZ_CZ_Monthly_VolumeWeightCustomers"
+				},
+				"linkedServiceName": {
+					"referenceName": "DigitalInsightsDatabricks",
+					"type": "LinkedServiceReference"
+				}
+			}
+		],
+		"folder": {
+			"name": "Brazil/DigitalInsights/FlexibleDelivery/DynamicFeeMov/Customers"
+		},
+		"annotations": [],
+		"lastPublishTime": "2022-10-25T18:47:47Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

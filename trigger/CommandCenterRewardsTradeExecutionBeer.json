@@ -1,0 +1,35 @@
+{
+	"name": "CommandCenterRewardsTradeExecutionBeer",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Stopped",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "0_Rewards_TradeExecutionBeer_Monitor_PPL",
+					"type": "PipelineReference"
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Month",
+				"interval": 1,
+				"startTime": "2022-12-06T18:16:00",
+				"timeZone": "E. South America Standard Time",
+				"schedule": {
+					"minutes": [
+						30
+					],
+					"hours": [
+						4
+					],
+					"monthDays": [
+						22
+					]
+				}
+			}
+		}
+	}
+}

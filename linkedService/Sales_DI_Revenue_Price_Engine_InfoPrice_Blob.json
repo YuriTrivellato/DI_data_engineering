@@ -1,0 +1,24 @@
+{
+	"name": "Sales_DI_Revenue_Price_Engine_InfoPrice_Blob",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"description": "Blob da InfoPrice contendo pesquisa de preço em csv.",
+		"annotations": [],
+		"type": "AzureBlobStorage",
+		"typeProperties": {
+			"sasUri": "https://salesdigitalinsights.blob.core.windows.net",
+			"sasToken": {
+				"type": "AzureKeyVaultSecret",
+				"store": {
+					"referenceName": "KeyVault",
+					"type": "LinkedServiceReference"
+				},
+				"secretName": "DigitalInsightsBlobInfoPricePrecosToken"
+			}
+		},
+		"connectVia": {
+			"referenceName": "AutoResolveIntegrationRuntime",
+			"type": "IntegrationRuntimeReference"
+		}
+	}
+}

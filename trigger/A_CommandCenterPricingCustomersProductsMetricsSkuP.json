@@ -1,0 +1,25 @@
+{
+	"name": "A_CommandCenterPricingCustomersProductsMetricsSkuP",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Stopped",
+		"pipelines": [],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Day",
+				"interval": 1,
+				"startTime": "2022-03-03T20:12:00",
+				"timeZone": "E. South America Standard Time",
+				"schedule": {
+					"minutes": [
+						30
+					],
+					"hours": [
+						9
+					]
+				}
+			}
+		}
+	}
+}

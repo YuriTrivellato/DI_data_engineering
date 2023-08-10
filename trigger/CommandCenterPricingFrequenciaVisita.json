@@ -1,0 +1,34 @@
+{
+	"name": "CommandCenterPricingFrequenciaVisita",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Stopped",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "0_FrequenciaVisita_Monitor_PPL",
+					"type": "PipelineReference"
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Day",
+				"interval": 1,
+				"startTime": "2021-11-05T13:44:00",
+				"timeZone": "E. South America Standard Time",
+				"schedule": {
+					"minutes": [
+						45
+					],
+					"hours": [
+						5,
+						8,
+						2
+					]
+				}
+			}
+		}
+	}
+}

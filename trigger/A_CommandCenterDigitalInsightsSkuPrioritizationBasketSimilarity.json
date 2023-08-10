@@ -1,0 +1,36 @@
+{
+	"name": "A_CommandCenterDigitalInsightsSkuPrioritizationBasketSimilarity",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Stopped",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "0_DI_SkuP_BasketSimilarity_Monitor_PPL",
+					"type": "PipelineReference"
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Month",
+				"interval": 1,
+				"startTime": "2023-01-02T16:25:00",
+				"timeZone": "E. South America Standard Time",
+				"schedule": {
+					"minutes": [
+						0
+					],
+					"hours": [
+						19
+					],
+					"monthDays": [
+						9,
+						2
+					]
+				}
+			}
+		}
+	}
+}

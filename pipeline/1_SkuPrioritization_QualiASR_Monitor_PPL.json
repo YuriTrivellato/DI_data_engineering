@@ -1,0 +1,103 @@
+{
+	"name": "1_SkuPrioritization_QualiASR_Monitor_PPL",
+	"properties": {
+		"activities": [
+			{
+				"name": "CZ_blob_QualiASR",
+				"type": "DatabricksNotebook",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/DigitalInsights/SkuPrioritization/Output/CZ_Blob_QualiASR"
+				},
+				"linkedServiceName": {
+					"referenceName": "DigitalInsightsDatabricks",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "Set dayOfMonth",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "CZ_blob_QualiASR",
+						"dependencyConditions": [
+							"Completed"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "dayOfMonth",
+					"value": {
+						"value": "@formatDateTime(addHours(utcnow(),-3),'dd')",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "run closing if first day of month",
+				"type": "IfCondition",
+				"dependsOn": [
+					{
+						"activity": "Set dayOfMonth",
+						"dependencyConditions": [
+							"Completed"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@equals(variables('dayOfMonth'),'01')",
+						"type": "Expression"
+					},
+					"ifTrueActivities": [
+						{
+							"name": "CZ_blob_QualiASR_closing",
+							"type": "DatabricksNotebook",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"notebookPath": "/Brazil/DigitalInsights/SkuPrioritization/Output/CZ_Blob_QualiASR_closing"
+							},
+							"linkedServiceName": {
+								"referenceName": "DigitalInsightsDatabricks",
+								"type": "LinkedServiceReference"
+							}
+						}
+					]
+				}
+			}
+		],
+		"variables": {
+			"dayOfMonth": {
+				"type": "String"
+			}
+		},
+		"folder": {
+			"name": "Brazil/DigitalInsights/SkuPrioritization/QualiASR"
+		},
+		"annotations": [],
+		"lastPublishTime": "2023-01-30T16:09:10Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

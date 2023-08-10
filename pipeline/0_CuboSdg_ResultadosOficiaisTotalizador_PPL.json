@@ -1,0 +1,163 @@
+{
+	"name": "0_CuboSdg_ResultadosOficiaisTotalizador_PPL",
+	"properties": {
+		"activities": [
+			{
+				"name": "SET_Data_UTC",
+				"description": "Set the dataUTC variable.",
+				"type": "SetVariable",
+				"dependsOn": [],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "data_utc",
+					"value": {
+						"value": "@utcnow()",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "SET_Data",
+				"description": "Set the data.",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "SET_Data_UTC",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "data",
+					"value": {
+						"value": "@replace(substring(variables('data_utc'),0,10), '-', '')",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "DL_to_PZ",
+				"description": "",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "SET_Data",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.02:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/CuboSDG/ResultadosOficiaisTotalizador/DL_PZ_CuboSdg_ResultadosOficiaisTotalizador",
+					"baseParameters": {
+						"data": {
+							"value": "@variables('data')",
+							"type": "Expression"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "CommandCenterDatabricksPricing",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "PZ_to_HZ",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "DL_to_PZ",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.02:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/CuboSDG/ResultadosOficiaisTotalizador/PZ_HZ_CuboSdg_ResultadosOficiaisTotalizador",
+					"baseParameters": {
+						"data": {
+							"value": "@variables('data')",
+							"type": "Expression"
+						},
+						"control_fields": "file, path, insert_date, folder_date"
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "CommandCenterDatabricksPricing",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "HZ_to_CZ",
+				"description": "History Zone to Consumer Zone.",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "PZ_to_HZ",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.02:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/CuboSDG/ResultadosOficiaisTotalizador/HZ_CZ_CuboSdg_ResultadosOficiaisTotalizador",
+					"baseParameters": {
+						"control_fields": "file, path, insert_date, folder_date"
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "CommandCenterDatabricksPricing",
+					"type": "LinkedServiceReference"
+				}
+			}
+		],
+		"variables": {
+			"data_utc": {
+				"type": "String"
+			},
+			"data": {
+				"type": "String"
+			}
+		},
+		"folder": {
+			"name": "Brazil/CuboSDG/ResultadosOficiais"
+		},
+		"annotations": [],
+		"lastPublishTime": "2022-11-29T16:13:41Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

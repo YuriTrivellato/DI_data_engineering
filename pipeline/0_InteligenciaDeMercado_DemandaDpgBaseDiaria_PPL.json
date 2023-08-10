@@ -1,0 +1,170 @@
+{
+	"name": "0_InteligenciaDeMercado_DemandaDpgBaseDiaria_PPL",
+	"properties": {
+		"activities": [
+			{
+				"name": "1_Sharepoint_DL_DemandaDpg_PPL",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "SET_Data",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "1_Sharepoint_DL_DemandaDpgBaseDiaria_PPL",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "SET_Data",
+				"description": "Set the variable \"data\" with the first 10 characters from dataUTC and replace the dashes with null spaces.",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "SET_Data_UTC",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "date",
+					"value": {
+						"value": "@replace(substring(variables('DateUTC'),0,10), '-', '')",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "SET_Data_UTC",
+				"description": "Set the variable \"dataUTC\" with the value from current date. ",
+				"type": "SetVariable",
+				"dependsOn": [],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "dateUTC",
+					"value": {
+						"value": "@utcnow()",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "Folder_Metadata_DemandaDPG_Zip",
+				"type": "GetMetadata",
+				"dependsOn": [
+					{
+						"activity": "1_Sharepoint_DL_DemandaDpg_PPL",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataset": {
+						"referenceName": "BlobCustomerExperienceFolder_CSV_DTS",
+						"type": "DatasetReference",
+						"parameters": {
+							"caminho": {
+								"value": "@concat('datalake-im/DemandaDPG/DemandaDPG_Zip/', variables('date'))",
+								"type": "Expression"
+							}
+						}
+					},
+					"fieldList": [
+						"exists"
+					]
+				}
+			},
+			{
+				"name": "If Condition Monitor Zip",
+				"type": "IfCondition",
+				"dependsOn": [
+					{
+						"activity": "Folder_Metadata_DemandaDPG_Zip",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@equals(activity('Folder_Metadata_DemandaDPG_Zip').output.exists, true)",
+						"type": "Expression"
+					},
+					"ifFalseActivities": [
+						{
+							"name": "Sem_Dados_Para_Atualizar",
+							"type": "Wait",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"waitTimeInSeconds": 1
+							}
+						}
+					],
+					"ifTrueActivities": [
+						{
+							"name": "1_DL_CZ_InteligenciaDeMercado_DemandaDpg_PPL",
+							"type": "ExecutePipeline",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "1_DL_DL_InteligenciaDeMercado_DemandaDpgBaseDiaria_PPL",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true
+							}
+						}
+					]
+				}
+			}
+		],
+		"variables": {
+			"dateUTC": {
+				"type": "String"
+			},
+			"date": {
+				"type": "String"
+			},
+			"folder_demandadpg_zip": {
+				"type": "String"
+			},
+			"folder_input_manual": {
+				"type": "Array"
+			}
+		},
+		"folder": {
+			"name": "Brazil/SalesLabIM/DemandaDPG/BaseDiaria"
+		},
+		"annotations": [],
+		"lastPublishTime": "2023-01-30T16:09:10Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

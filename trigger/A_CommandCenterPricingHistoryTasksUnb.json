@@ -1,0 +1,35 @@
+{
+	"name": "A_CommandCenterPricingHistoryTasksUnb",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Stopped",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "0_HistoryTasksUnb_PPL",
+					"type": "PipelineReference"
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Month",
+				"interval": 1,
+				"startTime": "2023-07-25T13:56:00",
+				"timeZone": "E. South America Standard Time",
+				"schedule": {
+					"minutes": [
+						15
+					],
+					"hours": [
+						23
+					],
+					"monthDays": [
+						-1
+					]
+				}
+			}
+		}
+	}
+}

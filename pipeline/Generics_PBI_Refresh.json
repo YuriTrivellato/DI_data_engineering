@@ -1,0 +1,528 @@
+{
+	"name": "Generics_PBI_Refresh",
+	"properties": {
+		"activities": [
+			{
+				"name": "Call dataset refresh",
+				"type": "WebActivity",
+				"dependsOn": [
+					{
+						"activity": "Get AAD Token",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "Nomes diferentes para dataflow e dataset",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": true
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"url": {
+						"value": "@concat('https://api.powerbi.com/v1.0/myorg/groups/',pipeline().parameters.id_grupo,'/',variables('v_ObjectType'),'/',pipeline().parameters.id_objeto,'/refreshes')",
+						"type": "Expression"
+					},
+					"method": "POST",
+					"headers": {
+						"Authorization": {
+							"value": "@concat(string(activity('Get AAD Token').output.token_type),' ',string(activity('Get AAD Token').output.access_token))",
+							"type": "Expression"
+						}
+					},
+					"body": {
+						"notifyOption": "NoNotification"
+					}
+				}
+			},
+			{
+				"name": "Until dataset refresh completion",
+				"type": "Until",
+				"dependsOn": [
+					{
+						"activity": "Call dataset refresh",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@not(equals(first(json(string(activity('Get dataset refresh status').output)).value).status,variables('v_StatusJson')))",
+						"type": "Expression"
+					},
+					"activities": [
+						{
+							"name": "Wait 15 seconds",
+							"type": "Wait",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"waitTimeInSeconds": 15
+							}
+						},
+						{
+							"name": "Get dataset refresh status",
+							"type": "WebActivity",
+							"dependsOn": [
+								{
+									"activity": "Wait 15 seconds",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": true
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"url": {
+									"value": "@concat('https://api.powerbi.com/v1.0/myorg/groups/',pipeline().parameters.id_grupo,'/',variables('v_ObjectType'),'/',pipeline().parameters.id_objeto,'/',variables('v_APIReturnJson'),'?$top=1')",
+									"type": "Expression"
+								},
+								"method": "GET",
+								"headers": {
+									"Authorization": {
+										"value": "@concat(string(activity('Get AAD Token').output.token_type),' ',string(activity('Get AAD Token').output.access_token))",
+										"type": "Expression"
+									},
+									"Content-Type": "application/json"
+								}
+							}
+						}
+					],
+					"timeout": "0.03:00:00"
+				}
+			},
+			{
+				"name": "If dataset refresh failed",
+				"type": "IfCondition",
+				"dependsOn": [
+					{
+						"activity": "Until dataset refresh completion",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@and(equals(first(json(string(activity('Get dataset refresh status').output)).value).status,'Failed'),equals(pipeline().parameters.is_dataflow,false))",
+						"type": "Expression"
+					},
+					"ifTrueActivities": [
+						{
+							"name": "SaveErrorMessages",
+							"description": "In case of an error in processing of the dataset, the actual messages are saved in the pipeline variable \"ProcessingErrors\".",
+							"type": "SetVariable",
+							"dependsOn": [],
+							"policy": {
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "ProcessingErrors",
+								"value": {
+									"value": "@string(json(first(json(string(activity('Get dataset refresh status').output)).value).serviceExceptionJson))",
+									"type": "Expression"
+								}
+							}
+						}
+					]
+				}
+			},
+			{
+				"name": "Get AAD Token",
+				"type": "WebActivity",
+				"dependsOn": [
+					{
+						"activity": "Get Secret from AKV",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "Get ClientId from AKV",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "Get TenantId from AKV",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": true,
+					"secureInput": true
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"url": {
+						"value": "@concat('https://login.microsoftonline.com/',activity('Get TenantId from AKV').output.value,'/oauth2/token')",
+						"type": "Expression"
+					},
+					"connectVia": {
+						"referenceName": "AutoResolveIntegrationRuntime",
+						"type": "IntegrationRuntimeReference"
+					},
+					"method": "POST",
+					"headers": {
+						"Content-Type": "application/x-www-form-urlencoded"
+					},
+					"body": {
+						"value": "@concat('grant_type=client_credentials&resource=https://analysis.windows.net/powerbi/api&client_id=',activity('Get ClientId from AKV').output.value,'&client_secret=',encodeUriComponent(activity('Get Secret from AKV').output.value))",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "Get TenantId from AKV",
+				"type": "WebActivity",
+				"dependsOn": [
+					{
+						"activity": "Set Tenant Id",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "Set DNS Name",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": true,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"url": {
+						"value": "@concat(variables('v_DNSName'),'secrets/',variables('v_TenantId'),'/?api-version=7.0')",
+						"type": "Expression"
+					},
+					"connectVia": {
+						"referenceName": "AutoResolveIntegrationRuntime",
+						"type": "IntegrationRuntimeReference"
+					},
+					"method": "GET",
+					"body": {
+						"simple": "body"
+					},
+					"authentication": {
+						"type": "MSI",
+						"resource": "https://vault.azure.net"
+					}
+				}
+			},
+			{
+				"name": "Get ClientId from AKV",
+				"type": "WebActivity",
+				"dependsOn": [
+					{
+						"activity": "Set Client Id",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "Set DNS Name",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": true,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"url": {
+						"value": "@concat(variables('v_DNSName'),'secrets/',variables('v_ClientId'),'/?api-version=7.0')",
+						"type": "Expression"
+					},
+					"method": "GET",
+					"body": {
+						"simple": "body"
+					},
+					"authentication": {
+						"type": "MSI",
+						"resource": "https://vault.azure.net"
+					}
+				}
+			},
+			{
+				"name": "Get Secret from AKV",
+				"type": "WebActivity",
+				"dependsOn": [
+					{
+						"activity": "Set Secret",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "Set DNS Name",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": true,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"url": {
+						"value": "@concat(variables('v_DNSName'),'secrets/',variables('v_Secret'),'/?api-version=7.0')",
+						"type": "Expression"
+					},
+					"method": "GET",
+					"body": {
+						"simple": "body"
+					},
+					"authentication": {
+						"type": "MSI",
+						"resource": "https://vault.azure.net"
+					}
+				}
+			},
+			{
+				"name": "Set Tenant Id",
+				"type": "SetVariable",
+				"dependsOn": [],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "v_TenantId",
+					"value": "CommandCenterAzureAppTenantId"
+				}
+			},
+			{
+				"name": "Set Client Id",
+				"type": "SetVariable",
+				"dependsOn": [],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "v_ClientId",
+					"value": "CommandCenterAzureAppClientId"
+				}
+			},
+			{
+				"name": "Set Secret",
+				"type": "SetVariable",
+				"dependsOn": [],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "v_Secret",
+					"value": "CommandCenterAzureAppSecret"
+				}
+			},
+			{
+				"name": "Set DNS Name",
+				"type": "SetVariable",
+				"dependsOn": [],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "v_DNSName",
+					"value": "https://kvcommandcenter.vault.azure.net/"
+				}
+			},
+			{
+				"name": "Nomes diferentes para dataflow e dataset",
+				"type": "IfCondition",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@pipeline().parameters.is_dataflow",
+						"type": "Expression"
+					},
+					"ifFalseActivities": [
+						{
+							"name": "Set tipo objeto dataset",
+							"type": "SetVariable",
+							"dependsOn": [],
+							"policy": {
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "v_ObjectType",
+								"value": "datasets"
+							}
+						},
+						{
+							"name": "Set objeto json dataset",
+							"type": "SetVariable",
+							"dependsOn": [],
+							"policy": {
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "v_APIReturnJson",
+								"value": "refreshes"
+							}
+						},
+						{
+							"name": "Set status json dataset",
+							"description": "Unknown",
+							"type": "SetVariable",
+							"dependsOn": [],
+							"policy": {
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "v_StatusJson",
+								"value": "Unknown"
+							}
+						}
+					],
+					"ifTrueActivities": [
+						{
+							"name": "Set tipo objeto dataflow",
+							"type": "SetVariable",
+							"dependsOn": [],
+							"policy": {
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "v_ObjectType",
+								"value": "dataflows"
+							}
+						},
+						{
+							"name": "Set objeto json dataflow",
+							"type": "SetVariable",
+							"dependsOn": [],
+							"policy": {
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "v_APIReturnJson",
+								"value": "transactions"
+							}
+						},
+						{
+							"name": "Set status json dataflow",
+							"description": "InProgress",
+							"type": "SetVariable",
+							"dependsOn": [],
+							"policy": {
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "v_StatusJson",
+								"value": "InProgress"
+							}
+						}
+					]
+				}
+			}
+		],
+		"parameters": {
+			"id_grupo": {
+				"type": "string"
+			},
+			"id_objeto": {
+				"type": "string"
+			},
+			"is_dataflow": {
+				"type": "bool"
+			}
+		},
+		"variables": {
+			"ProcessingErrors": {
+				"type": "String"
+			},
+			"v_TenantId": {
+				"type": "String"
+			},
+			"v_ClientId": {
+				"type": "String"
+			},
+			"v_Secret": {
+				"type": "String"
+			},
+			"v_DNSName": {
+				"type": "String"
+			},
+			"v_ObjectType": {
+				"type": "String"
+			},
+			"v_APIReturnJson": {
+				"type": "String"
+			},
+			"v_StatusJson": {
+				"type": "String"
+			}
+		},
+		"folder": {
+			"name": "Brazil/SalesLabRevenue/Modelagem/Generics"
+		},
+		"annotations": [],
+		"lastPublishTime": "2023-06-01T16:23:57Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

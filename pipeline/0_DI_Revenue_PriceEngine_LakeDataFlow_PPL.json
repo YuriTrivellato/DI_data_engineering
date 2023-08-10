@@ -1,0 +1,46 @@
+{
+	"name": "0_DI_Revenue_PriceEngine_LakeDataFlow_PPL",
+	"properties": {
+		"activities": [
+			{
+				"name": "0_DI_Revenue_PriceIngestion_DataManager_PPL",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "0_DI_Revenue_PriceIngestion_DataManager_PPL",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "0_DI_Revenue_HubSharePoint_ProductsDataManager_PPL",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "0_DI_Revenue_PriceIngestion_DataManager_PPL",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "0_DI_Revenue_HubSharePoint_ProductsDataManager_PPL",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			}
+		],
+		"folder": {
+			"name": "Brazil/DigitalInsights/RevenueManagement/PriceEngine"
+		},
+		"annotations": [],
+		"lastPublishTime": "2023-01-30T16:09:14Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

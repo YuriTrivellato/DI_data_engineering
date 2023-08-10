@@ -1,0 +1,40 @@
+{
+	"name": "A_CommandCenterDigitalInsightsBeesForceDataShareTasks",
+	"properties": {
+		"description": "Trigger para ingestão de tasks do Bees Force via data share",
+		"annotations": [],
+		"runtimeState": "Stopped",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "0_BeesForce_BeesForceTasks_Monitor_PPL",
+					"type": "PipelineReference"
+				},
+				"parameters": {
+					"ingestion_date": "@trigger().scheduledTime"
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Day",
+				"interval": 1,
+				"startTime": "2023-06-12T14:30:00",
+				"timeZone": "E. South America Standard Time",
+				"schedule": {
+					"minutes": [
+						30
+					],
+					"hours": [
+						2,
+						5,
+						8,
+						12,
+						22
+					]
+				}
+			}
+		}
+	}
+}

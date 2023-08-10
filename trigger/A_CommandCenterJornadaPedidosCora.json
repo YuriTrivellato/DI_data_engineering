@@ -1,0 +1,45 @@
+{
+	"name": "A_CommandCenterJornadaPedidosCora",
+	"properties": {
+		"description": "Trigger para executar o notebook Trusted_CZ_Cora_Jornada_Pedidos de 20 em 20 minutos.",
+		"annotations": [],
+		"runtimeState": "Stopped",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "0_Cora_Pedidos_PPL",
+					"type": "PipelineReference"
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Day",
+				"interval": 1,
+				"startTime": "2022-09-02T19:46:00",
+				"timeZone": "E. South America Standard Time",
+				"schedule": {
+					"minutes": [
+						0,
+						20,
+						40
+					],
+					"hours": [
+						9,
+						10,
+						11,
+						12,
+						13,
+						14,
+						15,
+						16,
+						17,
+						18,
+						19
+					]
+				}
+			}
+		}
+	}
+}

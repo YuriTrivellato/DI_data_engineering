@@ -1,0 +1,35 @@
+{
+	"name": "A_CommandCenterPricingRtmMetricsRevenueConcentrationSkus",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Stopped",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "0_Metrics_RevenueConcentrationSkus_PPL",
+					"type": "PipelineReference"
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Month",
+				"interval": 1,
+				"startTime": "2023-01-27T14:07:00",
+				"timeZone": "E. South America Standard Time",
+				"schedule": {
+					"minutes": [
+						0
+					],
+					"hours": [
+						16
+					],
+					"monthDays": [
+						2
+					]
+				}
+			}
+		}
+	}
+}

@@ -1,0 +1,33 @@
+{
+	"name": "A_CommandCenterPricingInvestimentoAs",
+	"properties": {
+		"description": "Trigger de execução pipeline as 06:00 do horário de Brasília",
+		"annotations": [],
+		"runtimeState": "Stopped",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "1_GPRO_InvestimentoAs_Malha_PPL",
+					"type": "PipelineReference"
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Day",
+				"interval": 1,
+				"startTime": "2021-04-30T20:21:00",
+				"timeZone": "E. South America Standard Time",
+				"schedule": {
+					"minutes": [
+						0
+					],
+					"hours": [
+						6
+					]
+				}
+			}
+		}
+	}
+}

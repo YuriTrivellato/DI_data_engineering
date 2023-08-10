@@ -1,0 +1,93 @@
+{
+	"name": "0_ManualDiscounts_PPL",
+	"properties": {
+		"activities": [
+			{
+				"name": "CZ_Presto_TipoClassificacaoDiscountsOnTrade",
+				"type": "DatabricksNotebook",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/Manual/TipoClassificacaoDiscountsOnTrade/CZ_Presto_TipoClassificacaoDiscountsOnTrade"
+				},
+				"linkedServiceName": {
+					"referenceName": "CommandCenterDatabricksPricing",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "CZ_Presto_TipoClassificacaoDiscountsOffTrade",
+				"type": "DatabricksNotebook",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/Manual/TipoClassificacaoDiscountsOffTrade/CZ_Presto_TipoClassificacaoDiscountsOffTrade"
+				},
+				"linkedServiceName": {
+					"referenceName": "CommandCenterDatabricksPricing",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "CZ_Presto_TipoOperacaoMkt",
+				"type": "DatabricksNotebook",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/Manual/TipoOperacaoMkt/CZ_Presto_TipoOperacaoMkt"
+				},
+				"linkedServiceName": {
+					"referenceName": "CommandCenterDatabricksPricing",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "CZ_Presto_TipoProduto",
+				"type": "DatabricksNotebook",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/Manual/TipoProduto/CZ_Presto_TipoProduto"
+				},
+				"linkedServiceName": {
+					"referenceName": "CommandCenterDatabricksPricing",
+					"type": "LinkedServiceReference"
+				}
+			}
+		],
+		"folder": {
+			"name": "Brazil/Manual/ManuaisDiscounts"
+		},
+		"annotations": [],
+		"lastPublishTime": "2022-09-19T19:51:16Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

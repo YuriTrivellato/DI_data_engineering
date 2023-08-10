@@ -1,0 +1,167 @@
+{
+	"name": "0_Hercules_Promocoes_PPL",
+	"properties": {
+		"activities": [
+			{
+				"name": "PZ_HZ",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "DL_PZ",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/Hercules/Promocoes/PZ_HZ_Hercules_Promocoes",
+					"baseParameters": {
+						"dataMenosUmDia": {
+							"value": "@replace(substring(adddays(variables('dataUTC'),-1),0,10), '-', '')",
+							"type": "Expression"
+						},
+						"control_fields": "insert_date, path"
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "CommandCenterDatabricksPricing",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "HZ_CZ",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "PZ_HZ",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/Hercules/Promocoes/HZ_CZ_Hercules_Promocoes",
+					"baseParameters": {
+						"dataMenosUmDia": {
+							"value": "@replace(substring(adddays(variables('dataUTC'),-1),0,10), '-', '')",
+							"type": "Expression"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "CommandCenterDatabricksPricing",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "SET_Data_UTC",
+				"description": "Set the dataUTC variable.",
+				"type": "SetVariable",
+				"dependsOn": [],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "dataUTC",
+					"value": {
+						"value": "@utcnow()",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "SET_Data",
+				"description": "Set the data.",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "SET_Data_UTC",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "dataMenosUmDia",
+					"value": {
+						"value": "@replace(substring(adddays(variables('dataUTC'),-1),0,10), '-', '')",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "DL_PZ",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "SET_Data",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/Hercules/Promocoes/DL_PZ_Hercules_Promocoes",
+					"baseParameters": {
+						"dataMenosUmDia": {
+							"value": "@replace(substring(adddays(variables('dataUTC'),-1),0,10), '-', '')",
+							"type": "Expression"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "CommandCenterDatabricksPricing",
+					"type": "LinkedServiceReference"
+				}
+			}
+		],
+		"variables": {
+			"dataUTC": {
+				"type": "String"
+			},
+			"dataMenosUmDia": {
+				"type": "String"
+			},
+			"control_fields": {
+				"type": "String"
+			}
+		},
+		"folder": {
+			"name": "Brazil/Hercules/Promocoes"
+		},
+		"annotations": [],
+		"lastPublishTime": "2022-09-19T19:51:16Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

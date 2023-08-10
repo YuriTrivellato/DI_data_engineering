@@ -1,0 +1,24 @@
+{
+	"name": "A_CommandCenterOffTradeExecutionsDimClient",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Stopped",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "0_OfftradeExecutions_Dim_Client_PPL",
+					"type": "PipelineReference"
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Day",
+				"interval": 1,
+				"startTime": "2023-08-04T05:00:00",
+				"timeZone": "E. South America Standard Time"
+			}
+		}
+	}
+}

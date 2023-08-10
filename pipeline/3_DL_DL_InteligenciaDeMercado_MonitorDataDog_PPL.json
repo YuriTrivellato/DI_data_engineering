@@ -1,0 +1,199 @@
+{
+	"name": "3_DL_DL_InteligenciaDeMercado_MonitorDataDog_PPL",
+	"properties": {
+		"activities": [
+			{
+				"name": "Scantrack Monitor",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "Folder_Metadata_Retail_Cerveja",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Operation/Brazil/Nielsen/NielsenScantrackMonitor"
+				},
+				"linkedServiceName": {
+					"referenceName": "CommandCenterDatabricksInteligenciaMercado",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "Folder_Metadata_Retail_Cerveja",
+				"type": "GetMetadata",
+				"dependsOn": [
+					{
+						"activity": "SET_Data_File",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "00:05:00",
+					"retry": 2,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataset": {
+						"referenceName": "BlobCustomerExperienceFolder_CSV_DTS",
+						"type": "DatasetReference",
+						"parameters": {
+							"caminho": {
+								"value": "@concat('datalake-im/Nielsen/Retail_Cerveja/', variables('Data_File'))",
+								"type": "Expression"
+							}
+						}
+					},
+					"fieldList": [
+						"exists",
+						"childItems"
+					]
+				}
+			},
+			{
+				"name": "SET_Data_UTC",
+				"description": "Set the dataUTC variable.",
+				"type": "SetVariable",
+				"dependsOn": [],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "DataUTC",
+					"value": {
+						"value": "@convertTimeZone(utcnow(), 'UTC', 'E. South America Standard Time')",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "SET_Data_File",
+				"description": "Modificar esta data, para a data de reprocessamento necessária",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "SET_Data_UTC",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "Data_File",
+					"value": {
+						"value": "@replace(substring(variables('DataUTC'),0,10), '-', '')",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "IF Retail exists",
+				"type": "IfCondition",
+				"dependsOn": [
+					{
+						"activity": "Scantrack Monitor",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@equals(activity('Folder_Metadata_Retail_Cerveja').output.exists, true)",
+						"type": "Expression"
+					},
+					"ifFalseActivities": [
+						{
+							"name": "Nada para Atualizar",
+							"type": "Wait",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"waitTimeInSeconds": 1
+							}
+						}
+					],
+					"ifTrueActivities": [
+						{
+							"name": "Retail Cerveja Monitor",
+							"type": "DatabricksNotebook",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"notebookPath": "/Operation/Brazil/Nielsen/NielsenRetailCervejaMonitor"
+							},
+							"linkedServiceName": {
+								"referenceName": "CommandCenterDatabricksInteligenciaMercado",
+								"type": "LinkedServiceReference"
+							}
+						},
+						{
+							"name": "Retail PreEvolution Monitor",
+							"type": "DatabricksNotebook",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"notebookPath": "/Operation/Brazil/Nielsen/NielsenRetailPreEvolutionCervejaMonitor"
+							},
+							"linkedServiceName": {
+								"referenceName": "CommandCenterDatabricksInteligenciaMercado",
+								"type": "LinkedServiceReference"
+							}
+						}
+					]
+				}
+			}
+		],
+		"variables": {
+			"DataUTC": {
+				"type": "String"
+			},
+			"Data_File": {
+				"type": "String"
+			}
+		},
+		"folder": {
+			"name": "Brazil/Nielsen"
+		},
+		"annotations": [],
+		"lastPublishTime": "2023-01-12T18:45:00Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

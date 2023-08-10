@@ -1,0 +1,27 @@
+{
+	"name": "Sink_RPM_ReportPdvPalpites_DTS",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "BlobPlatform",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "Brazil/RPM/BolaoCopa22"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"folderPath": "Brazil/Rpm/BolaoCopa22/ReportPdvPalpites",
+				"container": "prelandingzone"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": []
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

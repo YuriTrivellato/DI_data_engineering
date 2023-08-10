@@ -1,0 +1,135 @@
+{
+	"name": "Malha_SalesLabRevenue_Public",
+	"properties": {
+		"activities": [
+			{
+				"name": "Executa Fornec",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "Generics_CZ_CZ_DW",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"path_notebook": "/Brazil/Modelagem_Precos/Public/Fornec",
+						"flag_processamento_full": "0",
+						"dias_processamento": "60",
+						"path_exportacao": "/mnt/consumezone/Brazil/Sales/RevenueManagement/SelfService/Compartilhado/Fornec/",
+						"tabela_sqldw": "sales_rm_selfservice.compartilhado_fornec",
+						"flag_atualizacao_pbi": true,
+						"id_grupo": "70779b28-0cdc-4f2a-9236-23ebe341099c",
+						"id_objeto": "7a42fb9f-a0bf-47d2-814d-cf82cb2e0357",
+						"is_dataflow": true
+					}
+				}
+			},
+			{
+				"name": "Executa Cliente",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "Generics_CZ_CZ_DW",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"path_notebook": "/Brazil/Modelagem_Precos/Public/Cliente",
+						"flag_processamento_full": "1",
+						"dias_processamento": "1",
+						"path_exportacao": "",
+						"tabela_sqldw": "",
+						"flag_atualizacao_pbi": true,
+						"id_grupo": "70779b28-0cdc-4f2a-9236-23ebe341099c",
+						"id_objeto": "11687adf-4905-46b4-a240-852f3e067a66",
+						"is_dataflow": true
+					}
+				}
+			},
+			{
+				"name": "Executa Produto",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "Generics_CZ_CZ_DW",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"path_notebook": "/Brazil/Modelagem_Precos/Public/Produto",
+						"flag_processamento_full": "1",
+						"dias_processamento": "1",
+						"path_exportacao": "",
+						"tabela_sqldw": "",
+						"flag_atualizacao_pbi": false
+					}
+				}
+			},
+			{
+				"name": "Executa Produto Cesta",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "Executa Produto",
+						"dependencyConditions": [
+							"Completed"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "Generics_CZ_CZ_DW",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"path_notebook": "/Brazil/Modelagem_Precos/Public/ProdutoCesta",
+						"flag_processamento_full": "1",
+						"dias_processamento": "1",
+						"path_exportacao": "",
+						"tabela_sqldw": "",
+						"flag_atualizacao_pbi": false
+					}
+				}
+			},
+			{
+				"name": "Atualiza Produto Cesta PBI",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "Executa Produto Cesta",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "Generics_PBI_Refresh",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"id_grupo": "70779b28-0cdc-4f2a-9236-23ebe341099c",
+						"id_objeto": "7177087f-7ce6-4371-9ccf-091aa9afed14",
+						"is_dataflow": true
+					}
+				}
+			}
+		],
+		"folder": {
+			"name": "Brazil/SalesLabRevenue/Modelagem/Public"
+		},
+		"annotations": [],
+		"lastPublishTime": "2023-07-17T15:59:40Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

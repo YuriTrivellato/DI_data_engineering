@@ -1,0 +1,33 @@
+{
+	"name": "0_ColetaTtcVitrine_PPL",
+	"properties": {
+		"activities": [
+			{
+				"name": "CZ_CZ_Coleta_Ttc_Vitrine",
+				"type": "DatabricksNotebook",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/ColetaTtcVitrine/ColetaTtcVitrine"
+				},
+				"linkedServiceName": {
+					"referenceName": "CommandCenterDatabricksPricing",
+					"type": "LinkedServiceReference"
+				}
+			}
+		],
+		"folder": {
+			"name": "Brazil/ColetaTtcVitrine"
+		},
+		"annotations": [],
+		"lastPublishTime": "2023-05-11T15:49:16Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

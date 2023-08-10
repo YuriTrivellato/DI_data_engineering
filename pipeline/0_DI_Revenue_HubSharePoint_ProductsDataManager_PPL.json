@@ -1,0 +1,33 @@
+{
+	"name": "0_DI_Revenue_HubSharePoint_ProductsDataManager_PPL",
+	"properties": {
+		"activities": [
+			{
+				"name": "CZ_CZ_Products_List",
+				"type": "DatabricksNotebook",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.00:30:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/DigitalInsights/RevenueManagement/SharePoint/CZ_CZ_Products_List"
+				},
+				"linkedServiceName": {
+					"referenceName": "DigitalInsightsDatabricks",
+					"type": "LinkedServiceReference"
+				}
+			}
+		],
+		"folder": {
+			"name": "Brazil/DigitalInsights/RevenueManagement/Exports"
+		},
+		"annotations": [],
+		"lastPublishTime": "2023-02-09T16:26:56Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

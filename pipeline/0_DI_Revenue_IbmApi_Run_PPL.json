@@ -1,0 +1,52 @@
+{
+	"name": "0_DI_Revenue_IbmApi_Run_PPL",
+	"properties": {
+		"activities": [
+			{
+				"name": "4_DI_Revenue_Ibm_HistoricalDataImport_PPL",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "4_DI_Revenue_Ibm_HistoricalDataImport_PPL",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "5_DI_Revenue_Ibm_MonthForecastDataImport_PPL",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "5_DI_Revenue_Ibm_MonthForecastDataImport_PPL",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": false
+				}
+			},
+			{
+				"name": "7_DI_Revenue_Ibm_15DaysForecastDataImport_PPL",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "7_DI_Revenue_Ibm_15DaysForecastDataImport_PPL",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			}
+		],
+		"folder": {
+			"name": "Brazil/DigitalInsights/RevenueManagement/IBM_API"
+		},
+		"annotations": [],
+		"lastPublishTime": "2023-03-23T15:45:09Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

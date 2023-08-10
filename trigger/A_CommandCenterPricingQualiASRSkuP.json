@@ -1,0 +1,32 @@
+{
+	"name": "A_CommandCenterPricingQualiASRSkuP",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Stopped",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "0_SkuPrioritization_QualiASR_Monitor_PPL",
+					"type": "PipelineReference"
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Day",
+				"interval": 1,
+				"startTime": "2022-09-27T06:00:00",
+				"timeZone": "E. South America Standard Time",
+				"schedule": {
+					"minutes": [
+						5
+					],
+					"hours": [
+						1
+					]
+				}
+			}
+		}
+	}
+}

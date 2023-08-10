@@ -1,0 +1,38 @@
+{
+	"name": "A_CommandCenterDigitalInsightsRevenueManagementCltvMonthly",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Stopped",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "6_DI_Revenue_CLTV_PPL",
+					"type": "PipelineReference"
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Month",
+				"interval": 1,
+				"startTime": "2023-04-04T00:00:00",
+				"timeZone": "E. South America Standard Time",
+				"schedule": {
+					"minutes": [
+						0
+					],
+					"hours": [
+						14
+					],
+					"monthlyOccurrences": [
+						{
+							"day": "Friday",
+							"occurrence": 3
+						}
+					]
+				}
+			}
+		}
+	}
+}

@@ -1,0 +1,35 @@
+{
+	"name": "A_CommandCenterBeesForceConversionProbabilityFeatureEngineering",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Stopped",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "0_BeesForce_ConversionProbabilityFeatureEngineering_PPL",
+					"type": "PipelineReference"
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Month",
+				"interval": 1,
+				"startTime": "2023-05-23T03:16:00",
+				"timeZone": "E. South America Standard Time",
+				"schedule": {
+					"minutes": [
+						0
+					],
+					"hours": [
+						1
+					],
+					"monthDays": [
+						-1
+					]
+				}
+			}
+		}
+	}
+}

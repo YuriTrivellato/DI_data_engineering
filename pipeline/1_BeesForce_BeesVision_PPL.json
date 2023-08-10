@@ -1,0 +1,161 @@
+{
+	"name": "1_BeesForce_BeesVision_PPL",
+	"properties": {
+		"activities": [
+			{
+				"name": "DS_PZ_BeesVision_ImageRecognitionTasks",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "Definindo Ingestion_date",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/DigitalInsights/TasksBeesForce/Datashare/BeesVision/DS_PZ_BeesVision_ImageRecognitionTasks",
+					"baseParameters": {
+						"ingestion_date": {
+							"value": "@variables('bees_vision_ingestion_date')",
+							"type": "Expression"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "DigitalInsightsDatabricks",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "DS_PZ_BeesVision_ImageRecognitionInferences",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "DS_PZ_BeesVision_ImageRecognitionTasks",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/DigitalInsights/TasksBeesForce/Datashare/BeesVision/DS_PZ_BeesVision_ImageRecognitionInferences",
+					"baseParameters": {
+						"ingestion_date": {
+							"value": "@variables('bees_vision_ingestion_date')",
+							"type": "Expression"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "DigitalInsightsDatabricks",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "PZ_HZ_BeesVision",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "DS_PZ_BeesVision_ImageRecognitionInferences",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/DigitalInsights/TasksBeesForce/Datashare/BeesVision/PZ_HZ_BeesVision",
+					"baseParameters": {
+						"ingestion_date": {
+							"value": "@variables('bees_vision_ingestion_date')",
+							"type": "Expression"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "DigitalInsightsDatabricks",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "HZ_CZ_BeesVision",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "PZ_HZ_BeesVision",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/DigitalInsights/TasksBeesForce/Datashare/BeesVision/HZ_CZ_BeesVision"
+				},
+				"linkedServiceName": {
+					"referenceName": "DigitalInsightsDatabricks",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "Definindo Ingestion_date",
+				"type": "SetVariable",
+				"dependsOn": [],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "bees_vision_ingestion_date",
+					"value": {
+						"value": "@formatDateTime(utcNow(), 'yyyy-MM-dd')",
+						"type": "Expression"
+					}
+				}
+			}
+		],
+		"variables": {
+			"bees_vision_ingestion_date": {
+				"type": "String"
+			}
+		},
+		"folder": {
+			"name": "Brazil/DigitalInsights/BeesForce/BeesVision"
+		},
+		"annotations": [],
+		"lastPublishTime": "2023-06-05T16:20:17Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

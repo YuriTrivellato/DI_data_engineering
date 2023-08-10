@@ -1,0 +1,33 @@
+{
+	"name": "0_DI_Revenue_Metabase_Upload_PPL",
+	"properties": {
+		"activities": [
+			{
+				"name": "CZ_CZ_Metabase_Upload",
+				"type": "DatabricksNotebook",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/DigitalInsights/RevenueManagement/CZ_CZ_Metabase_Upload"
+				},
+				"linkedServiceName": {
+					"referenceName": "DigitalInsightsDatabricks",
+					"type": "LinkedServiceReference"
+				}
+			}
+		],
+		"folder": {
+			"name": "Brazil/DigitalInsights/RevenueManagement"
+		},
+		"annotations": [],
+		"lastPublishTime": "2023-01-12T18:45:00Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

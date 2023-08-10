@@ -1,0 +1,131 @@
+{
+	"name": "1_Sharepoint_DL_DemandaDpgBaseDiaria_PPL",
+	"properties": {
+		"activities": [
+			{
+				"name": "SET_Data_UTC",
+				"description": "Set the variable \"dataUTC\" with the value from current date. ",
+				"type": "SetVariable",
+				"dependsOn": [],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "dateUTC",
+					"value": {
+						"value": "@utcnow()",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "SET_Data",
+				"description": "Set the variable \"data\" with the first 10 characters from dataUTC and replace the dashes with null spaces.",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "SET_Data_UTC",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "date",
+					"value": {
+						"value": "@replace(substring(variables('DateUTC'),0,10), '-', '')",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "Sharepoint_DL_DemandaDPG",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "SET_Data",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/SalesLabIM/DemandaDPG/Sharepoint/Sharepoint_DL_DemandaDPG",
+					"baseParameters": {
+						"clientID": {
+							"value": "@pipeline().parameters.clientID",
+							"type": "Expression"
+						},
+						"sharepointURL": {
+							"value": "@pipeline().parameters.sharepointURL",
+							"type": "Expression"
+						},
+						"storagePath": {
+							"value": "@pipeline().parameters.storagePath",
+							"type": "Expression"
+						},
+						"date": {
+							"value": "@variables('date')",
+							"type": "Expression"
+						},
+						"namePath": {
+							"value": "@pipeline().parameters.namePath",
+							"type": "Expression"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "CommandCenterDatabricksInteligenciaMercado",
+					"type": "LinkedServiceReference"
+				}
+			}
+		],
+		"parameters": {
+			"clientID": {
+				"type": "string",
+				"defaultValue": "6de8363c-cc0f-4b4f-9f99-e46c367a8bbf"
+			},
+			"namePath": {
+				"type": "string",
+				"defaultValue": "OHD_ALL_DP_KF"
+			},
+			"sharepointURL": {
+				"type": "string",
+				"defaultValue": "https://anheuserbuschinbev.sharepoint.com/sites/Sales.Lab-IM/"
+			},
+			"storagePath": {
+				"type": "string",
+				"defaultValue": "/dbfs/mnt/datalake-im/DemandaDPG/"
+			}
+		},
+		"variables": {
+			"dateUTC": {
+				"type": "String"
+			},
+			"date": {
+				"type": "String"
+			}
+		},
+		"folder": {
+			"name": "Brazil/SalesLabIM/DemandaDPG/BaseDiaria"
+		},
+		"annotations": [],
+		"lastPublishTime": "2022-12-13T14:09:07Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

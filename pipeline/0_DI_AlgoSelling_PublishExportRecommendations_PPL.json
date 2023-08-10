@@ -1,0 +1,132 @@
+{
+	"name": "0_DI_AlgoSelling_PublishExportRecommendations_PPL",
+	"properties": {
+		"activities": [
+			{
+				"name": "1_CZ_CZ_DI_AlgoSelling_QuickOrderPublishRecs_PPL",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "1_CZ_CZ_DI_AlgoSelling_QuickOrderPublishRecommendations_PPL",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "2_CZ_CZ_DI_AlgoSelling_QuickOrderExport_PPL",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "1_CZ_CZ_DI_AlgoSelling_QuickOrderPublishRecs_PPL",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "2_CZ_CZ_DI_AlgoSelling_QuickOrderExport_PPL",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "1_CZ_CZ_DI_AlgoSelling_IncartPublishRecs_PPL",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "1_CZ_CZ_DI_AlgoSelling_IncartPublishRecommendations_PPL",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "2_CZ_CZ_DI_AlgoSelling_IncartExport_PPL",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "1_CZ_CZ_DI_AlgoSelling_IncartPublishRecs_PPL",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "2_CZ_CZ_DI_AlgoSelling_IncartExport_PPL",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "1_CZ_CZ_DI_AlgoSelling_PopupPublishRecs_PPL",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "1_CZ_CZ_DI_AlgoSelling_PopupPublishRecommendations_PPL",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "2_CZ_CZ_DI_AlgoSelling_PopupExport_PPL",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "1_CZ_CZ_DI_AlgoSelling_PopupPublishRecs_PPL",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "2_CZ_CZ_DI_AlgoSelling_PopupExport_PPL",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "3_CZ_CZ_DI_AlgoSelling_OutOfStock_PPL",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "2_CZ_CZ_DI_AlgoSelling_QuickOrderExport_PPL",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "3_CZ_CZ_DI_AlgoSelling_OutOfStock_PPL",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			}
+		],
+		"folder": {
+			"name": "Brazil/DigitalInsights/AlgoSelling"
+		},
+		"annotations": [],
+		"lastPublishTime": "2023-05-25T21:50:11Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

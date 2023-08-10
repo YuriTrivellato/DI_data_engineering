@@ -1,0 +1,33 @@
+{
+	"name": "A_CommandCenterDigitalInsightsFlexibleDeliveryCdpPromaxOtimizada",
+	"properties": {
+		"description": "Trigger para execução do pipeline que cria a base otimizada da CDP da Squad Flexible Delivery.",
+		"annotations": [],
+		"runtimeState": "Stopped",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "0_DI_FlexibleDelivery_CdpPromaxOtimizada_PPL",
+					"type": "PipelineReference"
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Day",
+				"interval": 1,
+				"startTime": "2023-04-27T20:36:00",
+				"timeZone": "E. South America Standard Time",
+				"schedule": {
+					"minutes": [
+						50
+					],
+					"hours": [
+						7
+					]
+				}
+			}
+		}
+	}
+}

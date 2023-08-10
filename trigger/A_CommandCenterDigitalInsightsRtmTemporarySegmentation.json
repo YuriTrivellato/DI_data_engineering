@@ -1,0 +1,29 @@
+{
+	"name": "A_CommandCenterDigitalInsightsRtmTemporarySegmentation",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Stopped",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "0_Segmentation_TemporaryPrimarySegmentation_Monitor_PPL",
+					"type": "PipelineReference"
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Day",
+				"interval": 1,
+				"startTime": "2023-08-04T00:01:00",
+				"timeZone": "E. South America Standard Time",
+				"schedule": {
+					"hours": [
+						7
+					]
+				}
+			}
+		}
+	}
+}

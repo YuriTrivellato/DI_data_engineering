@@ -1,0 +1,352 @@
+{
+	"name": "2_SkuPrioritization_Customers_Metrics_Monitor_PPL",
+	"properties": {
+		"activities": [
+			{
+				"name": "Set dayOfMonth",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "CZ_CZ_Customers_Metrics_static_rules",
+						"dependencyConditions": [
+							"Completed"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "dayOfMonth",
+					"value": {
+						"value": "@formatDateTime(addHours(utcnow(),-3),'dd')",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "is_firstDayOfMonth",
+				"type": "IfCondition",
+				"dependsOn": [
+					{
+						"activity": "Set dayOfMonth",
+						"dependencyConditions": [
+							"Completed"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@equals(variables('dayOfMonth'),'01')",
+						"type": "Expression"
+					},
+					"ifTrueActivities": [
+						{
+							"name": "CZ_CZ_Customers_Metrics_last_month",
+							"type": "DatabricksNotebook",
+							"dependsOn": [
+								{
+									"activity": "CZ_CZ_Customers_Metrics_two_months_ago",
+									"dependencyConditions": [
+										"Completed"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"notebookPath": "/Brazil/DigitalInsights/SkuPrioritization/Customers/CZ_CZ_Customers_last_monthF"
+							},
+							"linkedServiceName": {
+								"referenceName": "DigitalInsightsDatabricks",
+								"type": "LinkedServiceReference"
+							}
+						},
+						{
+							"name": "CZ_CZ_Customers_Metrics_two_months_ago",
+							"type": "DatabricksNotebook",
+							"dependsOn": [
+								{
+									"activity": "CZ_CZ_Customers_Metrics_three_months_ago",
+									"dependencyConditions": [
+										"Completed"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"notebookPath": "/Brazil/DigitalInsights/SkuPrioritization/Customers/CZ_CZ_Customers_two_months_agoF"
+							},
+							"linkedServiceName": {
+								"referenceName": "DigitalInsightsDatabricks",
+								"type": "LinkedServiceReference"
+							}
+						},
+						{
+							"name": "CZ_CZ_Customers_Metrics_three_months_ago",
+							"type": "DatabricksNotebook",
+							"dependsOn": [
+								{
+									"activity": "CZ_CZ_Customers_Metrics_four_months_ago",
+									"dependencyConditions": [
+										"Completed"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"notebookPath": "/Brazil/DigitalInsights/SkuPrioritization/Customers/CZ_CZ_Customers_three_months_agoF"
+							},
+							"linkedServiceName": {
+								"referenceName": "DigitalInsightsDatabricks",
+								"type": "LinkedServiceReference"
+							}
+						},
+						{
+							"name": "CZ_CZ_Customers_Metrics_L3M",
+							"type": "DatabricksNotebook",
+							"dependsOn": [
+								{
+									"activity": "CZ_CZ_Customers_Metrics_last_month",
+									"dependencyConditions": [
+										"Completed"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"notebookPath": "/Brazil/DigitalInsights/SkuPrioritization/Customers/CZ_CZ_Customers_l3m"
+							},
+							"linkedServiceName": {
+								"referenceName": "DigitalInsightsDatabricks",
+								"type": "LinkedServiceReference"
+							}
+						},
+						{
+							"name": "CZ_CZ_Customers_Metrics_four_months_ago",
+							"type": "DatabricksNotebook",
+							"dependsOn": [
+								{
+									"activity": "CZ_CZ_Customers_Metrics_five_months_ago",
+									"dependencyConditions": [
+										"Completed"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"notebookPath": "/Brazil/DigitalInsights/SkuPrioritization/Customers/CZ_CZ_Customers_four_months_agoF"
+							},
+							"linkedServiceName": {
+								"referenceName": "DigitalInsightsDatabricks",
+								"type": "LinkedServiceReference"
+							}
+						},
+						{
+							"name": "CZ_CZ_Customers_Metrics_five_months_ago",
+							"type": "DatabricksNotebook",
+							"dependsOn": [
+								{
+									"activity": "CZ_CZ_Customers_Metrics_six_months_ago",
+									"dependencyConditions": [
+										"Completed"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"notebookPath": "/Brazil/DigitalInsights/SkuPrioritization/Customers/CZ_CZ_Customers_five_months_agoF"
+							},
+							"linkedServiceName": {
+								"referenceName": "DigitalInsightsDatabricks",
+								"type": "LinkedServiceReference"
+							}
+						},
+						{
+							"name": "CZ_CZ_Customers_Metrics_L6M",
+							"type": "DatabricksNotebook",
+							"dependsOn": [
+								{
+									"activity": "CZ_CZ_Customers_Metrics_L3M",
+									"dependencyConditions": [
+										"Completed"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"notebookPath": "/Brazil/DigitalInsights/SkuPrioritization/Customers/CZ_CZ_Customers_l6m"
+							},
+							"linkedServiceName": {
+								"referenceName": "DigitalInsightsDatabricks",
+								"type": "LinkedServiceReference"
+							}
+						},
+						{
+							"name": "CZ_CZ_Customers_Metrics_six_months_ago",
+							"type": "DatabricksNotebook",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"notebookPath": "/Brazil/DigitalInsights/SkuPrioritization/Customers/CZ_CZ_Customers_six_months_agoF"
+							},
+							"linkedServiceName": {
+								"referenceName": "DigitalInsightsDatabricks",
+								"type": "LinkedServiceReference"
+							}
+						}
+					]
+				}
+			},
+			{
+				"name": "CZ_CZ_Customers_Metrics_static_rules",
+				"type": "DatabricksNotebook",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/DigitalInsights/SkuPrioritization/Customers/CZ_CZ_Customers_static_rules"
+				},
+				"linkedServiceName": {
+					"referenceName": "DigitalInsightsDatabricks",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "CZ_CZ_Customers_Metrics_current_month",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "is_firstDayOfMonth",
+						"dependencyConditions": [
+							"Completed"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/DigitalInsights/SkuPrioritization/Customers/CZ_CZ_Customers_current_month"
+				},
+				"linkedServiceName": {
+					"referenceName": "DigitalInsightsDatabricks",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "CZ_CZ_Customers_Metrics_Final",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "CZ_CZ_Customers_Metrics_current_month",
+						"dependencyConditions": [
+							"Completed"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/DigitalInsights/SkuPrioritization/Customers/CZ_CZ_Customers_Metrics_Final"
+				},
+				"linkedServiceName": {
+					"referenceName": "DigitalInsightsDatabricks",
+					"type": "LinkedServiceReference"
+				}
+			}
+		],
+		"variables": {
+			"dayOfMonth": {
+				"type": "String"
+			},
+			"em true": {
+				"type": "String"
+			},
+			"em false": {
+				"type": "String"
+			}
+		},
+		"folder": {
+			"name": "Brazil/DigitalInsights/SkuPrioritization/customers"
+		},
+		"annotations": [],
+		"lastPublishTime": "2022-11-10T15:54:09Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

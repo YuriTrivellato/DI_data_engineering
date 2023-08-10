@@ -1,0 +1,110 @@
+{
+	"name": "1_BeesForce_Bees_Tasks_PPL",
+	"properties": {
+		"activities": [
+			{
+				"name": "HZ_CZ_BeesTasks",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "PZ_HZ_BeesTasks",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/DigitalInsights/TasksBeesForce/BeesTasks/HZ_CZ_Bees_Tasks",
+					"baseParameters": {
+						"ingestion_date": {
+							"value": "@formatDateTime(pipeline().parameters.ingestion_date, 'yyy-MM-dd')",
+							"type": "Expression"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "DigitalInsightsDatabricks",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "API_PZ_BeesTasks",
+				"type": "DatabricksNotebook",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.03:00:00",
+					"retry": 2,
+					"retryIntervalInSeconds": 120,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/DigitalInsights/TasksBeesForce/BeesTasks/API_PZ_Bees_Tasks",
+					"baseParameters": {
+						"ingestion_date": {
+							"value": "@formatDateTime(pipeline().parameters.ingestion_date, 'yyy-MM-dd')",
+							"type": "Expression"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "DigitalInsightsDatabricks",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "PZ_HZ_BeesTasks",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "API_PZ_BeesTasks",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/DigitalInsights/TasksBeesForce/BeesTasks/PZ_HZ_Bees_Tasks",
+					"baseParameters": {
+						"ingestion_date": {
+							"value": "@formatDateTime(pipeline().parameters.ingestion_date, 'yyy-MM-dd')",
+							"type": "Expression"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "DigitalInsightsDatabricks",
+					"type": "LinkedServiceReference"
+				}
+			}
+		],
+		"parameters": {
+			"ingestion_date": {
+				"type": "string"
+			}
+		},
+		"folder": {
+			"name": "Brazil/DigitalInsights/BeesForce/BeesTasks"
+		},
+		"annotations": [],
+		"lastPublishTime": "2023-06-26T16:14:31Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

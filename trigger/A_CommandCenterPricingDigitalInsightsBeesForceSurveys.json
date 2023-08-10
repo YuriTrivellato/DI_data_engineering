@@ -1,0 +1,36 @@
+{
+	"name": "A_CommandCenterPricingDigitalInsightsBeesForceSurveys",
+	"properties": {
+		"description": "Trigger da pipeline que obtém as surveys do Bees Force",
+		"annotations": [],
+		"runtimeState": "Stopped",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "0_DI_BeesForce_Survey_Monitor_PPL",
+					"type": "PipelineReference"
+				},
+				"parameters": {
+					"ingestion_date": "@trigger().scheduledTime"
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Day",
+				"interval": 1,
+				"startTime": "2022-02-19T05:00:00",
+				"timeZone": "E. South America Standard Time",
+				"schedule": {
+					"minutes": [
+						0
+					],
+					"hours": [
+						10
+					]
+				}
+			}
+		}
+	}
+}

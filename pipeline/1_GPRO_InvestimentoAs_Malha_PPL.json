@@ -1,0 +1,26 @@
+{
+	"name": "1_GPRO_InvestimentoAs_Malha_PPL",
+	"properties": {
+		"activities": [
+			{
+				"name": "0_GPRO_InvestimentoAs_Monitor_PPL",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "0_GPRO_InvestimentoAs_Monitor_PPL",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			}
+		],
+		"folder": {
+			"name": "Brazil/GPRO/InvestimentoAs"
+		},
+		"annotations": [],
+		"lastPublishTime": "2023-08-07T16:52:11Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

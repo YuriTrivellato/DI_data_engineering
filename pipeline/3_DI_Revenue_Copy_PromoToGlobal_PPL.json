@@ -1,0 +1,122 @@
+{
+	"name": "3_DI_Revenue_Copy_PromoToGlobal_PPL",
+	"properties": {
+		"activities": [
+			{
+				"name": "CZ_Global_PromoEngine_Integration",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "UTCLess1Day",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.01:00:00",
+					"retry": 2,
+					"retryIntervalInSeconds": 600,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "BinarySource",
+						"storeSettings": {
+							"type": "AzureBlobStorageReadSettings",
+							"recursive": true,
+							"modifiedDatetimeStart": {
+								"value": "@variables('dataUTCless1day')",
+								"type": "Expression"
+							},
+							"wildcardFolderPath": "report",
+							"wildcardFileName": "ExtracaoDadosPromocao_*.csv",
+							"deleteFilesAfterCompletion": false
+						},
+						"formatSettings": {
+							"type": "BinaryReadSettings"
+						}
+					},
+					"sink": {
+						"type": "BinarySink",
+						"storeSettings": {
+							"type": "AzureBlobFSWriteSettings"
+						}
+					},
+					"enableStaging": false
+				},
+				"inputs": [
+					{
+						"referenceName": "Blob_CoraPromos_DTS",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "Sink_Global_DigitalInsights_CoraPromocoes_DTS",
+						"type": "DatasetReference"
+					}
+				]
+			},
+			{
+				"name": "SET_Data_UTC",
+				"description": "Set the dataUTC variable.",
+				"type": "SetVariable",
+				"dependsOn": [],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "dataUTC",
+					"value": {
+						"value": "@utcnow()",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "UTCLess1Day",
+				"description": "Set the data.",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "SET_Data_UTC",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "dataUTCless1day",
+					"value": {
+						"value": "@addDays(variables('dataUTC'),-1)",
+						"type": "Expression"
+					}
+				}
+			}
+		],
+		"variables": {
+			"dataUTC": {
+				"type": "String"
+			},
+			"dataUTCless1day": {
+				"type": "String"
+			}
+		},
+		"folder": {
+			"name": "Brazil/DigitalInsights/RevenueManagement/Exports"
+		},
+		"annotations": [],
+		"lastPublishTime": "2023-01-12T18:45:00Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

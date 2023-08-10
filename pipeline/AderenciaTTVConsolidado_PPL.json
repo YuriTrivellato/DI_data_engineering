@@ -1,0 +1,33 @@
+{
+	"name": "AderenciaTTVConsolidado_PPL",
+	"properties": {
+		"activities": [
+			{
+				"name": "CZ_CZ",
+				"type": "DatabricksNotebook",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/GPRO/AderenciaTTVConsolidado/CZ_CZ_AderenciaTTVConsolidado"
+				},
+				"linkedServiceName": {
+					"referenceName": "CommandCenterDatabricksPricing",
+					"type": "LinkedServiceReference"
+				}
+			}
+		],
+		"folder": {
+			"name": "Brazil/GPRO/AderenciaTTVConsolidado"
+		},
+		"annotations": [],
+		"lastPublishTime": "2022-09-19T19:51:16Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

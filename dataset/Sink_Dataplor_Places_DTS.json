@@ -1,0 +1,24 @@
+{
+	"name": "Sink_Dataplor_Places_DTS",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "DigitalInsightsRtmBlobStorage",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "Brazil/DigitalInsights/Rtm"
+		},
+		"annotations": [],
+		"type": "Avro",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "dataplor",
+				"folderPath": "dataplor",
+				"container": "rtm"
+			}
+		},
+		"schema": []
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

@@ -1,0 +1,28 @@
+{
+	"name": "Sink_GPRO_Ccttv_DTS",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "DataLakePlatform",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"path_pz": {
+				"type": "string"
+			}
+		},
+		"annotations": [],
+		"type": "Avro",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"folderPath": {
+					"value": "@dataset().path_pz",
+					"type": "Expression"
+				},
+				"fileSystem": "prelandingzone"
+			}
+		},
+		"schema": {}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

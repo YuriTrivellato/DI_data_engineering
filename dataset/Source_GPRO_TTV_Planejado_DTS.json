@@ -1,0 +1,21 @@
+{
+	"name": "Source_GPRO_TTV_Planejado_DTS",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "CommandCenterFileServer_GPRO",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "Brazil/GPRO/TTVPlanejado"
+		},
+		"annotations": [],
+		"type": "Binary",
+		"typeProperties": {
+			"location": {
+				"type": "FileServerLocation",
+				"folderPath": "GPRO/TTVPLAN"
+			}
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

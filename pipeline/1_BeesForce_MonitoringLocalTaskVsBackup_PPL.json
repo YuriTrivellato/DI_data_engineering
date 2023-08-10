@@ -1,0 +1,33 @@
+{
+	"name": "1_BeesForce_MonitoringLocalTaskVsBackup_PPL",
+	"properties": {
+		"activities": [
+			{
+				"name": "CZ_PZ_AnaliseSaudabilidadeTarefasLocaisVsBackup",
+				"type": "DatabricksNotebook",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/DigitalInsights/TasksBeesForce/Monitoramento/CZ_PZ_AnaliseSaudabilidadeTarefasLocaisVsBackup"
+				},
+				"linkedServiceName": {
+					"referenceName": "DigitalInsightsDatabricks",
+					"type": "LinkedServiceReference"
+				}
+			}
+		],
+		"folder": {
+			"name": "Brazil/DigitalInsights/BeesForce/Monitoring/MonitoringLocalTaskVsBackup"
+		},
+		"annotations": [],
+		"lastPublishTime": "2023-07-27T16:05:35Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

@@ -1,0 +1,32 @@
+{
+	"name": "A_CommandCenterPricingMonitoringDailyHealthinessTasks",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Stopped",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "0_BeesForce_MonitoringDailyHealthinessTasks_PPL",
+					"type": "PipelineReference"
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Day",
+				"interval": 1,
+				"startTime": "2023-04-08T21:00:00",
+				"timeZone": "E. South America Standard Time",
+				"schedule": {
+					"minutes": [
+						45
+					],
+					"hours": [
+						6
+					]
+				}
+			}
+		}
+	}
+}

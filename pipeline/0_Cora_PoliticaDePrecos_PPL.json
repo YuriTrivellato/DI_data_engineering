@@ -1,0 +1,166 @@
+{
+	"name": "0_Cora_PoliticaDePrecos_PPL",
+	"properties": {
+		"activities": [
+			{
+				"name": "TrustedZone_CZ",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "SET_Data",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/Cora/PoliticaDePrecos/TrustedZone_CZ_Cora_PoliticaDePrecos",
+					"baseParameters": {
+						"today_date": {
+							"value": "@variables('Data')",
+							"type": "Expression"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "CommandCenterDatabricksPricing",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "SET_Data_UTC",
+				"description": "Set the dataUTC variable.",
+				"type": "SetVariable",
+				"dependsOn": [],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "DataUTC",
+					"value": {
+						"value": "@convertTimeZone(utcnow(), 'UTC', 'E. South America Standard Time')",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "SET_Data",
+				"description": "Set the data.",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "SET_Data_UTC",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "Data",
+					"value": {
+						"value": "@replace(substring(variables('DataUTC'),0,10), '-', '')",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "TrustedZone_CZ - MarketPlace",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "TrustedZone_CZ",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/Cora/PoliticaDePrecos/TZ_CZ_Cora_PoliticaDePrecosMktPlace",
+					"baseParameters": {
+						"today_date": {
+							"value": "@variables('Data')",
+							"type": "Expression"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "CommandCenterDatabricksPricing",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "Holmes_PoliticaDePrecos",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "TrustedZone_CZ",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/Cora/PoliticaDePrecos/Holmes_Cora_PoliticaDePrecos",
+					"baseParameters": {
+						"today_date": {
+							"value": "@variables('Data')",
+							"type": "Expression"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "CommandCenterDatabricksGov",
+					"type": "LinkedServiceReference"
+				}
+			}
+		],
+		"variables": {
+			"SET_Data_UTC": {
+				"type": "String"
+			},
+			"DataUTC": {
+				"type": "String"
+			},
+			"Data": {
+				"type": "String"
+			}
+		},
+		"folder": {
+			"name": "Brazil/Cora/PoliticaDePrecos"
+		},
+		"annotations": [],
+		"lastPublishTime": "2023-07-05T16:26:48Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

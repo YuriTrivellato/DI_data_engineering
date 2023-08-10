@@ -1,0 +1,33 @@
+{
+	"name": "0_DI_Revenue_PromoEngine_KPI_PPL",
+	"properties": {
+		"activities": [
+			{
+				"name": "CZ_CZ_Promo_Kpi_Prod",
+				"type": "DatabricksNotebook",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.2:00:00",
+					"retry": 1,
+					"retryIntervalInSeconds": 600,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/DigitalInsights/RevenueManagement/PROMO/CZ_CZ_Promo_Kpi_Prod"
+				},
+				"linkedServiceName": {
+					"referenceName": "DigitalInsightsDatabricks",
+					"type": "LinkedServiceReference"
+				}
+			}
+		],
+		"folder": {
+			"name": "Brazil/DigitalInsights/RevenueManagement/PromoEngine/Metrics"
+		},
+		"annotations": [],
+		"lastPublishTime": "2023-05-25T21:50:10Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

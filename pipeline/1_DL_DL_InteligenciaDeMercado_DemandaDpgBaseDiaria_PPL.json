@@ -1,0 +1,190 @@
+{
+	"name": "1_DL_DL_InteligenciaDeMercado_DemandaDpgBaseDiaria_PPL",
+	"properties": {
+		"activities": [
+			{
+				"name": "DL_DL_DemandaDPG_Parameters",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "SET_Data",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/SalesLabIM/DemandaDPG/Unzip/DL_DL_DemandaDPG_Parameters",
+					"baseParameters": {
+						"date_file": {
+							"value": "@variables('date')",
+							"type": "Expression"
+						},
+						"diretorio": {
+							"value": "@pipeline().parameters.diretorio",
+							"type": "Expression"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "CommandCenterDatabricksInteligenciaMercado",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "SET_Data",
+				"description": "Set the variable \"data\" with the first 10 characters from dataUTC and replace the dashes with null spaces.",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "SET_Data_UTC",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "date",
+					"value": {
+						"value": "@replace(substring(variables('DateUTC'),0,10), '-', '')",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "SET_Data_UTC",
+				"description": "Set the variable \"dataUTC\" with the value from current date. ",
+				"type": "SetVariable",
+				"dependsOn": [],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "dateUTC",
+					"value": {
+						"value": "@utcnow()",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "Copy_Unzip_DL",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "DL_DL_DemandaDPG_Parameters",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "DelimitedTextSource",
+						"storeSettings": {
+							"type": "AzureBlobFSReadSettings",
+							"recursive": true,
+							"wildcardFolderPath": {
+								"value": "@activity('DL_DL_DemandaDPG_Parameters').output.runOutput[0]",
+								"type": "Expression"
+							},
+							"wildcardFileName": {
+								"value": "@activity('DL_DL_DemandaDPG_Parameters').output.runOutput[1]",
+								"type": "Expression"
+							},
+							"enablePartitionDiscovery": false
+						},
+						"formatSettings": {
+							"type": "DelimitedTextReadSettings",
+							"compressionProperties": {
+								"type": "ZipDeflateReadSettings"
+							}
+						}
+					},
+					"sink": {
+						"type": "AzureBlobFSSink"
+					},
+					"enableStaging": false
+				},
+				"inputs": [
+					{
+						"referenceName": "DataLake_IM_NielsenZip",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "BlobCustomerExperienceFolder_CSV_DTS",
+						"type": "DatasetReference",
+						"parameters": {
+							"caminho": "@activity('DL_DL_DemandaDPG_Parameters').output.runOutput[2]"
+						}
+					}
+				]
+			},
+			{
+				"name": "2_DL_CZ_InteligenciaDeMercado_DemandaDpg_PPL",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "Copy_Unzip_DL",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "2_DL_CZ_InteligenciaDeMercado_DemandaDpgBaseDiaria_PPL",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			}
+		],
+		"parameters": {
+			"diretorio": {
+				"type": "string",
+				"defaultValue": "OHD_ALL_DP_KF"
+			}
+		},
+		"variables": {
+			"dateUTC": {
+				"type": "String"
+			},
+			"date": {
+				"type": "String"
+			}
+		},
+		"folder": {
+			"name": "Brazil/SalesLabIM/DemandaDPG/BaseDiaria"
+		},
+		"annotations": [],
+		"lastPublishTime": "2022-12-13T14:09:08Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

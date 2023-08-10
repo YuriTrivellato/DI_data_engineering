@@ -1,0 +1,285 @@
+{
+	"name": "1_DL_DL_InteligenciaDeMercado_RetailCerveja_PPL",
+	"properties": {
+		"activities": [
+			{
+				"name": "ForEach Diretorio",
+				"type": "ForEach",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@pipeline().parameters.diretorio",
+						"type": "Expression"
+					},
+					"isSequential": true,
+					"activities": [
+						{
+							"name": "DL_DL_Nielsen_Parameters",
+							"type": "DatabricksNotebook",
+							"dependsOn": [
+								{
+									"activity": "SET_Data_File",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "00:30:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"notebookPath": "/Brazil/Nielsen/Unzip/DL_DL_Nielsen_Parameters",
+								"baseParameters": {
+									"date_file": {
+										"value": "@variables('Data_File')",
+										"type": "Expression"
+									},
+									"diretorio": {
+										"value": "@item()",
+										"type": "Expression"
+									}
+								}
+							},
+							"linkedServiceName": {
+								"referenceName": "CommandCenterDatabricksPricing",
+								"type": "LinkedServiceReference"
+							}
+						},
+						{
+							"name": "Folder_Metadata_Retail_Cerveja",
+							"type": "GetMetadata",
+							"dependsOn": [
+								{
+									"activity": "Copy_Unzip_DL",
+									"dependencyConditions": [
+										"Succeeded",
+										"Failed"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"dataset": {
+									"referenceName": "BlobCustomerExperienceFolder_CSV_DTS",
+									"type": "DatasetReference",
+									"parameters": {
+										"caminho": {
+											"value": "@concat('datalake-im/Nielsen/',item(),'/', variables('Data_File'))",
+											"type": "Expression"
+										}
+									}
+								},
+								"fieldList": [
+									"exists",
+									"childItems"
+								]
+							}
+						},
+						{
+							"name": "If_Condition_Retail_Cerveja",
+							"description": "Verificar se criou a pasta de retail para data vigente unzipada",
+							"type": "IfCondition",
+							"dependsOn": [
+								{
+									"activity": "Folder_Metadata_Retail_Cerveja",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"expression": {
+									"value": "@equals(activity('Folder_Metadata_Retail_Cerveja').output.exists, true)",
+									"type": "Expression"
+								},
+								"ifFalseActivities": [
+									{
+										"name": "Sem_Dados_Retail_Cerveja",
+										"type": "Wait",
+										"dependsOn": [],
+										"userProperties": [],
+										"typeProperties": {
+											"waitTimeInSeconds": 1
+										}
+									}
+								],
+								"ifTrueActivities": [
+									{
+										"name": "2_DL_CZ_InteligenciaDeMercado_RetailCerveja_PPL",
+										"type": "ExecutePipeline",
+										"dependsOn": [],
+										"userProperties": [],
+										"typeProperties": {
+											"pipeline": {
+												"referenceName": "2_DL_CZ_InteligenciaDeMercado_RetailCerveja_PPL",
+												"type": "PipelineReference"
+											},
+											"waitOnCompletion": true,
+											"parameters": {
+												"dir_retail_cerveja": {
+													"value": "@activity('DL_DL_Nielsen_Parameters').output.runOutput[3]",
+													"type": "Expression"
+												}
+											}
+										}
+									}
+								]
+							}
+						},
+						{
+							"name": "SET_Data_UTC",
+							"description": "Set the dataUTC variable.",
+							"type": "SetVariable",
+							"dependsOn": [],
+							"policy": {
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "DataUTC",
+								"value": {
+									"value": "@convertTimeZone(utcnow(), 'UTC', 'E. South America Standard Time')",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "SET_Data_File",
+							"description": "Modificar esta data, para a data de reprocessamento necessária",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "SET_Data_UTC",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "Data_File",
+								"value": {
+									"value": "@replace(substring(variables('DataUTC'),0,10), '-', '')",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "Copy_Unzip_DL",
+							"type": "Copy",
+							"dependsOn": [
+								{
+									"activity": "DL_DL_Nielsen_Parameters",
+									"dependencyConditions": [
+										"Succeeded",
+										"Failed"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "01:00:00",
+								"retry": 2,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "DelimitedTextSource",
+									"storeSettings": {
+										"type": "AzureBlobFSReadSettings",
+										"recursive": true,
+										"wildcardFolderPath": {
+											"value": "@activity('DL_DL_Nielsen_Parameters').output.runOutput[0]",
+											"type": "Expression"
+										},
+										"wildcardFileName": {
+											"value": "@activity('DL_DL_Nielsen_Parameters').output.runOutput[1]",
+											"type": "Expression"
+										},
+										"enablePartitionDiscovery": false
+									},
+									"formatSettings": {
+										"type": "DelimitedTextReadSettings",
+										"compressionProperties": {
+											"type": "ZipDeflateReadSettings",
+											"preserveZipFileNameAsFolder": true
+										}
+									}
+								},
+								"sink": {
+									"type": "AzureBlobFSSink"
+								},
+								"enableStaging": false
+							},
+							"inputs": [
+								{
+									"referenceName": "DataLake_IM_NielsenZip",
+									"type": "DatasetReference"
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "BlobCustomerExperienceFolder_CSV_DTS",
+									"type": "DatasetReference",
+									"parameters": {
+										"caminho": {
+											"value": "@activity('DL_DL_Nielsen_Parameters').output.runOutput[2]",
+											"type": "Expression"
+										}
+									}
+								}
+							]
+						}
+					]
+				}
+			}
+		],
+		"parameters": {
+			"diretorio": {
+				"type": "array",
+				"defaultValue": [
+					"Retail_Cerveja",
+					"Retail_PreEvolution_Cerveja"
+				]
+			}
+		},
+		"variables": {
+			"DataUTC": {
+				"type": "String"
+			},
+			"Data_File": {
+				"type": "String"
+			},
+			"Data": {
+				"type": "String"
+			}
+		},
+		"folder": {
+			"name": "Brazil/Nielsen"
+		},
+		"annotations": [],
+		"lastPublishTime": "2023-01-12T18:45:00Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

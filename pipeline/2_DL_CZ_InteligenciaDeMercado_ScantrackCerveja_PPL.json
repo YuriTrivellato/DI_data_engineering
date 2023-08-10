@@ -1,0 +1,450 @@
+{
+	"name": "2_DL_CZ_InteligenciaDeMercado_ScantrackCerveja_PPL",
+	"properties": {
+		"activities": [
+			{
+				"name": "SET_Data_UTC",
+				"description": "Set the dataUTC variable.",
+				"type": "SetVariable",
+				"dependsOn": [],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "DataUTC",
+					"value": {
+						"value": "@convertTimeZone(utcnow(), 'UTC', 'E. South America Standard Time')",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "SET_Data_File",
+				"description": "Modificar esta data, para a data de reprocessamento necessária",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "SET_Data_UTC",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "Data_File",
+					"value": {
+						"value": "@replace(substring(variables('DataUTC'),0,10), '-', '')",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "SET_Data",
+				"description": "Data Atual utilizado para update_date CZ",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "SET_Data_UTC",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "Data",
+					"value": {
+						"value": "@replace(substring(variables('DataUTC'),0,10), '-', '')",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "DL_CZ_Dperiodo",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "SET_Data_File",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "SET_Data",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/Nielsen/ScantrackCerveja/DL_CZ_Nielsen_ScantrackCervejaDperiodo",
+					"baseParameters": {
+						"data": {
+							"value": "@variables('Data_File')",
+							"type": "Expression"
+						},
+						"diretorio": {
+							"value": "@pipeline().parameters.dir_scantrack_cerveja",
+							"type": "Expression"
+						},
+						"table_name": {
+							"value": "@pipeline().parameters.per_table_name",
+							"type": "Expression"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "CommandCenterDatabricksPricing",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "DL_HZ_Dmercado",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "SET_Data_File",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "SET_Data",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/Nielsen/ScantrackCerveja/DL_HZ_Nielsen_ScantrackCervejaDmercado",
+					"baseParameters": {
+						"data": {
+							"value": "@variables('Data_File')",
+							"type": "Expression"
+						},
+						"diretorio": {
+							"value": "@pipeline().parameters.dir_scantrack_cerveja",
+							"type": "Expression"
+						},
+						"table_name": {
+							"value": "@pipeline().parameters.mkt_table_name",
+							"type": "Expression"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "CommandCenterDatabricksPricing",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "DL_HZ_Dproduto",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "SET_Data_File",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "SET_Data",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/Nielsen/ScantrackCerveja/DL_HZ_Nielsen_ScantrackCervejaDproduto",
+					"baseParameters": {
+						"data": {
+							"value": "@variables('Data_File')",
+							"type": "Expression"
+						},
+						"diretorio": {
+							"value": "@pipeline().parameters.dir_scantrack_cerveja",
+							"type": "Expression"
+						},
+						"table_name": {
+							"value": "@pipeline().parameters.prod_table_name",
+							"type": "Expression"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "CommandCenterDatabricksPricing",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "DL_HZ_Fato",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "SET_Data_File",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "SET_Data",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/Nielsen/ScantrackCerveja/DL_HZ_Nielsen_ScantrackCervejaFato",
+					"baseParameters": {
+						"data": {
+							"value": "@variables('Data_File')",
+							"type": "Expression"
+						},
+						"diretorio": {
+							"value": "@pipeline().parameters.dir_scantrack_cerveja",
+							"type": "Expression"
+						},
+						"table_name": {
+							"value": "@pipeline().parameters.fact_table_name",
+							"type": "Expression"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "CommandCenterDatabricksPricing",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "HZ_CZ_Dmercado",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "DL_HZ_Dmercado",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/Nielsen/ScantrackCerveja/HZ_CZ_Nielsen_ScantrackCervejaDmercado",
+					"baseParameters": {
+						"data": {
+							"value": "@variables('Data')",
+							"type": "Expression"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "CommandCenterDatabricksPricing",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "HZ_CZ_Dproduto",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "DL_HZ_Dproduto",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/Nielsen/ScantrackCerveja/HZ_CZ_Nielsen_ScantrackCervejaDproduto",
+					"baseParameters": {
+						"data": {
+							"value": "@variables('Data')",
+							"type": "Expression"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "CommandCenterDatabricksPricing",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "HZ_CZ_Fato",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "DL_HZ_Fato",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "DL_CZ_Dperiodo",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "HZ_CZ_Dmercado",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "HZ_CZ_Dproduto",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/Nielsen/ScantrackCerveja/HZ_CZ_Nielsen_ScantrackCervejaFato",
+					"baseParameters": {
+						"data": {
+							"value": "@variables('Data')",
+							"type": "Expression"
+						},
+						"date_list": {
+							"value": "@string(activity('DL_CZ_Dperiodo').output.runOutput)",
+							"type": "Expression"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "CommandCenterDatabricks",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "CZ_CZ_ScanTrack_Presto",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "HZ_CZ_Fato",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/Nielsen/ScantrackCerveja/CZ_CZ_Nielsen_ScanTrackPresto"
+				},
+				"linkedServiceName": {
+					"referenceName": "CommandCenterDatabricksPricing",
+					"type": "LinkedServiceReference"
+				}
+			}
+		],
+		"parameters": {
+			"dir_scantrack_cerveja": {
+				"type": "string",
+				"defaultValue": "Scantrack_Cerveja"
+			},
+			"mkt_table_name": {
+				"type": "string",
+				"defaultValue": "SFF_MKT"
+			},
+			"per_table_name": {
+				"type": "string",
+				"defaultValue": "SFF_PER"
+			},
+			"prod_table_name": {
+				"type": "string",
+				"defaultValue": "SFF_PROD"
+			},
+			"fact_table_name": {
+				"type": "string",
+				"defaultValue": "SFF_fact_data"
+			}
+		},
+		"variables": {
+			"DataUTC": {
+				"type": "String"
+			},
+			"Data_File": {
+				"type": "String"
+			},
+			"Data": {
+				"type": "String"
+			}
+		},
+		"folder": {
+			"name": "Brazil/Nielsen"
+		},
+		"annotations": [],
+		"lastPublishTime": "2022-12-27T15:52:08Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

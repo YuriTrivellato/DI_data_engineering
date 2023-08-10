@@ -1,0 +1,93 @@
+{
+	"name": "0_Mesh_AutomationResult_Monitor_PPL",
+	"properties": {
+		"activities": [
+			{
+				"name": "QueueRequests_QueryMonitor_UpdateResolved",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "1_Mesh_AutomationResult_PPL",
+						"dependencyConditions": [
+							"Completed"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Operation/Brazil/DigitalInsights/Rtm/Segmentation/CZ_Customers_Segmentations_All_QueryMonitor",
+					"baseParameters": {
+						"cz_path": "Sales/DigitalInsights/Rtm/Segmentation/SegmentationChangeQueueRequests",
+						"typemetric": "di_rtm_segmentation_changequeuerequests_count_distinct_lines"
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "DigitalInsightsDatabricks",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "1_Mesh_AutomationResult_PPL",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "1_Mesh_AutomationResult_PPL",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "PipelineStatusMonitor",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "1_Mesh_AutomationResult_PPL",
+						"dependencyConditions": [
+							"Completed"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Operation/Monitor/PipelineStatusMonitorDatabricks",
+					"baseParameters": {
+						"runId": {
+							"value": "@pipeline().RunId",
+							"type": "Expression"
+						},
+						"factoryName": "adf-prod-iris-commandcenter",
+						"resourceGroup": "AMBEV-IRIS-RG-EUS-ATCS-PROD",
+						"checkChildrenOf": " "
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "DigitalInsightsDatabricks",
+					"type": "LinkedServiceReference"
+				}
+			}
+		],
+		"folder": {
+			"name": "Brazil/DigitalInsights/RTM/Segmentation/MeshAutomation"
+		},
+		"annotations": [],
+		"lastPublishTime": "2023-08-09T19:31:18Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

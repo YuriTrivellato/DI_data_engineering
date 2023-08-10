@@ -1,0 +1,68 @@
+{
+	"name": "1_HistoryTasksUnb_PPL",
+	"properties": {
+		"activities": [
+			{
+				"name": "ingestion_date",
+				"type": "SetVariable",
+				"dependsOn": [],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "last_day_of_the_month_unb",
+					"value": {
+						"value": "@convertTimeZone(utcNow(), 'UTC', 'E. South America Standard Time', 'yyyy-MM-dd')",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "CZ_CZ_HistoryTasksUnb",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "ingestion_date",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/DigitalInsights/TasksBeesForce/HistoryTasks/HistoryTasksUnb/CZ_CZ_HistoryTasksUnb",
+					"baseParameters": {
+						"ingestion_date": {
+							"value": "@variables('last_day_of_the_month_unb')",
+							"type": "Expression"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "DigitalInsightsDatabricks",
+					"type": "LinkedServiceReference"
+				}
+			}
+		],
+		"variables": {
+			"last_day_of_the_month_unb": {
+				"type": "String"
+			}
+		},
+		"folder": {
+			"name": "Brazil/DigitalInsights/BeesForce/HistoryTasks/HistoryTasksUnb"
+		},
+		"annotations": [],
+		"lastPublishTime": "2023-07-27T16:05:35Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

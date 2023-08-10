@@ -1,0 +1,35 @@
+{
+	"name": "A_CommandCenterDigitalInsightsBeesForceTasksJustificadas",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Stopped",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "0_BeesForce_TasksJustificadas_PPL",
+					"type": "PipelineReference"
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Week",
+				"interval": 1,
+				"startTime": "2022-12-28T22:25:00",
+				"timeZone": "E. South America Standard Time",
+				"schedule": {
+					"minutes": [
+						10
+					],
+					"hours": [
+						3
+					],
+					"weekDays": [
+						"Sunday"
+					]
+				}
+			}
+		}
+	}
+}

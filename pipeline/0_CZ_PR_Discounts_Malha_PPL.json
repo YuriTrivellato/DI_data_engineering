@@ -1,0 +1,813 @@
+{
+	"name": "0_CZ_PR_Discounts_Malha_PPL",
+	"properties": {
+		"activities": [
+			{
+				"name": "CZ_CZ_Manual_DimClienteRM",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "Aguarda ate 9 30",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.03:00:00",
+					"retry": 3,
+					"retryIntervalInSeconds": 120,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/SalesLabRM/Discounts/CZ_CZ_Manual_DimClienteRM"
+				},
+				"linkedServiceName": {
+					"referenceName": "CommandCenterDatabricksPricing",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "CZ_CZ_Bees_FatoBeesBank",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "CZ_CZ_Manual_DimClienteRM",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.07:00:00",
+					"retry": 3,
+					"retryIntervalInSeconds": 120,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/SalesLabRM/Discounts/CZ_CZ_Bees_FatoBeesBank"
+				},
+				"linkedServiceName": {
+					"referenceName": "CommandCenterDatabricksPricing",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "CZ_CZ_OffTrade_FatoDischarge",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "CZ_CZ_Manual_DimClienteRM",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.07:00:00",
+					"retry": 3,
+					"retryIntervalInSeconds": 120,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/SalesLabRM/Discounts/CZ_CZ_OffTrade_FatoDischarge"
+				},
+				"linkedServiceName": {
+					"referenceName": "CommandCenterDatabricksPricing",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "CZ_CZ_CuboSdg_FatoOffTrade",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "CZ_CZ_Manual_DimClienteRM",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.07:00:00",
+					"retry": 3,
+					"retryIntervalInSeconds": 120,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/SalesLabRM/Discounts/CZ_CZ_CuboSdg_FatoOffTrade"
+				},
+				"linkedServiceName": {
+					"referenceName": "CommandCenterDatabricksPricing",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "CZ_CZ_FornecFabrica_FatoSellinDireta",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "Aguarda ate 9 30",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.07:00:00",
+					"retry": 3,
+					"retryIntervalInSeconds": 120,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/SalesLabRM/Discounts/CZ_CZ_FornecFabrica_FatoSellinDireta",
+					"baseParameters": {
+						"FlagFull": "1"
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "CommandCenterDatabricksPricing",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "CZ_CZ_Promax_FatoVolumeTotal",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "CZ_CZ_FornecFabrica_FatoSellinDireta",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.07:00:00",
+					"retry": 3,
+					"retryIntervalInSeconds": 120,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/SalesLabRM/Discounts/CZ_CZ_Promax_FatoVolumeTotal",
+					"baseParameters": {
+						"FlagFull": {
+							"value": "@pipeline().parameters.FatoVolumeTotal_FlagFull",
+							"type": "Expression"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "CommandCenterDatabricksPricing",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "CZ_CZ_OffTrade_FatoDiscounts",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "CZ_CZ_Bees_FatoBeesBank",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "CZ_CZ_OffTrade_FatoDischarge",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "CZ_CZ_CuboSdg_FatoOffTrade",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.07:00:00",
+					"retry": 3,
+					"retryIntervalInSeconds": 120,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/SalesLabRM/Discounts/CZ_CZ_OffTrade_FatoDiscounts",
+					"baseParameters": {
+						"flag_processamento_full": {
+							"value": "@pipeline().parameters.FatoDiscounts_flag_processamento_full",
+							"type": "Expression"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "CommandCenterDatabricksPricing",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "Inicio da malha",
+				"type": "Wait",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"waitTimeInSeconds": 1
+				}
+			},
+			{
+				"name": "Atualiza DF DimClienteRM",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "CZ_CZ_Manual_DimClienteRM",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "Generics_PBI_Refresh",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"id_grupo": "70779b28-0cdc-4f2a-9236-23ebe341099c",
+						"id_objeto": "7058e932-5b2a-428c-ad96-d195fff83ce7",
+						"is_dataflow": true
+					}
+				}
+			},
+			{
+				"name": "Atualiza DF FatoVolumeTotal",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "CZ_CZ_Promax_FatoVolumeTotal",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "Generics_PBI_Refresh",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"id_grupo": "70779b28-0cdc-4f2a-9236-23ebe341099c",
+						"id_objeto": "bfb041e6-38fa-449a-9bde-5f62bfb4692a",
+						"is_dataflow": true
+					}
+				}
+			},
+			{
+				"name": "Atualiza DF FatoDiscounts",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "CZ_CZ_OffTrade_FatoDiscounts",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "Generics_PBI_Refresh",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"id_grupo": "70779b28-0cdc-4f2a-9236-23ebe341099c",
+						"id_objeto": "abf4a774-4bc7-43f1-9abb-d098ee43b60e",
+						"is_dataflow": true
+					}
+				}
+			},
+			{
+				"name": "Atualiza DF DimTendenciaOn",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "CZ_CZ_OnTrade_DimTendenciaOn",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "Generics_PBI_Refresh",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"id_grupo": "70779b28-0cdc-4f2a-9236-23ebe341099c",
+						"id_objeto": "ae888d50-4144-401c-a8b0-fc69b60d1c03",
+						"is_dataflow": true
+					}
+				}
+			},
+			{
+				"name": "CZ_CZ_Manual_DimCestaCerveja",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "Aguarda ate 9 30",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.03:00:00",
+					"retry": 3,
+					"retryIntervalInSeconds": 120,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/SalesLabRM/Discounts/CZ_CZ_Manual_DimCestaCerveja"
+				},
+				"linkedServiceName": {
+					"referenceName": "CommandCenterDatabricksPricing",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "Atualiza DF DimCestaCerveja",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "CZ_CZ_Manual_DimCestaCerveja",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "Generics_PBI_Refresh",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"id_grupo": "70779b28-0cdc-4f2a-9236-23ebe341099c",
+						"id_objeto": "483a3226-a828-4099-9f0d-5eae78071824",
+						"is_dataflow": true
+					}
+				}
+			},
+			{
+				"name": "Processamento do Dataset",
+				"type": "Wait",
+				"dependsOn": [
+					{
+						"activity": "Atualiza DF FatoDiscounts",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "Atualiza DF DimTendenciaOn",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "Atualiza DF DimClienteRM",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "Atualiza DF FatoVolumeTotal",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "Atualiza DF DimCestaCerveja",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "Atualiza DF DimTendenciaOff",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "Atualiza DF Discounts_Hist_Fato_DescontoTotal",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "Atualiza DF Discounts_Hist_Fato_VolumeTotal",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"waitTimeInSeconds": 1
+				}
+			},
+			{
+				"name": "Atualizacao DS Discounts",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "Processamento do Dataset",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "Generics_PBI_Refresh",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"id_grupo": {
+							"value": "70779b28-0cdc-4f2a-9236-23ebe341099c",
+							"type": "Expression"
+						},
+						"id_objeto": {
+							"value": "1ada1174-2849-4b4e-8da9-11cfa0f92c61",
+							"type": "Expression"
+						},
+						"is_dataflow": {
+							"value": "false",
+							"type": "Expression"
+						}
+					}
+				}
+			},
+			{
+				"name": "CZ_CZ_OffTrade_DimTendenciaOff",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "Aguarda ate 9 30",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.03:00:00",
+					"retry": 3,
+					"retryIntervalInSeconds": 120,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/SalesLabRM/Discounts/CZ_CZ_OffTrade_DimTendenciaOff",
+					"baseParameters": {
+						"flag_processamento_full": "0"
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "CommandCenterDatabricksPricing",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "CZ_CZ_OnTrade_DimTendenciaOn",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "Aguarda ate 9 30",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.03:00:00",
+					"retry": 3,
+					"retryIntervalInSeconds": 120,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/SalesLabRM/Discounts/CZ_CZ_OnTrade_DimTendenciaOn",
+					"baseParameters": {
+						"flag_processamento_full": "0"
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "CommandCenterDatabricksPricing",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "Atualiza DF DimTendenciaOff",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "CZ_CZ_OffTrade_DimTendenciaOff",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "Generics_PBI_Refresh",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"id_grupo": "70779b28-0cdc-4f2a-9236-23ebe341099c",
+						"id_objeto": "58846f5d-210b-429e-959e-46a29f927da2",
+						"is_dataflow": true
+					}
+				}
+			},
+			{
+				"name": "Atualiza DF Compartilhado Periodo",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "Aguarda ate 9 30",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "Generics_PBI_Refresh",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"id_grupo": "70779b28-0cdc-4f2a-9236-23ebe341099c",
+						"id_objeto": "1c11380b-c081-44dd-8256-11776adcb75f",
+						"is_dataflow": true
+					}
+				}
+			},
+			{
+				"name": "Atualiza DF Compartilhado RLS",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "Aguarda ate 9 30",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "Generics_PBI_Refresh",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"id_grupo": "70779b28-0cdc-4f2a-9236-23ebe341099c",
+						"id_objeto": "42766f7e-b4a4-4b43-a932-7e3d9a8c677f",
+						"is_dataflow": true
+					}
+				}
+			},
+			{
+				"name": "CZ_CZ_Bees_FatoCashBack",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "Inicio da malha",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.07:00:00",
+					"retry": 3,
+					"retryIntervalInSeconds": 120,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/SalesLabRM/Discounts/CZ_CZ_Bees_FatoCashBack"
+				},
+				"linkedServiceName": {
+					"referenceName": "CommandCenterDatabricks2",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "Aguarda ate 9 30",
+				"type": "Until",
+				"dependsOn": [
+					{
+						"activity": "CZ_CZ_Bees_FatoCashBack",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@greaterOrEquals(formatDateTime( addhours(utcnow(),-3), 'HH:mm'), '09:30')",
+						"type": "Expression"
+					},
+					"activities": [
+						{
+							"name": "Wait 5 min",
+							"type": "Wait",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"waitTimeInSeconds": 300
+							}
+						}
+					],
+					"timeout": "7.00:00:00"
+				}
+			},
+			{
+				"name": "CZ_CZ_OffTrade_FatoDiscountsConsolidado",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "CZ_CZ_CuboSdg_FatoOffTrade",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/SalesLabRM/Discounts/DiscountsHistorico/CZ_CZ_OffTrade_FatoDiscountsConsolidado",
+					"baseParameters": {
+						"flag_processamento_full_consolidado": "0",
+						"ano_processamento_discounts": "2023"
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "CommandCenterDatabricks",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "Atualiza DF Discounts_Hist_Fato_VolumeTotal",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "CZ_CZ_OffTrade_FatoDiscountsConsolidado",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "Generics_PBI_Refresh",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"id_grupo": "70779b28-0cdc-4f2a-9236-23ebe341099c",
+						"id_objeto": "3a4bd1a8-5502-4439-a660-9da73b27d730",
+						"is_dataflow": true
+					}
+				}
+			},
+			{
+				"name": "CZ_CZ_Promax_FatoVolumeTotalConsolidado",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "CZ_CZ_FornecFabrica_FatoSellinDireta",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/SalesLabRM/Discounts/DiscountsHistorico/CZ_CZ_Promax_FatoVolumeTotalConsolidado",
+					"baseParameters": {
+						"flag_processamento_full_volumeconsolidado": "0",
+						"ano_processamento_volume": "2023"
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "CommandCenterDatabricks",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "Atualiza DF Discounts_Hist_Fato_DescontoTotal",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "CZ_CZ_Promax_FatoVolumeTotalConsolidado",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "Generics_PBI_Refresh",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"id_grupo": "70779b28-0cdc-4f2a-9236-23ebe341099c",
+						"id_objeto": "1f0a960c-f0c6-4e7f-b4ac-ad9369189378",
+						"is_dataflow": true
+					}
+				}
+			}
+		],
+		"parameters": {
+			"FatoDiscounts_flag_processamento_full": {
+				"type": "string",
+				"defaultValue": "0"
+			},
+			"FatoVolumeTotal_FlagFull": {
+				"type": "string",
+				"defaultValue": "0"
+			},
+			"ano_processamento_discounts": {
+				"type": "string",
+				"defaultValue": "2023"
+			},
+			"flag_processamento_full_consolidado": {
+				"type": "string",
+				"defaultValue": "0"
+			},
+			"flag_processamento_full_volumeconsolidado": {
+				"type": "string",
+				"defaultValue": "0"
+			},
+			"ano_processamento_volume": {
+				"type": "string",
+				"defaultValue": "2023"
+			}
+		},
+		"folder": {
+			"name": "Brazil/SalesLabRevenue/Modelagem/Discounts"
+		},
+		"annotations": [],
+		"lastPublishTime": "2023-06-29T18:36:31Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

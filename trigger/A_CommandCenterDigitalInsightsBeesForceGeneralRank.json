@@ -1,0 +1,36 @@
+{
+	"name": "A_CommandCenterDigitalInsightsBeesForceGeneralRank",
+	"properties": {
+		"description": "Trigger mensal, no último dia do mês, para gerar a General Rank usada pelo produto de TasksBeesForce.",
+		"annotations": [],
+		"runtimeState": "Stopped",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "0_BeesForce_GeneralRank_Monitor_PPL",
+					"type": "PipelineReference"
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Month",
+				"interval": 1,
+				"startTime": "2023-05-26T10:56:00",
+				"timeZone": "E. South America Standard Time",
+				"schedule": {
+					"minutes": [
+						0
+					],
+					"hours": [
+						11
+					],
+					"monthDays": [
+						-1
+					]
+				}
+			}
+		}
+	}
+}

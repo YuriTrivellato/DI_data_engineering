@@ -1,0 +1,407 @@
+{
+	"name": "0_InteligenciaDeMercado_Nielsen_PPL",
+	"properties": {
+		"activities": [
+			{
+				"name": "SET_Data_UTC",
+				"description": "Set the dataUTC variable.",
+				"type": "SetVariable",
+				"dependsOn": [],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "DataUTC",
+					"value": {
+						"value": "@convertTimeZone(utcnow(), 'UTC', 'E. South America Standard Time')",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "SET_Data",
+				"description": "Set the data.",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "SET_Data_UTC",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "Data",
+					"value": {
+						"value": "@replace(substring(variables('DataUTC'),0,10), '-', '')",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "Folder_Metadata_Zip_Nielsen",
+				"description": "Criará parâmetro com o caminho da possível chegada do arquivo .zip no lake-im",
+				"type": "GetMetadata",
+				"dependsOn": [
+					{
+						"activity": "Blob_DL_Nielsen",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataset": {
+						"referenceName": "BlobCustomerExperienceFolder_CSV_DTS",
+						"type": "DatasetReference",
+						"parameters": {
+							"caminho": {
+								"value": "@concat('datalake-im/Nielsen/NielsenZip/', variables('Data'))",
+								"type": "Expression"
+							}
+						}
+					},
+					"fieldList": [
+						"exists",
+						"childItems"
+					]
+				}
+			},
+			{
+				"name": "If_Condition_Monitor_Zip",
+				"type": "IfCondition",
+				"dependsOn": [
+					{
+						"activity": "Folder_Metadata_Zip_Nielsen",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@equals(activity('Folder_Metadata_Zip_Nielsen').output.exists, true)",
+						"type": "Expression"
+					},
+					"ifFalseActivities": [
+						{
+							"name": "Sem_Dados_Para_Atualizar",
+							"type": "Wait",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"waitTimeInSeconds": 1
+							}
+						}
+					],
+					"ifTrueActivities": [
+						{
+							"name": "1_DL_DL_InteligenciaDeMercado_RetailCerveja_PPL",
+							"type": "ExecutePipeline",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "1_DL_DL_InteligenciaDeMercado_RetailCerveja_PPL",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true
+							}
+						},
+						{
+							"name": "1_DL_DL_InteligenciaDeMercado_RetailRefri_PPL",
+							"type": "ExecutePipeline",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "1_DL_DL_InteligenciaDeMercado_RetailRefri_PPL",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true
+							}
+						},
+						{
+							"name": "1_DL_DL_InteligenciaDeMercado_ScanTrackCerveja_PPL",
+							"type": "ExecutePipeline",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "1_DL_DL_InteligenciaDeMercado_ScanTrackCerveja_PPL",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true
+							}
+						},
+						{
+							"name": "1_DL_DL_InteligenciaDeMercado_ScantrackRTD_PPL",
+							"type": "ExecutePipeline",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "1_DL_DL_InteligenciaDeMercado_ScantrackRTD_PPL",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true
+							}
+						},
+						{
+							"name": "1_CZ_CZ_InteligenciaDeMercado_WeeklyReportBI_PPL",
+							"type": "ExecutePipeline",
+							"dependsOn": [
+								{
+									"activity": "1_DL_DL_InteligenciaDeMercado_RetailCerveja_PPL",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								},
+								{
+									"activity": "1_DL_DL_InteligenciaDeMercado_ScanTrackCerveja_PPL",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "1_CZ_CZ_InteligenciaDeMercado_WeeklyReportBI_PPL",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true
+							}
+						},
+						{
+							"name": "PipelineStatusMonitor_Nielsen",
+							"type": "DatabricksNotebook",
+							"dependsOn": [
+								{
+									"activity": "1_DL_DL_InteligenciaDeMercado_RetailRefri_PPL",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								},
+								{
+									"activity": "1_DL_DL_InteligenciaDeMercado_ScantrackRTD_PPL",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								},
+								{
+									"activity": "1_DL_DL_InteligenciaDeMercado_ScanTrackRefri_PPL",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								},
+								{
+									"activity": "1_DL_DL_InteligenciaDeMercado_HomeScan_PPL",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								},
+								{
+									"activity": "1_CZ_CZ_InteligenciaDeMercado_WeeklyShareCerveja_PPL",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"notebookPath": "/Operation/Monitor/PipelineStatusMonitorDatabricks",
+								"baseParameters": {
+									"runId": {
+										"value": "@pipeline().RunId",
+										"type": "Expression"
+									},
+									"factoryName": "adf-prod-iris-commandcenter",
+									"resourceGroup": "AMBEV-IRIS-RG-EUS-ATCS-PROD",
+									"checkChildrenOf": " "
+								}
+							},
+							"linkedServiceName": {
+								"referenceName": "CommandCenterDatabricksPricing",
+								"type": "LinkedServiceReference"
+							}
+						},
+						{
+							"name": "Send_Email_Class_Prod_Nielsen",
+							"type": "DatabricksNotebook",
+							"dependsOn": [
+								{
+									"activity": "1_CZ_CZ_InteligenciaDeMercado_WeeklyShareCerveja_PPL",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"notebookPath": "/Brazil/SalesLabIM/Email_SendGrid/Send_Email_ClassProdNielsen_Missing_Data"
+							},
+							"linkedServiceName": {
+								"referenceName": "CommandCenterDatabricksInteligenciaMercado",
+								"type": "LinkedServiceReference"
+							}
+						},
+						{
+							"name": "1_DL_DL_InteligenciaDeMercado_ScanTrackRefri_PPL",
+							"type": "ExecutePipeline",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "1_DL_DL_InteligenciaDeMercado_ScanTrackRefri_PPL",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true
+							}
+						},
+						{
+							"name": "Send_Email_Prod_Duplicado",
+							"type": "DatabricksNotebook",
+							"dependsOn": [
+								{
+									"activity": "1_CZ_CZ_InteligenciaDeMercado_WeeklyShareCerveja_PPL",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"notebookPath": "/Brazil/SalesLabIM/Email_SendGrid/Send_Email_ClassProd_IM_Duplicate_Data"
+							},
+							"linkedServiceName": {
+								"referenceName": "CommandCenterDatabricksInteligenciaMercado",
+								"type": "LinkedServiceReference"
+							}
+						},
+						{
+							"name": "1_DL_DL_InteligenciaDeMercado_HomeScan_PPL",
+							"type": "ExecutePipeline",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "1_DL_DL_InteligenciaDeMercado_HomeScan_PPL",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true
+							}
+						},
+						{
+							"name": "1_CZ_CZ_InteligenciaDeMercado_WeeklyShareCerveja_PPL",
+							"type": "ExecutePipeline",
+							"dependsOn": [
+								{
+									"activity": "1_CZ_CZ_InteligenciaDeMercado_WeeklyReportBI_PPL",
+									"dependencyConditions": [
+										"Succeeded",
+										"Failed"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "1_CZ_CZ_InteligenciaDeMercado_WeeklyShareCerveja_PPL",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true
+							}
+						}
+					]
+				}
+			},
+			{
+				"name": "Blob_DL_Nielsen",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "SET_Data",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/Nielsen/Blob_DL_Nielsen/Blob_DL_Nielsen",
+					"baseParameters": {
+						"originPath": "/mnt/nielsen",
+						"storagePath": "/dbfs/mnt/datalake-im/Nielsen/NielsenZip",
+						"date": {
+							"value": "@variables('Data')",
+							"type": "Expression"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "CommandCenterDatabricksPricing",
+					"type": "LinkedServiceReference"
+				}
+			}
+		],
+		"variables": {
+			"Data": {
+				"type": "String"
+			},
+			"DataUTC": {
+				"type": "String"
+			}
+		},
+		"folder": {
+			"name": "Brazil/Nielsen"
+		},
+		"annotations": [],
+		"lastPublishTime": "2023-07-11T16:35:15Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

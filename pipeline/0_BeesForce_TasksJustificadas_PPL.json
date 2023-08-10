@@ -1,0 +1,33 @@
+{
+	"name": "0_BeesForce_TasksJustificadas_PPL",
+	"properties": {
+		"activities": [
+			{
+				"name": "CZ_CZ_TasksJustificadas",
+				"type": "DatabricksNotebook",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/DigitalInsights/TasksBeesForce/TasksJustificadas/CZ_CZ_BeesForce_TasksJustificadas"
+				},
+				"linkedServiceName": {
+					"referenceName": "DigitalInsightsDatabricks",
+					"type": "LinkedServiceReference"
+				}
+			}
+		],
+		"folder": {
+			"name": "Brazil/DigitalInsights/BeesForce/TasksJustificadas"
+		},
+		"annotations": [],
+		"lastPublishTime": "2023-01-03T16:11:03Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

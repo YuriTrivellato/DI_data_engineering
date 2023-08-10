@@ -1,0 +1,41 @@
+{
+	"name": "1_CZ_CZ_DI_SkuP_ReachActivationQuantities_PPL",
+	"properties": {
+		"activities": [
+			{
+				"name": "Set DNS Name",
+				"type": "SetVariable",
+				"dependsOn": [],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "v_DNSName",
+					"value": "https://kv-prod-iris.vault.azure.net/"
+				}
+			}
+		],
+		"variables": {
+			"v_DNSName": {
+				"type": "String"
+			},
+			"v_Secret": {
+				"type": "String"
+			},
+			"v_Adb_EndPoint": {
+				"type": "String"
+			},
+			"v_Adb_JobId": {
+				"type": "String"
+			}
+		},
+		"folder": {
+			"name": "Brazil/DigitalInsights/SkuPrioritization/Algorithms/reach_activation_quantities"
+		},
+		"annotations": [],
+		"lastPublishTime": "2023-07-17T15:59:40Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

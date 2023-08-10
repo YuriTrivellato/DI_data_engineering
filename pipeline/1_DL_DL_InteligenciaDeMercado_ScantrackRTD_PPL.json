@@ -1,0 +1,229 @@
+{
+	"name": "1_DL_DL_InteligenciaDeMercado_ScantrackRTD_PPL",
+	"properties": {
+		"activities": [
+			{
+				"name": "Unzip_DL_Scantrack_RTD",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "SET_Data_File",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "1:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/Nielsen/Unzip/DL_DL_Unzip_Nielsen",
+					"baseParameters": {
+						"data": {
+							"value": "@variables('Data_File')",
+							"type": "Expression"
+						},
+						"diretorio": {
+							"value": "@pipeline().parameters.dir_scantrack_rtd",
+							"type": "Expression"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "CommandCenterDatabricksPricing",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "Folder_Metadata_Scantrack_RTD",
+				"type": "GetMetadata",
+				"dependsOn": [
+					{
+						"activity": "Unzip_DL_Scantrack_RTD",
+						"dependencyConditions": [
+							"Succeeded",
+							"Failed"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataset": {
+						"referenceName": "BlobCustomerExperienceFolder_CSV_DTS",
+						"type": "DatasetReference",
+						"parameters": {
+							"caminho": {
+								"value": "@concat('datalake-im/Nielsen/Scantrack_RTD/', variables('Data_File'))",
+								"type": "Expression"
+							}
+						}
+					},
+					"fieldList": [
+						"exists",
+						"childItems"
+					]
+				}
+			},
+			{
+				"name": "If_Condition_Scantrack_RTD",
+				"description": "Verificar se criou a pasta de scantrack para data vigente unzipada",
+				"type": "IfCondition",
+				"dependsOn": [
+					{
+						"activity": "Folder_Metadata_Scantrack_RTD",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@equals(activity('Folder_Metadata_Scantrack_RTD').output.exists, true)",
+						"type": "Expression"
+					},
+					"ifFalseActivities": [
+						{
+							"name": "Sem_Dados_Scantrack_RTD",
+							"type": "Wait",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"waitTimeInSeconds": 1
+							}
+						}
+					],
+					"ifTrueActivities": [
+						{
+							"name": "2_DL_CZ_InteligenciaDeMercado_ScantrackRTD_PPL",
+							"type": "ExecutePipeline",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "2_DL_CZ_InteligenciaDeMercado_ScantrackRTD_PPL",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true
+							}
+						},
+						{
+							"name": "1_CZ_CZ_Match_PPL",
+							"type": "ExecutePipeline",
+							"dependsOn": [
+								{
+									"activity": "2_DL_CZ_InteligenciaDeMercado_ScantrackRTD_PPL",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "1_CZ_CZ_Match_PPL",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true
+							}
+						}
+					]
+				}
+			},
+			{
+				"name": "SET_Data_UTC",
+				"description": "Set the dataUTC variable.",
+				"type": "SetVariable",
+				"dependsOn": [],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "DataUTC",
+					"value": {
+						"value": "@convertTimeZone(utcnow(), 'UTC', 'E. South America Standard Time')",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "SET_Data_File",
+				"description": "Modificar esta data, para a data de reprocessamento necessária",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "SET_Data_UTC",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "Data_File",
+					"value": {
+						"value": "@replace(substring(variables('DataUTC'),0,10), '-', '')",
+						"type": "Expression"
+					}
+				}
+			}
+		],
+		"parameters": {
+			"dir_scantrack_rtd": {
+				"type": "string",
+				"defaultValue": "Scantrack_RTD"
+			},
+			"mkt_table_name": {
+				"type": "string",
+				"defaultValue": "SFF_MKT"
+			},
+			"per_table_name": {
+				"type": "string",
+				"defaultValue": "SFF_PER"
+			},
+			"prod_table_name": {
+				"type": "string",
+				"defaultValue": "SFF_PROD"
+			},
+			"fact_table_name": {
+				"type": "string",
+				"defaultValue": "SFF_fact_data"
+			}
+		},
+		"variables": {
+			"DataUTC": {
+				"type": "String"
+			},
+			"Data_File": {
+				"type": "String"
+			},
+			"Data": {
+				"type": "String"
+			}
+		},
+		"folder": {
+			"name": "Brazil/Nielsen"
+		},
+		"annotations": [],
+		"lastPublishTime": "2022-12-20T16:04:05Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

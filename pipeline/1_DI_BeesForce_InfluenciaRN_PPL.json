@@ -1,0 +1,33 @@
+{
+	"name": "1_DI_BeesForce_InfluenciaRN_PPL",
+	"properties": {
+		"activities": [
+			{
+				"name": "CZ_CZ_InfluenciaRN",
+				"type": "DatabricksNotebook",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.5:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/DigitalInsights/TasksBeesForce/InfluenciaRn/CZ_CZ_InfluenciaRn"
+				},
+				"linkedServiceName": {
+					"referenceName": "DigitalInsightsDatabricks",
+					"type": "LinkedServiceReference"
+				}
+			}
+		],
+		"folder": {
+			"name": "Brazil/DigitalInsights/BeesForce/InfluenciaRN"
+		},
+		"annotations": [],
+		"lastPublishTime": "2023-07-04T16:58:57Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

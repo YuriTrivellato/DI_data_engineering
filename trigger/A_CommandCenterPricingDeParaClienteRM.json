@@ -1,0 +1,24 @@
+{
+	"name": "A_CommandCenterPricingDeParaClienteRM",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Stopped",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "0_DeParaClienteRM_PPL",
+					"type": "PipelineReference"
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Hour",
+				"interval": 3,
+				"startTime": "2021-12-27T18:43:00Z",
+				"timeZone": "UTC"
+			}
+		}
+	}
+}

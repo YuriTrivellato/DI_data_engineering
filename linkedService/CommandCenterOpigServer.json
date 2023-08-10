@@ -1,0 +1,22 @@
+{
+	"name": "CommandCenterOpigServer",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"annotations": [],
+		"type": "SqlServer",
+		"typeProperties": {
+			"connectionString": {
+				"type": "AzureKeyVaultSecret",
+				"store": {
+					"referenceName": "KeyVault",
+					"type": "LinkedServiceReference"
+				},
+				"secretName": "CommandCenterOPIGConnectionString"
+			}
+		},
+		"connectVia": {
+			"referenceName": "IntegrationRTPlatform",
+			"type": "IntegrationRuntimeReference"
+		}
+	}
+}

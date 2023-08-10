@@ -1,0 +1,33 @@
+{
+	"name": "0_ColetaTTC_PPL",
+	"properties": {
+		"activities": [
+			{
+				"name": "CZ_to_CZ",
+				"type": "DatabricksNotebook",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.00:40:00",
+					"retry": 1,
+					"retryIntervalInSeconds": 300,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/DigitalInsights/RevenueManagement/ColetaTTC/CZ_CZ_Coleta_TTC"
+				},
+				"linkedServiceName": {
+					"referenceName": "DigitalInsightsDatabricksTribo1",
+					"type": "LinkedServiceReference"
+				}
+			}
+		],
+		"folder": {
+			"name": "Brazil/DigitalInsights/RevenueManagement/ColetaTTC"
+		},
+		"annotations": [],
+		"lastPublishTime": "2023-08-01T18:56:31Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

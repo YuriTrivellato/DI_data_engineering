@@ -1,0 +1,97 @@
+{
+	"name": "0_GPRO_RelatorioRessarcimento_PPL",
+	"properties": {
+		"activities": [
+			{
+				"name": "0_GPRO_ValidacaoCCTTV_PPL",
+				"description": "Esse dataset é parte da composição do relatório de ressarcimento de revendas. Contêm informações dos usuários e das ações de inclusão/alteração no sistema.",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "0_GPRO_ExcecaoTipoProduto",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "0_GPRO_ValidacaoCCTTV_PPL",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "0_GPRO_ValidadosResumoCCTTV_PPL",
+				"description": "Esse dataset é parte da composição do relatório de ressarcimento de revendas. Contêm informações dos valores por tipo de produto de cada cliente.",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "0_GPRO_ValidacaoCCTTV_PPL",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "0_GPRO_ValidadosResumoCCTTV_PPL",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "1_GPRO_CZ_CZ_RelatorioRessarcimento",
+				"description": "Relatório de ressarcimento de conta corrente da rede de revendas.",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "0_GPRO_ValidadosResumoCCTTV_PPL",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/GPRO/CCTTV/RelatorioRessarcimentoCCTTV/CZ_CZ_CCTTV_RelatorioRessarcimento"
+				},
+				"linkedServiceName": {
+					"referenceName": "CommandCenterDatabricksPricing",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "0_GPRO_ExcecaoTipoProduto",
+				"description": "Listagem de produtos que não entram no cálculo de ressarcimento da revenda. Ex(Leite, café, etc...) Essas tabelas auxiliam a identificar esses produtos que devem ser tratados como exceção. É atualizada apenas quando entra um tipo de produto novo.",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "0_GPRO_ExcecaoTipoProduto",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			}
+		],
+		"folder": {
+			"name": "Brazil/GPRO/CCTTV"
+		},
+		"annotations": [],
+		"lastPublishTime": "2022-07-19T18:58:39Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

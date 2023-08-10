@@ -1,0 +1,194 @@
+{
+	"name": "0_PCA_FornecimentoFabricaConsolidado_PPL",
+	"properties": {
+		"activities": [
+			{
+				"name": "CZ_CZ_FornecimentoFabricaDireta",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "Valida Fornec",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/PCA/FornecimentoFabricaDireta/CZ_CZ_PCA_FornecimentoFabricaDireta"
+				},
+				"linkedServiceName": {
+					"referenceName": "CommandCenterDatabricksPricing",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "CZ_CZ_FornecimentoFabricaRota",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "Valida Fornec",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/PCA/FornecimentoFabricaRota/CZ_CZ_PCA_FornecimentoFabricaRota"
+				},
+				"linkedServiceName": {
+					"referenceName": "CommandCenterDatabricksPricing",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "CZ_CZ_FornecimentoFabricaRevenda",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "Valida Fornec",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/PCA/FornecimentoFabricaRevenda/CZ_CZ_PCA_FornecimentoFabricaRevenda"
+				},
+				"linkedServiceName": {
+					"referenceName": "CommandCenterDatabricksPricing",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "CZ_CZ_FornecimentoFabricaConsolidado",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "CZ_CZ_FornecimentoFabricaDireta",
+						"dependencyConditions": [
+							"Succeeded",
+							"Failed"
+						]
+					},
+					{
+						"activity": "CZ_CZ_FornecimentoFabricaRota",
+						"dependencyConditions": [
+							"Succeeded",
+							"Failed"
+						]
+					},
+					{
+						"activity": "CZ_CZ_FornecimentoFabricaRevenda",
+						"dependencyConditions": [
+							"Succeeded",
+							"Failed"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/PCA/FornecimentoFabricaConsolidado/CZ_CZ_PCA_FornecimentoFabricaConsolidado"
+				},
+				"linkedServiceName": {
+					"referenceName": "CommandCenterDatabricksPricing",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "Valida Fornec",
+				"type": "Until",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@Equals(activity('Get Fornec').output.exists , true)",
+						"type": "Expression"
+					},
+					"activities": [
+						{
+							"name": "Wait 2 Minutos Fornec",
+							"type": "Wait",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"waitTimeInSeconds": 120
+							}
+						},
+						{
+							"name": "Get Fornec",
+							"type": "GetMetadata",
+							"dependsOn": [
+								{
+									"activity": "Wait 2 Minutos Fornec",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"dataset": {
+									"referenceName": "Source_DataLake_Fornec",
+									"type": "DatasetReference"
+								},
+								"fieldList": [
+									"exists"
+								],
+								"storeSettings": {
+									"type": "AzureBlobFSReadSettings",
+									"recursive": true,
+									"enablePartitionDiscovery": false
+								}
+							}
+						}
+					],
+					"timeout": "7.00:00:00"
+				}
+			}
+		],
+		"folder": {
+			"name": "Brazil/PCA/FornecimentoFabricaConsolidado"
+		},
+		"annotations": [],
+		"lastPublishTime": "2022-07-19T18:58:33Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

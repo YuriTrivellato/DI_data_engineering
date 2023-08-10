@@ -1,0 +1,19 @@
+{
+	"name": "Sink_Global_DigitalInsights_CoraPromocoes_DTS",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "CommandCenterAzureBlobStorageGlobalStorageRecommendationsBees",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Binary",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"folderPath": "ambev/cora",
+				"fileSystem": "landing"
+			}
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

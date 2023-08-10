@@ -1,0 +1,162 @@
+{
+	"name": "0_GPRO_ValidadosResumoCCTTV_PPL",
+	"properties": {
+		"activities": [
+			{
+				"name": "PZ_HZ",
+				"description": "É salvo o histórico das alterações dos registros dos valores de tipos de produtos por código de cliente.",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "copy_ValidadosResumoCCTTV",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/GPRO/CCTTV/ValidadosResumoCCTTV/PZ_HZ_GPRO_ValidadosResumoCCTTV",
+					"baseParameters": {
+						"data": {
+							"value": "@variables('data')",
+							"type": "Expression"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "CommandCenterDatabricksPricing",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "HZ_CZ",
+				"description": "É salvo na CZ os valores de tipos de produtos por código de cliente e data de referência.",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "PZ_HZ",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/GPRO/CCTTV/ValidadosResumoCCTTV/HZ_CZ_GPRO_ValidadosResumoCCTTV"
+				},
+				"linkedServiceName": {
+					"referenceName": "CommandCenterDatabricksPricing",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "Set Data",
+				"type": "SetVariable",
+				"dependsOn": [],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "data",
+					"value": {
+						"value": "@formatDateTime(utcnow(), 'yyyyMMdd')",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "copy_ValidadosResumoCCTTV",
+				"description": "Faz uma cópia (\"tira uma foto\") da tabela, e salva em uma pasta particionada por dia na PZ.",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "Set Data",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 3,
+					"retryIntervalInSeconds": 120,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "SqlServerSource",
+						"sqlReaderQuery": "select * from CCTTV_VALIDADOS_RESUMO",
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"sink": {
+						"type": "AvroSink",
+						"storeSettings": {
+							"type": "AzureBlobFSWriteSettings"
+						},
+						"formatSettings": {
+							"type": "AvroWriteSettings"
+						}
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "Source_CommandCenterOpigServer_DTS",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "Sink_GPRO_Ccttv_DTS",
+						"type": "DatasetReference",
+						"parameters": {
+							"path_pz": {
+								"value": "@concat('Brazil/Gpro/ValidadosResumoCcttv/', formatDateTime(utcnow(), 'yyyyMMdd'), '/', formatDateTime(utcnow(), 'HHmmss'))",
+								"type": "Expression"
+							}
+						}
+					}
+				]
+			}
+		],
+		"variables": {
+			"data": {
+				"type": "String"
+			}
+		},
+		"folder": {
+			"name": "Brazil/GPRO/CCTTV"
+		},
+		"annotations": [],
+		"lastPublishTime": "2022-08-08T15:38:36Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

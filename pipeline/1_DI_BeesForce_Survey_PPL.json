@@ -1,0 +1,77 @@
+{
+	"name": "1_DI_BeesForce_Survey_PPL",
+	"properties": {
+		"activities": [
+			{
+				"name": "CZ_CZ_SurveyAnswers",
+				"type": "DatabricksNotebook",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "2:00:00",
+					"retry": 2,
+					"retryIntervalInSeconds": 60,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/DigitalInsights/TasksBeesForce/Survey/CZ_CZ_SurveyAnswers",
+					"baseParameters": {
+						"ingestion_date": {
+							"value": "@formatDateTime(pipeline().parameters.ingestion_date, 'yyy-MM-dd')",
+							"type": "Expression"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "DigitalInsightsDatabricks",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "CZ_CZ_SurveyColetaTTC",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "CZ_CZ_SurveyAnswers",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "2:00:00",
+					"retry": 2,
+					"retryIntervalInSeconds": 60,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/DigitalInsights/TasksBeesForce/Survey/CZ_CZ_Survey_ColetaTTC",
+					"baseParameters": {
+						"ingestion_date": {
+							"value": "@formatDateTime(pipeline().parameters.ingestion_date, 'yyy-MM-dd')",
+							"type": "Expression"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "DigitalInsightsDatabricks",
+					"type": "LinkedServiceReference"
+				}
+			}
+		],
+		"parameters": {
+			"ingestion_date": {
+				"type": "string"
+			}
+		},
+		"folder": {
+			"name": "Brazil/DigitalInsights/BeesForce/Survey"
+		},
+		"annotations": [],
+		"lastPublishTime": "2023-06-26T16:14:31Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

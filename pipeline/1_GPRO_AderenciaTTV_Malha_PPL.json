@@ -1,0 +1,48 @@
+{
+	"name": "1_GPRO_AderenciaTTV_Malha_PPL",
+	"properties": {
+		"description": "Pipeline de monitoramento.",
+		"activities": [
+			{
+				"name": "0_GPRO_AderenciaTTV_Monitor_PPL",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "0_GPRO_AderenciaTTV_Monitor_PPL",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "AderenciaTTVConsolidado_Monitor_PPL",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "0_GPRO_AderenciaTTV_Monitor_PPL",
+						"dependencyConditions": [
+							"Succeeded",
+							"Failed"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "AderenciaTTVConsolidado_Monitor_PPL",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			}
+		],
+		"folder": {
+			"name": "Brazil/GPRO/Aderencia_TTV"
+		},
+		"annotations": [],
+		"lastPublishTime": "2023-08-07T16:52:11Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

@@ -1,0 +1,123 @@
+{
+	"name": "0_CuboSDG_ResultadosOficiaisGerais_Monitor_PPL",
+	"properties": {
+		"description": "Main Pipeline",
+		"activities": [
+			{
+				"name": "ResultadosOficiaisGerais_PPL",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "0_CuboSDG_ResultadosOficiaisGerais_PPL",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "PipelineStatusMonitor",
+				"description": "Notebook de monitoramento de métricas",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "ResultadosOficiaisGerais_PPL",
+						"dependencyConditions": [
+							"Succeeded",
+							"Failed"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Operation/Monitor/PipelineStatusMonitorDatabricks",
+					"baseParameters": {
+						"runId": {
+							"value": "@pipeline().RunId",
+							"type": "Expression"
+						},
+						"factoryName": {
+							"value": "adf-prod-iris-commandcenter",
+							"type": "Expression"
+						},
+						"resourceGroup": {
+							"value": "AMBEV-IRIS-RG-EUS-ATCS-PROD",
+							"type": "Expression"
+						},
+						"checkChildrenOf": "ResultadosOficiaisAll_PPL"
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "CommandCenterDatabricksGov",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "MonitorQuery",
+				"description": "Notebook de monitoramento de queries.",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "ResultadosOficiaisGerais_PPL",
+						"dependencyConditions": [
+							"Failed",
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Operation/Brazil/CuboSDG/ResultadosOficiaisGerais/ResultadosOficiaisGeraisQueryMonitor",
+					"baseParameters": {
+						"runId": {
+							"value": "@pipeline().RunId",
+							"type": "Expression"
+						},
+						"factoryName": {
+							"value": "adf-prod-iris-commandcenter",
+							"type": "Expression"
+						},
+						"resourceGroup": {
+							"value": "AMBEV-IRIS-RG-EUS-ATCS-PROD",
+							"type": "Expression"
+						},
+						"checkChildrenOf": {
+							"value": "ResultadosOficiaisGerais_PPL",
+							"type": "Expression"
+						},
+						"pathRanges": "/mnt/consumezone/Brazil/RevenueManagement/Arquiteturadeprecos/MonitoramentoRangeQualidade/",
+						"notebookList": "DL_to_PZ, PZ_to_HZ, HZ_to_CZ",
+						"tableName": "compartilhado_resultados_oficiais_cubo_sdg_geral",
+						"biName": "LAB",
+						"malhaName": "Trigger Própria"
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "CommandCenterDatabricksGov",
+					"type": "LinkedServiceReference"
+				}
+			}
+		],
+		"folder": {
+			"name": "Brazil/CuboSDG/ResultadosOficiaisGerais"
+		},
+		"annotations": [],
+		"lastPublishTime": "2022-09-19T19:51:21Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

@@ -1,0 +1,33 @@
+{
+	"name": "A_CommandCenterDigitalInsightsFlexibleDeliveryLoatDeliveryWindow",
+	"properties": {
+		"description": "Trigger para execução do pipeline que consulta a API do Loat e salva os dados das Janelas de Entrega da Squad Flexible Delivery",
+		"annotations": [],
+		"runtimeState": "Stopped",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "0_DI_FlexibleDelivery_LoatDeliveryWindows_PPL",
+					"type": "PipelineReference"
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Day",
+				"interval": 1,
+				"startTime": "2023-04-13T18:31:00",
+				"timeZone": "E. South America Standard Time",
+				"schedule": {
+					"minutes": [
+						0
+					],
+					"hours": [
+						5
+					]
+				}
+			}
+		}
+	}
+}

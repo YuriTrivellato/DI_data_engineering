@@ -1,0 +1,26 @@
+{
+	"name": "Source_MetaData_Donus_PagamentoFintech_DTS",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "CommandCenterAzureBlobStorageGlobalStorageIguazu",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "Brazil/Donus/PagamentoFintech"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"container": "iguazu-dataexchange-ambev-revenue-management/revenue_management"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": []
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

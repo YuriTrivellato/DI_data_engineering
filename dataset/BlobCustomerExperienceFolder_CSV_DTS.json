@@ -1,0 +1,35 @@
+{
+	"name": "BlobCustomerExperienceFolder_CSV_DTS",
+	"properties": {
+		"description": "Dataset genérico utilizado para apagar uma pasta.",
+		"linkedServiceName": {
+			"referenceName": "CommandCenterAzureDataLakeStorageG2CustomerExperiencePlatform",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"caminho": {
+				"type": "string"
+			}
+		},
+		"folder": {
+			"name": "Brazil/Promax/Calendario"
+		},
+		"annotations": [],
+		"type": "AzureBlobFSFile",
+		"typeProperties": {
+			"format": {
+				"type": "TextFormat",
+				"columnDelimiter": ",",
+				"rowDelimiter": "",
+				"treatEmptyAsNull": true,
+				"skipLineCount": 0,
+				"firstRowAsHeader": false
+			},
+			"folderPath": {
+				"value": "@dataset().caminho",
+				"type": "Expression"
+			}
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

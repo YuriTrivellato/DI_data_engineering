@@ -1,0 +1,227 @@
+{
+	"name": "1_Rewards_ChallengesRelay_PPL",
+	"properties": {
+		"activities": [
+			{
+				"name": "00_CZ_CZ_Rewards_Challenges_Filter_Eligible",
+				"type": "DatabricksNotebook",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/DigitalInsights/Rewards/Challenges_Relay/00_CZ_CZ_Rewards_Challenges_Filter_Eligible"
+				},
+				"linkedServiceName": {
+					"referenceName": "DigitalInsightsDatabricks",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "01_CZ_CZ_Rewards_Challenges_Create",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "00_CZ_CZ_Rewards_Challenges_Filter_Eligible",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/DigitalInsights/Rewards/Challenges_Relay/01_CZ_CZ_Rewards_Challenges_Create"
+				},
+				"linkedServiceName": {
+					"referenceName": "DigitalInsightsDatabricks",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "02_CZ_CZ_Rewards_Challenges_Check_Transparency",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "Wait_Challenges_Transparency",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/DigitalInsights/Rewards/Challenges_Relay/02_CZ_CZ_Rewards_Challenges_Check_Transparency"
+				},
+				"linkedServiceName": {
+					"referenceName": "DigitalInsightsDatabricks",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "03_CZ_CZ_Rewards_Accounts_Filter",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "02_CZ_CZ_Rewards_Challenges_Check_Transparency",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/DigitalInsights/Rewards/Challenges_Relay/03_CZ_CZ_Rewards_Accounts_Filter"
+				},
+				"linkedServiceName": {
+					"referenceName": "DigitalInsightsDatabricks",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "06_CZ_CZ_Rewards_Accounts_Registered",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "05_CZ_CZ_Rewards_Accounts_Transparency",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/DigitalInsights/Rewards/Challenges_Relay/06_CZ_CZ_Rewards_Accounts_Registered"
+				},
+				"linkedServiceName": {
+					"referenceName": "DigitalInsightsDatabricks",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "05_CZ_CZ_Rewards_Accounts_Transparency",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "Wait_Accounts_Transparency",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/DigitalInsights/Rewards/Challenges_Relay/05_CZ_CZ_Rewards_Accounts_Transparency"
+				},
+				"linkedServiceName": {
+					"referenceName": "DigitalInsightsDatabricks",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "04_CZ_CZ_Rewards_Accounts_Create",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "03_CZ_CZ_Rewards_Accounts_Filter",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/DigitalInsights/Rewards/Challenges_Relay/04_CZ_CZ_Rewards_Accounts_Create"
+				},
+				"linkedServiceName": {
+					"referenceName": "DigitalInsightsDatabricks",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "Wait_Challenges_Transparency",
+				"type": "Wait",
+				"dependsOn": [
+					{
+						"activity": "01_CZ_CZ_Rewards_Challenges_Create",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"waitTimeInSeconds": 600
+				}
+			},
+			{
+				"name": "Wait_Accounts_Transparency",
+				"type": "Wait",
+				"dependsOn": [
+					{
+						"activity": "04_CZ_CZ_Rewards_Accounts_Create",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"waitTimeInSeconds": 600
+				}
+			}
+		],
+		"folder": {
+			"name": "Brazil/DigitalInsights/Rewards/ChallengesRelay"
+		},
+		"annotations": [],
+		"lastPublishTime": "2023-01-19T20:58:18Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

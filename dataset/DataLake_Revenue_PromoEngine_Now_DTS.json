@@ -1,0 +1,57 @@
+{
+	"name": "DataLake_Revenue_PromoEngine_Now_DTS",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "DataLakePlatform",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Parquet",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"folderPath": {
+					"value": "@concat('Brazil/Sales/DigitalInsights/RevenueManagement/PromoEngine/PromoOrderOutput/geo=BR/use_case=DEAL_SORT/recommendation_date=',substring(addHours(utcNow(),-3),0,10),'/recommendation_ts=',string(div(sub(ticks(addHours(utcnow(),-3)),ticks('1970-01-01T00:00:00.0000000Z')),10000000)))",
+					"type": "Expression"
+				},
+				"fileSystem": "consumezone"
+			},
+			"compressionCodec": "snappy"
+		},
+		"schema": [
+			{
+				"name": "uf",
+				"type": "UTF8"
+			},
+			{
+				"name": "cluster_id",
+				"type": "INT32"
+			},
+			{
+				"name": "cluster_description",
+				"type": "UTF8"
+			},
+			{
+				"name": "cod_unb",
+				"type": "INT32"
+			},
+			{
+				"name": "cod_pdv",
+				"type": "INT32"
+			},
+			{
+				"name": "cod_pricing_rule",
+				"type": "INT64"
+			},
+			{
+				"name": "data_registro",
+				"type": "DATE"
+			},
+			{
+				"name": "data_exclusao",
+				"type": "DATE"
+			}
+		]
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

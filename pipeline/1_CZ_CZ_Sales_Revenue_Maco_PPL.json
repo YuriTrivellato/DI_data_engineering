@@ -1,0 +1,123 @@
+{
+	"name": "1_CZ_CZ_Sales_Revenue_Maco_PPL",
+	"properties": {
+		"activities": [
+			{
+				"name": "Atualiza Maco PBI",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "Executa Maco SDG",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "Generics_PBI_Refresh",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"id_grupo": "70779b28-0cdc-4f2a-9236-23ebe341099c",
+						"id_objeto": "f123f4b9-b5ea-4c04-8389-176786e11fe7",
+						"is_dataflow": false
+					}
+				}
+			},
+			{
+				"name": "Executa Maco SDG",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "Executa Maco Produto",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "Executa Maco Cliente",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "Generics_CZ_CZ_DW",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"path_notebook": "/Brazil/Modelagem_Precos/Maco/CZ_CZ_SDG",
+						"flag_processamento_full": "1",
+						"dias_processamento": "1",
+						"path_exportacao": "/mnt/consumezone/Brazil/Sales/RevenueManagement/SelfService/Maco/Sdg/",
+						"tabela_sqldw": "sales_rm_selfservice.maco_sdg",
+						"flag_atualizacao_pbi": true,
+						"id_grupo": "70779b28-0cdc-4f2a-9236-23ebe341099c",
+						"id_objeto": "77911e61-c8c9-4dc9-86f8-a6b85a6d2ae4",
+						"is_dataflow": true
+					}
+				}
+			},
+			{
+				"name": "Executa Maco Produto",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "Generics_CZ_CZ_DW",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"path_notebook": "/Brazil/Modelagem_Precos/Maco/CZ_CZ_SDG_Produto",
+						"flag_processamento_full": "1",
+						"dias_processamento": "1",
+						"path_exportacao": "/mnt/consumezone/Brazil/Sales/RevenueManagement/SelfService/Maco/Produto/",
+						"tabela_sqldw": "sales_rm_selfservice.maco_produto",
+						"flag_atualizacao_pbi": true,
+						"id_grupo": "70779b28-0cdc-4f2a-9236-23ebe341099c",
+						"id_objeto": "40621138-3c07-4b0f-b09d-eba6f91fcdf9",
+						"is_dataflow": true
+					}
+				}
+			},
+			{
+				"name": "Executa Maco Cliente",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "Generics_CZ_CZ_DW",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"path_notebook": "/Brazil/Modelagem_Precos/Maco/CZ_CZ_SDG_Cliente",
+						"flag_processamento_full": "1",
+						"dias_processamento": "1",
+						"path_exportacao": "/mnt/consumezone/Brazil/Sales/RevenueManagement/SelfService/Maco/Cliente/",
+						"tabela_sqldw": "sales_rm_selfservice.maco_cliente",
+						"flag_atualizacao_pbi": true,
+						"id_grupo": "70779b28-0cdc-4f2a-9236-23ebe341099c",
+						"id_objeto": "301e21f6-2c04-4906-81e4-f20d2c3ed599",
+						"is_dataflow": true
+					}
+				}
+			}
+		],
+		"folder": {
+			"name": "Brazil/SalesLabRevenue/Modelagem/Maco"
+		},
+		"annotations": [],
+		"lastPublishTime": "2022-09-19T19:51:24Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

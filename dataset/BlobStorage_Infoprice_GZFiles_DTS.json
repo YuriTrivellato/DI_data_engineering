@@ -1,0 +1,19 @@
+{
+	"name": "BlobStorage_Infoprice_GZFiles_DTS",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "DigitalInsightsRevenueBlobStorage",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Binary",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"folderPath": "ISA-InfoPanel",
+				"container": "revenueinfoprice"
+			}
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

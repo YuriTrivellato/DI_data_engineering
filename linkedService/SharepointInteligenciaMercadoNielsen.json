@@ -1,0 +1,26 @@
+{
+	"name": "SharepointInteligenciaMercadoNielsen",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"description": "SharepointInteligenciaMercadoNielsen",
+		"annotations": [],
+		"type": "SharePointOnlineList",
+		"typeProperties": {
+			"siteUrl": "https://anheuserbuschinbev.sharepoint.com/sites/Sales.Lab-IM/",
+			"tenantId": "cef04b19-7776-4a94-b89b-375c77a8f936",
+			"servicePrincipalId": "6de8363c-cc0f-4b4f-9f99-e46c367a8bbf",
+			"servicePrincipalKey": {
+				"type": "AzureKeyVaultSecret",
+				"store": {
+					"referenceName": "KeyVault",
+					"type": "LinkedServiceReference"
+				},
+				"secretName": "SalesLabSharepointInteligenciaMercadoSecret"
+			}
+		},
+		"connectVia": {
+			"referenceName": "AutoResolveIntegrationRuntime",
+			"type": "IntegrationRuntimeReference"
+		}
+	}
+}

@@ -1,0 +1,36 @@
+{
+	"name": "A_CommandCenterDigitalInsightsVisitsKpis",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Stopped",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "0_BeesForce_VisitsKPIs_Monitor_PPL",
+					"type": "PipelineReference"
+				},
+				"parameters": {
+					"ingestion_date": "@trigger().scheduledTime"
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Day",
+				"interval": 1,
+				"startTime": "2023-05-09T17:16:00",
+				"timeZone": "E. South America Standard Time",
+				"schedule": {
+					"minutes": [
+						0
+					],
+					"hours": [
+						11,
+						14
+					]
+				}
+			}
+		}
+	}
+}

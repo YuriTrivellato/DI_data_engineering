@@ -1,0 +1,135 @@
+{
+	"name": "1_BeesForce_Bdr_Accounts_PPL",
+	"properties": {
+		"activities": [
+			{
+				"name": "HZ_CZ_Bdr_Accounts",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "PZ_HZ_Bdr_Accounts",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/DigitalInsights/TasksBeesForce/BdrAccounts/HZ_CZ_Bdrs_Accounts",
+					"baseParameters": {
+						"ingestion_date": {
+							"value": "@variables('ingestion_date')",
+							"type": "Expression"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "DigitalInsightsDatabricks",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "API_PZ_Bdr_Accounts",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "Set Ingestion Date Variable",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/DigitalInsights/TasksBeesForce/BdrAccounts/API_PZ_Bdrs_Accounts",
+					"baseParameters": {
+						"ingestion_date": {
+							"value": "@variables('ingestion_date')",
+							"type": "Expression"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "DigitalInsightsDatabricks",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "PZ_HZ_Bdr_Accounts",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "API_PZ_Bdr_Accounts",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/DigitalInsights/TasksBeesForce/BdrAccounts/PZ_HZ_Bdrs_Accounts",
+					"baseParameters": {
+						"ingestion_date": {
+							"value": "@variables('ingestion_date')",
+							"type": "Expression"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "DigitalInsightsDatabricks",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "Set Ingestion Date Variable",
+				"type": "SetVariable",
+				"dependsOn": [],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "ingestion_date",
+					"value": {
+						"value": "@utcNow()",
+						"type": "Expression"
+					}
+				}
+			}
+		],
+		"variables": {
+			"ingestion_date": {
+				"type": "String",
+				"defaultValue": "0000-00-00T00:00:00.0000000Z"
+			}
+		},
+		"folder": {
+			"name": "Brazil/DigitalInsights/BeesForce/BdrAccounts"
+		},
+		"annotations": [],
+		"lastPublishTime": "2022-09-19T19:51:14Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

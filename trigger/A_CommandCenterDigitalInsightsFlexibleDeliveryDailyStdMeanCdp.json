@@ -1,0 +1,36 @@
+{
+	"name": "A_CommandCenterDigitalInsightsFlexibleDeliveryDailyStdMeanCdp",
+	"properties": {
+		"description": "Trigger para execução do pipeline que cria a base com dados de desvio padrão e média de volume diário da CDP da Squad Flexible Delivery.",
+		"annotations": [],
+		"runtimeState": "Stopped",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "0_DI_FlexibleDelivery_DailyStdMeanCdp_PPL",
+					"type": "PipelineReference"
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Month",
+				"interval": 1,
+				"startTime": "2023-05-10T20:14:00",
+				"timeZone": "E. South America Standard Time",
+				"schedule": {
+					"minutes": [
+						0
+					],
+					"hours": [
+						5
+					],
+					"monthDays": [
+						1
+					]
+				}
+			}
+		}
+	}
+}

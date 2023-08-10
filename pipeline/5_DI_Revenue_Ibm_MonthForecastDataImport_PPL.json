@@ -1,0 +1,165 @@
+{
+	"name": "5_DI_Revenue_Ibm_MonthForecastDataImport_PPL",
+	"properties": {
+		"activities": [
+			{
+				"name": "API_PZ_Month_Forecast_Data",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "Date_UTC_Today",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.5:00:00",
+					"retry": 1,
+					"retryIntervalInSeconds": 300,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/DigitalInsights/RevenueManagement/DataAcquisition/IBM/API_PZ_Month_Forecast_Data",
+					"baseParameters": {
+						"Date": {
+							"value": "@variables('Date_UTC_Today')",
+							"type": "Expression"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "DigitalInsightsDatabricks",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "Date_UTC",
+				"description": "Set the dataUTC variable.",
+				"type": "SetVariable",
+				"dependsOn": [],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "Date_UTC",
+					"value": {
+						"value": "@addHours(utcNow(),-3)",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "Date_UTC_Today",
+				"description": "Set the data.",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "Date_UTC",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "Date_UTC_Today",
+					"value": {
+						"value": "@substring(variables('Date_UTC'),0,10)",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "PZ_HZ_Month_Forecast_RTData",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "API_PZ_Month_Forecast_Data",
+						"dependencyConditions": [
+							"Failed",
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.0:00:00",
+					"retry": 1,
+					"retryIntervalInSeconds": 120,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/DigitalInsights/RevenueManagement/DataAcquisition/IBM/PZ_HZ_Month_Forecast_RTData",
+					"baseParameters": {
+						"Date": {
+							"value": "@variables('Date_UTC_Today')",
+							"type": "Expression"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "DigitalInsightsDatabricks",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "PZ_HZ_Month_Forecast_TData",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "API_PZ_Month_Forecast_Data",
+						"dependencyConditions": [
+							"Failed",
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.0:00:00",
+					"retry": 1,
+					"retryIntervalInSeconds": 120,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/DigitalInsights/RevenueManagement/DataAcquisition/IBM/PZ_HZ_Month_Forecast_TData",
+					"baseParameters": {
+						"Date": {
+							"value": "@variables('Date_UTC_Today')",
+							"type": "Expression"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "DigitalInsightsDatabricks",
+					"type": "LinkedServiceReference"
+				}
+			}
+		],
+		"variables": {
+			"Date_UTC": {
+				"type": "String"
+			},
+			"Date_UTC_Today": {
+				"type": "String"
+			}
+		},
+		"folder": {
+			"name": "Brazil/DigitalInsights/RevenueManagement/Imports"
+		},
+		"annotations": [],
+		"lastPublishTime": "2023-07-05T16:26:48Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

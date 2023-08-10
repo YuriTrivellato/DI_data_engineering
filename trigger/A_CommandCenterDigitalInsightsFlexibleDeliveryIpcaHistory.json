@@ -1,0 +1,36 @@
+{
+	"name": "A_CommandCenterDigitalInsightsFlexibleDeliveryIpcaHistory",
+	"properties": {
+		"description": "Trigger para execução do pipeline que gera a base histórica do IPCA da Squad Flexible Delivery",
+		"annotations": [],
+		"runtimeState": "Stopped",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "0_DI_FlexibleDelivery_IpcaHistory_PPL",
+					"type": "PipelineReference"
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Week",
+				"interval": 1,
+				"startTime": "2023-04-13T14:54:00",
+				"timeZone": "E. South America Standard Time",
+				"schedule": {
+					"minutes": [
+						0
+					],
+					"hours": [
+						4
+					],
+					"weekDays": [
+						"Monday"
+					]
+				}
+			}
+		}
+	}
+}

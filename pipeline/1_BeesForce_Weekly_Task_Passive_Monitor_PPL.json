@@ -1,0 +1,33 @@
+{
+	"name": "1_BeesForce_Weekly_Task_Passive_Monitor_PPL",
+	"properties": {
+		"activities": [
+			{
+				"name": "CZ_HZ_Notebooks_Passives_PPL",
+				"type": "DatabricksNotebook",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.02:00:00",
+					"retry": 1,
+					"retryIntervalInSeconds": 600,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/DigitalInsights/TasksBeesForce/TasksPassivo/0_Run_Notebooks_PassiveTasks"
+				},
+				"linkedServiceName": {
+					"referenceName": "DigitalInsightsDatabricks",
+					"type": "LinkedServiceReference"
+				}
+			}
+		],
+		"folder": {
+			"name": "Brazil/DigitalInsights/BeesForce/TasksPassivo"
+		},
+		"annotations": [],
+		"lastPublishTime": "2023-01-19T20:58:18Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

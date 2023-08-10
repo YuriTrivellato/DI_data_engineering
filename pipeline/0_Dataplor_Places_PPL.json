@@ -1,0 +1,133 @@
+{
+	"name": "0_Dataplor_Places_PPL",
+	"properties": {
+		"activities": [
+			{
+				"name": "1_S3_PZ_Dataplor_Places_PPL",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "1_S3_PZ_Dataplor_Places_PPL",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "2_PZ_HZ_Dataplor_Places_PPL",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "1_S3_PZ_Dataplor_Places_PPL",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "2_PZ_HZ_Dataplor_Places_PPL",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "3_HZ_CZ_Dataplor_Places_PPL",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "2_PZ_HZ_Dataplor_Places_PPL",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "3_HZ_CZ_Dataplor_Places_PPL",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "PipelineStatusMonitor",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "1_S3_PZ_Dataplor_Places_PPL",
+						"dependencyConditions": [
+							"Failed"
+						]
+					},
+					{
+						"activity": "2_PZ_HZ_Dataplor_Places_PPL",
+						"dependencyConditions": [
+							"Failed"
+						]
+					},
+					{
+						"activity": "3_HZ_CZ_Dataplor_Places_PPL",
+						"dependencyConditions": [
+							"Failed",
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Operation/Monitor/PipelineStatusMonitor"
+				},
+				"linkedServiceName": {
+					"referenceName": "DigitalInsightsDatabricks",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "DataplorQueryMonitor",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "3_HZ_CZ_Dataplor_Places_PPL",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Operation/Brazil/DigitalInsights/Rtm/ExternalBases/DataplorQueryMonitor"
+				},
+				"linkedServiceName": {
+					"referenceName": "DigitalInsightsDatabricks",
+					"type": "LinkedServiceReference"
+				}
+			}
+		],
+		"folder": {
+			"name": "Brazil/DigitalInsights/RTM/ExternalBases/Dataplor"
+		},
+		"annotations": [],
+		"lastPublishTime": "2022-09-20T15:37:01Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

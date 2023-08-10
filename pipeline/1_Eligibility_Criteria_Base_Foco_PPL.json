@@ -1,0 +1,60 @@
+{
+	"name": "1_Eligibility_Criteria_Base_Foco_PPL",
+	"properties": {
+		"activities": [
+			{
+				"name": "CZ_CZ_EligibilityCriteriaBaseFoco",
+				"type": "DatabricksNotebook",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/DigitalInsights/SkuPrioritization/Algorithms/EligibilityCriterias/CZ_CZ_EligibilityCriteriaBaseFoco"
+				},
+				"linkedServiceName": {
+					"referenceName": "DigitalInsightsDatabricks",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "CZ_CZ_DI_SkuP_FilteredFocusBaseRecommendations",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "CZ_CZ_EligibilityCriteriaBaseFoco",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/DigitalInsights/SkuPrioritization/Algorithms/EligibilityCriterias/CZ_CZ_DI_SkuP_FilteredFocusBaseRecommendations"
+				},
+				"linkedServiceName": {
+					"referenceName": "DigitalInsightsDatabricks",
+					"type": "LinkedServiceReference"
+				}
+			}
+		],
+		"folder": {
+			"name": "Brazil/DigitalInsights/SkuPrioritization/Algorithms/eligibility_criteria_base_foco"
+		},
+		"annotations": [],
+		"lastPublishTime": "2023-05-18T16:14:58Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

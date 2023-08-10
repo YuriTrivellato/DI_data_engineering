@@ -1,0 +1,165 @@
+{
+	"name": "0_CuboSDG_ResultadosOficiaisGerais_PPL",
+	"properties": {
+		"description": "Main pipeline.",
+		"activities": [
+			{
+				"name": "SET_Data_UTC",
+				"description": "Set the dataUTC variable.",
+				"type": "SetVariable",
+				"dependsOn": [],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "dataUTC",
+					"value": {
+						"value": "@utcnow()",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "SET_Data",
+				"description": "Set the data.",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "SET_Data_UTC",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "data",
+					"value": {
+						"value": "@replace(substring(variables('dataUTC'),0,10), '-', '')",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "DL_to_PZ",
+				"description": "",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "SET_Data",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/CuboSDG/ResultadosOficiaisGerais/DL_PZ_CuboSDG_ResultadosOficiaisGerais",
+					"baseParameters": {
+						"data": {
+							"value": "@variables('data')",
+							"type": "Expression"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "CommandCenterDatabricksPricing",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "PZ_to_HZ",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "DL_to_PZ",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/CuboSDG/ResultadosOficiaisGerais/PZ_HZ_CuboSDG_ResultadosOficiaisGerais",
+					"baseParameters": {
+						"data": {
+							"value": "@variables('data')",
+							"type": "Expression"
+						},
+						"control_fields": "file, path, insert_date, folder_date",
+						"hz_path": "/mnt/historyzone/Brazil/CommandCenter/Pricing/ResultadosOficiaisGeraisCuboSDG",
+						"pz_path": "/mnt/prelandingzone/Brazil/CommandCenter/Pricing/ResultadosOficiaisGeraisCuboSDG"
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "CommandCenterDatabricksPricing",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "HZ_to_CZ",
+				"description": "History Zone to Consumer Zone.",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "PZ_to_HZ",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/CuboSDG/ResultadosOficiaisGerais/HZ_CZ_CuboSDG_ResultadosOficiaisGerais"
+				},
+				"linkedServiceName": {
+					"referenceName": "CommandCenterDatabricksPricing",
+					"type": "LinkedServiceReference"
+				}
+			}
+		],
+		"variables": {
+			"dataUTC": {
+				"type": "String",
+				"defaultValue": "0000-00-00T00:00:00.0000000Z"
+			},
+			"data": {
+				"type": "String",
+				"defaultValue": "00000000"
+			}
+		},
+		"folder": {
+			"name": "Brazil/CuboSDG/ResultadosOficiaisGerais"
+		},
+		"annotations": [],
+		"lastPublishTime": "2022-09-19T19:51:16Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

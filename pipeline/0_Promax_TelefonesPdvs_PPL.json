@@ -1,0 +1,73 @@
+{
+	"name": "0_Promax_TelefonesPdvs_PPL",
+	"properties": {
+		"description": "Main pipeline.",
+		"activities": [
+			{
+				"name": "CZ_to_CZ",
+				"description": "Notebook that updates all the data for API Telefones. It reads data from various Consume Zones and loads into an exclusive TelefonesPdvs CZ.",
+				"type": "DatabricksNotebook",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 5,
+					"retryIntervalInSeconds": 600,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/Promax/TelefonesPdvs/CZ_CZ_TelefonesPdvs"
+				},
+				"linkedServiceName": {
+					"referenceName": "CommandCenterDatabricks",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "CZ_to_DW",
+				"description": "Notebook that reads from the TelefonesPdvs CZ and writes into DW.",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "CZ_to_CZ",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 5,
+					"retryIntervalInSeconds": 600,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/Promax/TelefonesPdvs/CZ_DW_TelefonesPdvs"
+				},
+				"linkedServiceName": {
+					"referenceName": "CommandCenterDatabricks",
+					"type": "LinkedServiceReference"
+				}
+			}
+		],
+		"variables": {
+			"dataUTC": {
+				"type": "String",
+				"defaultValue": "0000-00-00T00:00:00.0000000Z"
+			},
+			"data": {
+				"type": "String",
+				"defaultValue": "00000000"
+			}
+		},
+		"folder": {
+			"name": "Brazil/Promax/TelefonesPdvs"
+		},
+		"annotations": [],
+		"lastPublishTime": "2022-09-19T19:51:14Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

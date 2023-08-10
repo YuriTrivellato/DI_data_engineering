@@ -1,0 +1,14 @@
+{
+	"name": "adf-nonprod-iris-commandcenter-pricing",
+	"properties": {
+		"globalConfigurations": {
+			"PipelineBillingEnabled": "true"
+		}
+	},
+	"location": "eastus",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "d6e94be4-5cd8-435b-8e4a-77f6be6c050c",
+		"tenantId": "cef04b19-7776-4a94-b89b-375c77a8f936"
+	}
+}

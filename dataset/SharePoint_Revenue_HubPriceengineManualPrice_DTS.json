@@ -1,0 +1,16 @@
+{
+	"name": "SharePoint_Revenue_HubPriceengineManualPrice_DTS",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "digitalInsightsSharepoint",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "SharePointOnlineListResource",
+		"schema": [],
+		"typeProperties": {
+			"listName": "Hub_priceengine_manual_price"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

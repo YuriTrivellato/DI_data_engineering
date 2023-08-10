@@ -1,0 +1,316 @@
+{
+	"name": "1_CZ_CZ_InteligenciaDeMercado_WeeklyReportBI_PPL",
+	"properties": {
+		"activities": [
+			{
+				"name": "Folder_Metadata_Scantrack_Cerveja",
+				"type": "GetMetadata",
+				"dependsOn": [
+					{
+						"activity": "SET_Data_File",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "00:05:00",
+					"retry": 2,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataset": {
+						"referenceName": "BlobCustomerExperienceFolder_CSV_DTS",
+						"type": "DatasetReference",
+						"parameters": {
+							"caminho": {
+								"value": "@concat('datalake-im/Nielsen/Scantrack_Cerveja/', variables('Data_File'))",
+								"type": "Expression"
+							}
+						}
+					},
+					"fieldList": [
+						"exists",
+						"childItems"
+					]
+				}
+			},
+			{
+				"name": "Folder_Metadata_Retail_Cerveja",
+				"type": "GetMetadata",
+				"dependsOn": [
+					{
+						"activity": "SET_Data_File",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "00:05:00",
+					"retry": 2,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataset": {
+						"referenceName": "BlobCustomerExperienceFolder_CSV_DTS",
+						"type": "DatasetReference",
+						"parameters": {
+							"caminho": {
+								"value": "@concat('datalake-im/Nielsen/Retail_Cerveja/', variables('Data_File'))",
+								"type": "Expression"
+							}
+						}
+					},
+					"fieldList": [
+						"exists",
+						"childItems"
+					]
+				}
+			},
+			{
+				"name": "If Path Retail or Scan",
+				"type": "IfCondition",
+				"dependsOn": [
+					{
+						"activity": "Folder_Metadata_Retail_Cerveja",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "Folder_Metadata_Scantrack_Cerveja",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@or(equals(activity('Folder_Metadata_Retail_Cerveja').output.exists, true), equals(activity('Folder_Metadata_Scantrack_Cerveja').output.exists, true))",
+						"type": "Expression"
+					},
+					"ifFalseActivities": [
+						{
+							"name": "False",
+							"type": "Wait",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"waitTimeInSeconds": 1
+							}
+						}
+					],
+					"ifTrueActivities": [
+						{
+							"name": "1_CZ_CZ_WeeklyReport_PPL",
+							"type": "ExecutePipeline",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "1_CZ_CZ_WeeklyReport_PPL",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true
+							}
+						},
+						{
+							"name": "1_BI_MixRateEvolution",
+							"type": "ExecutePipeline",
+							"dependsOn": [
+								{
+									"activity": "2_CZ_CZ_FDL_PPL",
+									"dependencyConditions": [
+										"Succeeded",
+										"Failed"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "1_CZ_CZ_Sales_InteligenciaDeMercado_MixRateEvolution_PPL",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true
+							}
+						},
+						{
+							"name": "1_CZ_CZ_Sales_InteligenciaDeMercado_Scantool_PPL",
+							"type": "ExecutePipeline",
+							"dependsOn": [
+								{
+									"activity": "1_CZ_CZ_WeeklyReport_PPL",
+									"dependencyConditions": [
+										"Succeeded",
+										"Failed"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "1_CZ_CZ_Sales_InteligenciaDeMercado_ScanTool_PPL",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true
+							}
+						},
+						{
+							"name": "3_DL_DL_InteligenciaDeMercado_MonitorDataDog_PPL",
+							"type": "ExecutePipeline",
+							"dependsOn": [
+								{
+									"activity": "1_BI_MixRateEvolution",
+									"dependencyConditions": [
+										"Succeeded",
+										"Failed"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "3_DL_DL_InteligenciaDeMercado_MonitorDataDog_PPL",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true
+							}
+						},
+						{
+							"name": "2_CZ_CZ_FDL_PPL",
+							"type": "ExecutePipeline",
+							"dependsOn": [
+								{
+									"activity": "1_CZ_CZ_Sales_InteligenciaDeMercado_Scantool_PPL",
+									"dependencyConditions": [
+										"Succeeded",
+										"Failed"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "2_CZ_CZ_FDL_PPL",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true
+							}
+						}
+					]
+				}
+			},
+			{
+				"name": "SET_Data_UTC",
+				"description": "Set the dataUTC variable.",
+				"type": "SetVariable",
+				"dependsOn": [],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "DataUTC",
+					"value": {
+						"value": "@convertTimeZone(utcnow(), 'UTC', 'E. South America Standard Time')",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "SET_Data_File",
+				"description": "Modificar esta data, para a data de reprocessamento necessária",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "SET_Data_UTC",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "Data_File",
+					"value": {
+						"value": "@replace(substring(variables('DataUTC'),0,10), '-', '')",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "If Retail",
+				"type": "IfCondition",
+				"dependsOn": [
+					{
+						"activity": "Folder_Metadata_Retail_Cerveja",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@equals(activity('Folder_Metadata_Retail_Cerveja').output.exists, true)",
+						"type": "Expression"
+					},
+					"ifFalseActivities": [
+						{
+							"name": "sem dados para atualizar",
+							"type": "Wait",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"waitTimeInSeconds": 1
+							}
+						}
+					],
+					"ifTrueActivities": [
+						{
+							"name": "Retail Pipeline",
+							"type": "ExecutePipeline",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "1_CZ_CZ_Sales_InteligenciaDeMercado_RetailToolEvolution_PPL",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true
+							}
+						}
+					]
+				}
+			}
+		],
+		"variables": {
+			"DataUTC": {
+				"type": "String"
+			},
+			"Data_File": {
+				"type": "String"
+			}
+		},
+		"folder": {
+			"name": "Brazil/Nielsen"
+		},
+		"annotations": [],
+		"lastPublishTime": "2023-03-28T15:54:21Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

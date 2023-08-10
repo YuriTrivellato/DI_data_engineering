@@ -1,0 +1,86 @@
+{
+	"name": "1_DI_Revenue_PriceEngine_BusinessDataFlow_PPL",
+	"properties": {
+		"activities": [
+			{
+				"name": "2_DI_Revenue_HubSharePointMaco_DataManager_PPL",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "2_DI_Revenue_HubSharePointMaco_DataManager_PPL",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "1_DI_Revenue_HubSharePoint_DataManager_PPL",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "1_DI_Revenue_HubSharePoint_DataManager_PPL",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "1_DI_Revenue_Output_Execution_PPL",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "2_DI_Revenue_HubSharePointMaco_DataManager_PPL",
+						"dependencyConditions": [
+							"Completed"
+						]
+					},
+					{
+						"activity": "1_DI_Revenue_HubSharePoint_DataManager_PPL",
+						"dependencyConditions": [
+							"Completed"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "1_DI_Revenue_Automation_PPL",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "1_DI_Revenue_HubSharepoint_Cora_PPL",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "1_DI_Revenue_Output_Execution_PPL",
+						"dependencyConditions": [
+							"Succeeded",
+							"Failed"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "1_DI_Revenue_HubSharepoint_Cora_PPL",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			}
+		],
+		"folder": {
+			"name": "Brazil/DigitalInsights/RevenueManagement/PriceEngine"
+		},
+		"annotations": [],
+		"lastPublishTime": "2023-01-30T16:09:11Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

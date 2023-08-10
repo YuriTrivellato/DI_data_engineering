@@ -1,0 +1,33 @@
+{
+	"name": "A_CommandCenterPricingTasksBeesForceCustomersProducts",
+	"properties": {
+		"description": "Trigger para execução diária da geração de métricas de custormers products para Tasks Bees Force. ",
+		"annotations": [],
+		"runtimeState": "Stopped",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "2_BeesForce_CustomersProducts_PPL",
+					"type": "PipelineReference"
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Day",
+				"interval": 1,
+				"startTime": "2022-03-17T13:55:00",
+				"timeZone": "E. South America Standard Time",
+				"schedule": {
+					"minutes": [
+						0
+					],
+					"hours": [
+						14
+					]
+				}
+			}
+		}
+	}
+}

@@ -1,0 +1,141 @@
+{
+	"name": "1_Blob_PZ_Rfb_Info_PPL",
+	"properties": {
+		"activities": [
+			{
+				"name": "Blob_PZ_RFB_Empresas",
+				"type": "DatabricksNotebook",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/DigitalInsights/Rtm/ExternalBases/RFB/Blob_PZ_RFB_Empresas"
+				},
+				"linkedServiceName": {
+					"referenceName": "DigitalInsightsDatabricks",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "Blob_PZ_RFB_Estabelecimentos",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "Blob_PZ_RFB_Empresas",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/DigitalInsights/Rtm/ExternalBases/RFB/Blob_PZ_RFB_Estabelecimentos"
+				},
+				"linkedServiceName": {
+					"referenceName": "DigitalInsightsDatabricks",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "Blob_PZ_RFB_Simples",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "Blob_PZ_RFB_Estabelecimentos",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/DigitalInsights/Rtm/ExternalBases/RFB/Blob_PZ_RFB_Simples"
+				},
+				"linkedServiceName": {
+					"referenceName": "DigitalInsightsDatabricks",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "Blob_PZ_RFB_Socios",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "Blob_PZ_RFB_Simples",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/DigitalInsights/Rtm/ExternalBases/RFB/Blob_PZ_RFB_Socios"
+				},
+				"linkedServiceName": {
+					"referenceName": "DigitalInsightsDatabricks",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "Blob_PZ_RFB_Outros",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "Blob_PZ_RFB_Socios",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/DigitalInsights/Rtm/ExternalBases/RFB/Blob_PZ_RFB_Outros"
+				},
+				"linkedServiceName": {
+					"referenceName": "DigitalInsightsDatabricks",
+					"type": "LinkedServiceReference"
+				}
+			}
+		],
+		"folder": {
+			"name": "Brazil/DigitalInsights/RTM/ExternalBases/Rfb"
+		},
+		"annotations": [],
+		"lastPublishTime": "2023-02-13T18:43:16Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

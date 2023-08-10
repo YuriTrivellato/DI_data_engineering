@@ -1,0 +1,36 @@
+{
+	"name": "A_CommandCenterPricingSPOAcidentes",
+	"properties": {
+		"description": "Trigger de execução pipeline 0_Acidentes_Monitor_PPL.",
+		"annotations": [],
+		"runtimeState": "Stopped",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "0_Acidentes_Monitor_PPL",
+					"type": "PipelineReference"
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Month",
+				"interval": 1,
+				"startTime": "2022-03-14T19:30:00",
+				"timeZone": "E. South America Standard Time",
+				"schedule": {
+					"minutes": [
+						0
+					],
+					"hours": [
+						7
+					],
+					"monthDays": [
+						10
+					]
+				}
+			}
+		}
+	}
+}

@@ -1,0 +1,33 @@
+{
+	"name": "0_BeesForce_VisitingTime_PPL",
+	"properties": {
+		"activities": [
+			{
+				"name": "CZ_CZ_VisitingTime",
+				"type": "DatabricksNotebook",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/DigitalInsights/TasksBeesForce/VisitingTime/CZ_CZ_VisitingTime"
+				},
+				"linkedServiceName": {
+					"referenceName": "DigitalInsightsDatabricks",
+					"type": "LinkedServiceReference"
+				}
+			}
+		],
+		"folder": {
+			"name": "Brazil/DigitalInsights/BeesForce/VisitingTime"
+		},
+		"annotations": [],
+		"lastPublishTime": "2022-12-14T16:01:28Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

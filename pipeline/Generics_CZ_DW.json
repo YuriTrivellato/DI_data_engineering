@@ -1,0 +1,67 @@
+{
+	"name": "Generics_CZ_DW",
+	"properties": {
+		"activities": [
+			{
+				"name": "Exporta Dataframe para SQLDW",
+				"type": "DatabricksNotebook",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.01:00:00",
+					"retry": 2,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/Modelagem_Precos/Generics/CZ_SQLDW",
+					"baseParameters": {
+						"flag_processamento_full": {
+							"value": "@pipeline().parameters.flag_processamento_full",
+							"type": "Expression"
+						},
+						"dias_processamento": {
+							"value": "@pipeline().parameters.dias_processamento",
+							"type": "Expression"
+						},
+						"path_exportacao": {
+							"value": "@pipeline().parameters.path_exportacao",
+							"type": "Expression"
+						},
+						"path_sqldw": {
+							"value": "@pipeline().parameters.path_sqldw",
+							"type": "Expression"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "CommandCenterDatabricksPricing",
+					"type": "LinkedServiceReference"
+				}
+			}
+		],
+		"parameters": {
+			"flag_processamento_full": {
+				"type": "int",
+				"defaultValue": 1
+			},
+			"dias_processamento": {
+				"type": "string",
+				"defaultValue": "0"
+			},
+			"path_exportacao": {
+				"type": "string"
+			},
+			"path_sqldw": {
+				"type": "string"
+			}
+		},
+		"folder": {
+			"name": "Brazil/SalesLabRevenue/Modelagem/Generics"
+		},
+		"annotations": [],
+		"lastPublishTime": "2022-09-19T19:51:16Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

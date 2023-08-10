@@ -1,0 +1,36 @@
+{
+	"name": "A_CommandCenterDigitalInsightsFlexibleDeliveryHistoricalCurve6m",
+	"properties": {
+		"description": "Trigger para execução do pipeline que gera a base que tem a curva histórica de vendas por faixa de horário da squad Flexible Delivery.",
+		"annotations": [],
+		"runtimeState": "Stopped",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "0_DI_FlexibleDelivery_HistoricalCurve6m_PPL",
+					"type": "PipelineReference"
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Month",
+				"interval": 1,
+				"startTime": "2023-06-26T17:37:00",
+				"timeZone": "E. South America Standard Time",
+				"schedule": {
+					"minutes": [
+						0
+					],
+					"hours": [
+						4
+					],
+					"monthDays": [
+						2
+					]
+				}
+			}
+		}
+	}
+}

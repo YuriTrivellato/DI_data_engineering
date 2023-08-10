@@ -1,0 +1,33 @@
+{
+	"name": "1_API_PZ_Ifood_Products_PPL",
+	"properties": {
+		"activities": [
+			{
+				"name": "API_PZ_Ifood_Products_DB",
+				"type": "DatabricksNotebook",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/DigitalInsights/Rtm/ExternalBases/Ifood/API_PZ_Ifood_Products_DB"
+				},
+				"linkedServiceName": {
+					"referenceName": "DigitalInsightsDatabricks",
+					"type": "LinkedServiceReference"
+				}
+			}
+		],
+		"folder": {
+			"name": "Brazil/DigitalInsights/RTM/ExternalBases/Ifood"
+		},
+		"annotations": [],
+		"lastPublishTime": "2022-09-28T17:39:20Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

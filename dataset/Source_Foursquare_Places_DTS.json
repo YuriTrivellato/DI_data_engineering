@@ -1,0 +1,494 @@
+{
+	"name": "Source_Foursquare_Places_DTS",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "DigitalInsightsRtmAmazonS3Foursquare",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "Brazil/DigitalInsights/Rtm"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AmazonS3Location",
+				"bucketName": "4sq-partner-places-61aea5007ca315461cb05c3f",
+				"folderPath": "ABInBev/ABInBev_Standard_Global"
+			},
+			"columnDelimiter": "\t",
+			"compressionCodec": "gzip",
+			"compressionLevel": "Fastest",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": [
+			{
+				"name": "fsq_id",
+				"type": "String"
+			},
+			{
+				"name": "name",
+				"type": "String"
+			},
+			{
+				"name": "name_translated",
+				"type": "String"
+			},
+			{
+				"name": "latitude",
+				"type": "String"
+			},
+			{
+				"name": "longitude",
+				"type": "String"
+			},
+			{
+				"name": "geocodes",
+				"type": "String"
+			},
+			{
+				"name": "address",
+				"type": "String"
+			},
+			{
+				"name": "address_extended",
+				"type": "String"
+			},
+			{
+				"name": "locality",
+				"type": "String"
+			},
+			{
+				"name": "dma",
+				"type": "String"
+			},
+			{
+				"name": "region",
+				"type": "String"
+			},
+			{
+				"name": "postcode",
+				"type": "String"
+			},
+			{
+				"name": "country",
+				"type": "String"
+			},
+			{
+				"name": "admin_region",
+				"type": "String"
+			},
+			{
+				"name": "post_town",
+				"type": "String"
+			},
+			{
+				"name": "neighborhood",
+				"type": "String"
+			},
+			{
+				"name": "po_box",
+				"type": "String"
+			},
+			{
+				"name": "date_created",
+				"type": "String"
+			},
+			{
+				"name": "date_refreshed",
+				"type": "String"
+			},
+			{
+				"name": "fsq_category_ids",
+				"type": "String"
+			},
+			{
+				"name": "fsq_category_labels",
+				"type": "String"
+			},
+			{
+				"name": "fsq_chain_id",
+				"type": "String"
+			},
+			{
+				"name": "fsq_chain_name",
+				"type": "String"
+			},
+			{
+				"name": "parent_id",
+				"type": "String"
+			},
+			{
+				"name": "subvenue_count",
+				"type": "String"
+			},
+			{
+				"name": "total_tips",
+				"type": "String"
+			},
+			{
+				"name": "tips",
+				"type": "String"
+			},
+			{
+				"name": "tastes",
+				"type": "String"
+			},
+			{
+				"name": "popularity",
+				"type": "String"
+			},
+			{
+				"name": "venue_reality_bucket",
+				"type": "String"
+			},
+			{
+				"name": "provenance_rating",
+				"type": "String"
+			},
+			{
+				"name": "date_closed",
+				"type": "String"
+			},
+			{
+				"name": "closed_bucket",
+				"type": "String"
+			},
+			{
+				"name": "hours",
+				"type": "String"
+			},
+			{
+				"name": "hours_popular",
+				"type": "String"
+			},
+			{
+				"name": "hours_display",
+				"type": "String"
+			},
+			{
+				"name": "tel",
+				"type": "String"
+			},
+			{
+				"name": "website",
+				"type": "String"
+			},
+			{
+				"name": "fax",
+				"type": "String"
+			},
+			{
+				"name": "email",
+				"type": "String"
+			},
+			{
+				"name": "facebook_id",
+				"type": "String"
+			},
+			{
+				"name": "instagram",
+				"type": "String"
+			},
+			{
+				"name": "twitter",
+				"type": "String"
+			},
+			{
+				"name": "rating",
+				"type": "String"
+			},
+			{
+				"name": "description",
+				"type": "String"
+			},
+			{
+				"name": "price",
+				"type": "String"
+			},
+			{
+				"name": "total_photos",
+				"type": "String"
+			},
+			{
+				"name": "photos",
+				"type": "String"
+			},
+			{
+				"name": "atm",
+				"type": "String"
+			},
+			{
+				"name": "barservice",
+				"type": "String"
+			},
+			{
+				"name": "delivery",
+				"type": "String"
+			},
+			{
+				"name": "drivethrough",
+				"type": "String"
+			},
+			{
+				"name": "essentialreservations",
+				"type": "String"
+			},
+			{
+				"name": "fullbar",
+				"type": "String"
+			},
+			{
+				"name": "hasparking",
+				"type": "String"
+			},
+			{
+				"name": "onlinereservations",
+				"type": "String"
+			},
+			{
+				"name": "outdoorseating",
+				"type": "String"
+			},
+			{
+				"name": "privatelot",
+				"type": "String"
+			},
+			{
+				"name": "privateroom",
+				"type": "String"
+			},
+			{
+				"name": "publiclot",
+				"type": "String"
+			},
+			{
+				"name": "reservations",
+				"type": "String"
+			},
+			{
+				"name": "restroom",
+				"type": "String"
+			},
+			{
+				"name": "sitdowndining",
+				"type": "String"
+			},
+			{
+				"name": "smoking",
+				"type": "String"
+			},
+			{
+				"name": "streetparking",
+				"type": "String"
+			},
+			{
+				"name": "takeout",
+				"type": "String"
+			},
+			{
+				"name": "takesamex",
+				"type": "String"
+			},
+			{
+				"name": "takescreditcards",
+				"type": "String"
+			},
+			{
+				"name": "takesdinersclub",
+				"type": "String"
+			},
+			{
+				"name": "takesdiscover",
+				"type": "String"
+			},
+			{
+				"name": "takesmastercard",
+				"type": "String"
+			},
+			{
+				"name": "takesnfc",
+				"type": "String"
+			},
+			{
+				"name": "takesunionpay",
+				"type": "String"
+			},
+			{
+				"name": "takesvisa",
+				"type": "String"
+			},
+			{
+				"name": "valetparking",
+				"type": "String"
+			},
+			{
+				"name": "wheelchairaccessible",
+				"type": "String"
+			},
+			{
+				"name": "wifi",
+				"type": "String"
+			},
+			{
+				"name": "beer",
+				"type": "String"
+			},
+			{
+				"name": "businessmeeting",
+				"type": "String"
+			},
+			{
+				"name": "byo",
+				"type": "String"
+			},
+			{
+				"name": "clean",
+				"type": "String"
+			},
+			{
+				"name": "coatcheck",
+				"type": "String"
+			},
+			{
+				"name": "cocktails",
+				"type": "String"
+			},
+			{
+				"name": "crowded",
+				"type": "String"
+			},
+			{
+				"name": "datespopular",
+				"type": "String"
+			},
+			{
+				"name": "dressy",
+				"type": "String"
+			},
+			{
+				"name": "familiespopular",
+				"type": "String"
+			},
+			{
+				"name": "glutenfreediet",
+				"type": "String"
+			},
+			{
+				"name": "goodfordogs",
+				"type": "String"
+			},
+			{
+				"name": "groupsonlyreservations",
+				"type": "String"
+			},
+			{
+				"name": "groupspopular",
+				"type": "String"
+			},
+			{
+				"name": "hasmusic",
+				"type": "String"
+			},
+			{
+				"name": "healthydiet",
+				"type": "String"
+			},
+			{
+				"name": "jukeboxmusic",
+				"type": "String"
+			},
+			{
+				"name": "latenight",
+				"type": "String"
+			},
+			{
+				"name": "livemusic",
+				"type": "String"
+			},
+			{
+				"name": "noisy",
+				"type": "String"
+			},
+			{
+				"name": "quickbite",
+				"type": "String"
+			},
+			{
+				"name": "romantic",
+				"type": "String"
+			},
+			{
+				"name": "servesbarsnacks",
+				"type": "String"
+			},
+			{
+				"name": "servesbreakfast",
+				"type": "String"
+			},
+			{
+				"name": "servesbrunch",
+				"type": "String"
+			},
+			{
+				"name": "servesdessert",
+				"type": "String"
+			},
+			{
+				"name": "servesdinner",
+				"type": "String"
+			},
+			{
+				"name": "serveshappyhour",
+				"type": "String"
+			},
+			{
+				"name": "serveslunch",
+				"type": "String"
+			},
+			{
+				"name": "servestastingmenu",
+				"type": "String"
+			},
+			{
+				"name": "servicequality",
+				"type": "String"
+			},
+			{
+				"name": "singlespopular",
+				"type": "String"
+			},
+			{
+				"name": "specialoccasion",
+				"type": "String"
+			},
+			{
+				"name": "trendy",
+				"type": "String"
+			},
+			{
+				"name": "tvs",
+				"type": "String"
+			},
+			{
+				"name": "valueformoney",
+				"type": "String"
+			},
+			{
+				"name": "vegandiet",
+				"type": "String"
+			},
+			{
+				"name": "vegetariandiet",
+				"type": "String"
+			},
+			{
+				"name": "wine",
+				"type": "String"
+			}
+		]
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

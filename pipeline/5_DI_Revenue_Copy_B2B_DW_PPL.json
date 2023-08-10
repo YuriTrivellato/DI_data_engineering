@@ -1,0 +1,38 @@
+{
+	"name": "5_DI_Revenue_Copy_B2B_DW_PPL",
+	"properties": {
+		"activities": [
+			{
+				"name": "CZ_to_DW",
+				"description": "Consume Zone to DW SQL",
+				"type": "DatabricksNotebook",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 3,
+					"retryIntervalInSeconds": 120,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/Generics/Writer/CZ_DW_WRITER",
+					"baseParameters": {
+						"tzPath": "/mnt/consumezone/Brazil/Sales/FullDigital/Promax/RelatorioPedido/*",
+						"dwTable": "PRX.FT_PROMAX_RELATORIO_PEDIDO_B2B_NEW"
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "DigitalInsightsDatabricks",
+					"type": "LinkedServiceReference"
+				}
+			}
+		],
+		"folder": {
+			"name": "Brazil/DigitalInsights/RevenueManagement/Exports"
+		},
+		"annotations": [],
+		"lastPublishTime": "2023-07-26T17:32:45Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

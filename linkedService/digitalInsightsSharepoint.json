@@ -1,0 +1,25 @@
+{
+	"name": "digitalInsightsSharepoint",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"annotations": [],
+		"type": "SharePointOnlineList",
+		"typeProperties": {
+			"siteUrl": "https://anheuserbuschinbev.sharepoint.com/sites/digitalinsights/hub",
+			"tenantId": "cef04b19-7776-4a94-b89b-375c77a8f936",
+			"servicePrincipalId": "2951d89d-9ed0-492c-bb4f-755b9be4224d",
+			"servicePrincipalKey": {
+				"type": "AzureKeyVaultSecret",
+				"store": {
+					"referenceName": "KeyVault",
+					"type": "LinkedServiceReference"
+				},
+				"secretName": "DigitalInsightsdigitalInsightsSharepointSecret"
+			}
+		},
+		"connectVia": {
+			"referenceName": "AutoResolveIntegrationRuntime",
+			"type": "IntegrationRuntimeReference"
+		}
+	}
+}

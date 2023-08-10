@@ -1,0 +1,35 @@
+{
+	"name": "A_CommandCenterDigitalInsightsSkuPrioritizationZeDeliveryQuali",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Stopped",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "0_DI_SkuP_QualiZeDelivery_Monitor_PPL",
+					"type": "PipelineReference"
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Month",
+				"interval": 1,
+				"startTime": "2023-02-23T17:59:00Z",
+				"timeZone": "UTC",
+				"schedule": {
+					"minutes": [
+						0
+					],
+					"hours": [
+						15
+					],
+					"monthDays": [
+						-2
+					]
+				}
+			}
+		}
+	}
+}

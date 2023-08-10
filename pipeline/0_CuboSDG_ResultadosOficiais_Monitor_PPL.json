@@ -1,0 +1,158 @@
+{
+	"name": "0_CuboSDG_ResultadosOficiais_Monitor_PPL",
+	"properties": {
+		"description": "Main Pipeline",
+		"activities": [
+			{
+				"name": "ResultadosOficiais_PPL",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "ResultadosOficiaisTotalizador_PPL",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "0_CuboSDG_ResultadosOficiais_PPL",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "PipelineStatusMonitor",
+				"description": "Notebook de monitoramento de métricas",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "ResultadosOficiais_PPL",
+						"dependencyConditions": [
+							"Succeeded",
+							"Failed"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Operation/Monitor/PipelineStatusMonitorDatabricks",
+					"baseParameters": {
+						"runId": {
+							"value": "@pipeline().RunId",
+							"type": "Expression"
+						},
+						"factoryName": {
+							"value": "adf-prod-iris-commandcenter",
+							"type": "Expression"
+						},
+						"resourceGroup": {
+							"value": "AMBEV-IRIS-RG-EUS-ATCS-PROD",
+							"type": "Expression"
+						},
+						"checkChildrenOf": "ResultadosOficiais_PPL"
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "CommandCenterDatabricksGov",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "MonitorQuery",
+				"description": "Notebook de monitoramento de queries.",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "ResultadosOficiais_PPL",
+						"dependencyConditions": [
+							"Failed",
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Operation/Brazil/CuboSDG/ResultadosOficiais/ResultadosOficiaisQueryMonitor",
+					"baseParameters": {
+						"runId": {
+							"value": "@pipeline().RunId",
+							"type": "Expression"
+						},
+						"factoryName": {
+							"value": "adf-prod-iris-commandcenter",
+							"type": "Expression"
+						},
+						"resourceGroup": {
+							"value": "AMBEV-IRIS-RG-EUS-ATCS-PROD",
+							"type": "Expression"
+						},
+						"checkChildrenOf": {
+							"value": "ResultadosOficiais_PPL",
+							"type": "Expression"
+						},
+						"notebookList": {
+							"value": "DL_to_PZ, PZ_to_HZ, HZ_to_CZ",
+							"type": "Expression"
+						},
+						"pathRanges": {
+							"value": "/mnt/consumezone/Brazil/RevenueManagement/Arquiteturadeprecos/MonitoramentoRangeQualidade/",
+							"type": "Expression"
+						},
+						"biName": {
+							"value": "Maco",
+							"type": "Expression"
+						},
+						"tableName": {
+							"value": "compartilhado_resultados_oficiais_cubo_sdg",
+							"type": "Expression"
+						},
+						"malhaName": {
+							"value": "trigger própria",
+							"type": "Expression"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "CommandCenterDatabricksGov",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "ResultadosOficiaisTotalizador_PPL",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "0_CuboSdg_ResultadosOficiaisTotalizador_PPL",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			}
+		],
+		"folder": {
+			"name": "Brazil/CuboSDG/ResultadosOficiais"
+		},
+		"annotations": [],
+		"lastPublishTime": "2022-11-29T16:13:42Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

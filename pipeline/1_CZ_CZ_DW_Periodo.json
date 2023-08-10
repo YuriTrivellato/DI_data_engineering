@@ -1,0 +1,37 @@
+{
+	"name": "1_CZ_CZ_DW_Periodo",
+	"properties": {
+		"activities": [
+			{
+				"name": "Executa Periodo - CZ e DW",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "Generics_CZ_CZ_DW",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"path_notebook": "/Brazil/Modelagem_Precos/Public/Periodo",
+						"flag_processamento_full": "1",
+						"dias_processamento": "1",
+						"path_exportacao": "/mnt/consumezone/Brazil/Sales/RevenueManagement/SelfService/Compartilhado/Periodo/",
+						"tabela_sqldw": "sales_rm_selfservice.compartilhado_periodo",
+						"flag_atualizacao_pbi": true,
+						"id_grupo": "70779b28-0cdc-4f2a-9236-23ebe341099c",
+						"id_objeto": "1c11380b-c081-44dd-8256-11776adcb75f",
+						"is_dataflow": true
+					}
+				}
+			}
+		],
+		"folder": {
+			"name": "Brazil/SalesLabRevenue/Modelagem/Public"
+		},
+		"annotations": [],
+		"lastPublishTime": "2022-09-19T19:51:24Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

@@ -1,0 +1,187 @@
+{
+	"name": "1_CZ_CZ_InteligenciaDeMercado_WeeklyShareCerveja_PPL",
+	"properties": {
+		"activities": [
+			{
+				"name": "Folder_Metadata_Scantrack_Cerveja",
+				"type": "GetMetadata",
+				"dependsOn": [
+					{
+						"activity": "SET_Data_File",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "00:05:00",
+					"retry": 2,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataset": {
+						"referenceName": "BlobCustomerExperienceFolder_CSV_DTS",
+						"type": "DatasetReference",
+						"parameters": {
+							"caminho": {
+								"value": "@concat('datalake-im/Nielsen/Scantrack_Cerveja/', variables('Data_File'))",
+								"type": "Expression"
+							}
+						}
+					},
+					"fieldList": [
+						"exists",
+						"childItems"
+					]
+				}
+			},
+			{
+				"name": "If Path Retail or Scan",
+				"type": "IfCondition",
+				"dependsOn": [
+					{
+						"activity": "Folder_Metadata_Scantrack_Cerveja",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "Folder_Metadata_Retail_Cerveja",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@or(equals(activity('Folder_Metadata_Retail_Cerveja').output.exists, true), equals(activity('Folder_Metadata_Scantrack_Cerveja').output.exists, true))",
+						"type": "Expression"
+					},
+					"ifFalseActivities": [
+						{
+							"name": "False",
+							"type": "Wait",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"waitTimeInSeconds": 1
+							}
+						}
+					],
+					"ifTrueActivities": [
+						{
+							"name": "1_CZ_CZ_WeeklyShareCerveja_PPL",
+							"type": "ExecutePipeline",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "1_CZ_CZ_WeeklyShareCerveja_PPL",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true
+							}
+						}
+					]
+				}
+			},
+			{
+				"name": "SET_Data_UTC",
+				"description": "Set the dataUTC variable.",
+				"type": "SetVariable",
+				"dependsOn": [],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "DataUTC",
+					"value": {
+						"value": "@convertTimeZone(utcnow(), 'UTC', 'E. South America Standard Time')",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "SET_Data_File",
+				"description": "Modificar esta data, para a data de reprocessamento necessária",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "SET_Data_UTC",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "Data_File",
+					"value": {
+						"value": "@replace(substring(variables('DataUTC'),0,10), '-', '')",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "Folder_Metadata_Retail_Cerveja",
+				"type": "GetMetadata",
+				"dependsOn": [
+					{
+						"activity": "SET_Data_File",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "00:05:00",
+					"retry": 2,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataset": {
+						"referenceName": "BlobCustomerExperienceFolder_CSV_DTS",
+						"type": "DatasetReference",
+						"parameters": {
+							"caminho": {
+								"value": "@concat('datalake-im/Nielsen/Retail_Cerveja/', variables('Data_File'))",
+								"type": "Expression"
+							}
+						}
+					},
+					"fieldList": [
+						"exists",
+						"childItems"
+					]
+				}
+			}
+		],
+		"variables": {
+			"DataUTC": {
+				"type": "String"
+			},
+			"Data_File": {
+				"type": "String"
+			}
+		},
+		"folder": {
+			"name": "Brazil/SalesLabIM/Modelagem/WeeklyShareCerveja"
+		},
+		"annotations": [],
+		"lastPublishTime": "2023-07-11T16:35:14Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

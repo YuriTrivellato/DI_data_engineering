@@ -1,0 +1,16 @@
+{
+	"name": "CommandCenterAzureBlobStorageGlobalStorageRecommendationsBees",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"description": "Conexão ao storage do Global para envio das recomendações (popup/incart/quikorder)",
+		"annotations": [],
+		"type": "AzureBlobFS",
+		"typeProperties": {
+			"url": "https://beeseastus2revman.dfs.core.windows.net"
+		},
+		"connectVia": {
+			"referenceName": "AutoResolveIntegrationRuntime",
+			"type": "IntegrationRuntimeReference"
+		}
+	}
+}

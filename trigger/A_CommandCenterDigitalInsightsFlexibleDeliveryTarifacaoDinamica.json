@@ -1,0 +1,36 @@
+{
+	"name": "A_CommandCenterDigitalInsightsFlexibleDeliveryTarifacaoDinamica",
+	"properties": {
+		"description": "Trigger para o pipeline da tarifação dinâmica.",
+		"annotations": [],
+		"runtimeState": "Stopped",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "0_DI_FlexibleDelivery_DynamicFeeMov_PPL",
+					"type": "PipelineReference"
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Month",
+				"interval": 1,
+				"startTime": "2022-10-20T11:19:00",
+				"timeZone": "E. South America Standard Time",
+				"schedule": {
+					"minutes": [
+						0
+					],
+					"hours": [
+						2
+					],
+					"monthDays": [
+						10
+					]
+				}
+			}
+		}
+	}
+}

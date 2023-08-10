@@ -1,0 +1,33 @@
+{
+	"name": "A_CommandCenterDigitalInsightsFlexibleDeliveryFrotasDiario",
+	"properties": {
+		"description": "Trigger para execução do pipeline que cria a base de FrotasDiario da Squad Flexible Delivery",
+		"annotations": [],
+		"runtimeState": "Stopped",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "0_DI_FlexibleDelivery_FrotasDiario_PPL",
+					"type": "PipelineReference"
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Day",
+				"interval": 1,
+				"startTime": "2023-04-18T16:52:00",
+				"timeZone": "E. South America Standard Time",
+				"schedule": {
+					"minutes": [
+						40
+					],
+					"hours": [
+						7
+					]
+				}
+			}
+		}
+	}
+}

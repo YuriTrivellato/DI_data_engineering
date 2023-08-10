@@ -1,0 +1,33 @@
+{
+	"name": "1_CZ_CZ_DI_SkuP_BasketSimilarity_PPL",
+	"properties": {
+		"activities": [
+			{
+				"name": "CZ_CZ_DI_SkuP_BrandSimilarityMatrix",
+				"type": "DatabricksNotebook",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/DigitalInsights/SkuPrioritization/Algorithms/RecommendationFlow/Fluxo Similaridade/CZ_CZ_DI_SkuP_BrandSimilarityMatrix"
+				},
+				"linkedServiceName": {
+					"referenceName": "DigitalInsightsDatabricks",
+					"type": "LinkedServiceReference"
+				}
+			}
+		],
+		"folder": {
+			"name": "Brazil/DigitalInsights/SkuPrioritization/Algorithms/basket_similarity"
+		},
+		"annotations": [],
+		"lastPublishTime": "2023-03-07T16:04:36Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

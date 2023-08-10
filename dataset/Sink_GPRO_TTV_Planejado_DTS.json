@@ -1,0 +1,25 @@
+{
+	"name": "Sink_GPRO_TTV_Planejado_DTS",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "CommandCenterAzureDataLakeStorageG2CustomerExperiencePlatform",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "Brazil/GPRO/TTVPlanejado"
+		},
+		"annotations": [],
+		"type": "Binary",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"folderPath": {
+					"value": "@concat('GPRO/TTVPlanejado/',formatDateTime(utcNow(),'yyyyMMdd'))",
+					"type": "Expression"
+				},
+				"fileSystem": "datalake-rm"
+			}
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

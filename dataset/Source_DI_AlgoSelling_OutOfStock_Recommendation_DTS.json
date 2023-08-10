@@ -1,0 +1,66 @@
+{
+	"name": "Source_DI_AlgoSelling_OutOfStock_Recommendation_DTS",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "DataLakePlatform",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "Brazil/BEES"
+		},
+		"annotations": [],
+		"type": "Parquet",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": "*.parquet",
+				"folderPath": "Brazil/Sales/DigitalInsights/AlgoSelling/ExportRecommendations/OutOfStockIntegrationGlobal",
+				"fileSystem": "consumezone"
+			},
+			"compressionCodec": "snappy"
+		},
+		"schema": [
+			{
+				"name": "vendor_id",
+				"type": "UTF8"
+			},
+			{
+				"name": "vendor_account_id",
+				"type": "UTF8"
+			},
+			{
+				"name": "recommendation_id",
+				"type": "UTF8"
+			},
+			{
+				"name": "recommendation_id_type",
+				"type": "UTF8"
+			},
+			{
+				"name": "score",
+				"type": "INT32"
+			},
+			{
+				"name": "recommendation_type",
+				"type": "UTF8"
+			},
+			{
+				"name": "quantity",
+				"type": "INT32"
+			},
+			{
+				"name": "use_case",
+				"type": "UTF8"
+			},
+			{
+				"name": "recommendation_ts",
+				"type": "INT32"
+			},
+			{
+				"name": "recommendation_date",
+				"type": "UTF8"
+			}
+		]
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

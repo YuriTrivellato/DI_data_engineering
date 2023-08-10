@@ -1,0 +1,33 @@
+{
+	"name": "A_CommandCenterDigitalInsightsBeesForceApiStatus",
+	"properties": {
+		"description": "Trigger do PPL para consulta do status da invocações na API do BeesForce.",
+		"annotations": [],
+		"runtimeState": "Stopped",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "0_BeesForce_APIStatus_Monitor_PPL",
+					"type": "PipelineReference"
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Day",
+				"interval": 1,
+				"startTime": "2022-08-29T00:00:00",
+				"timeZone": "E. South America Standard Time",
+				"schedule": {
+					"minutes": [
+						30
+					],
+					"hours": [
+						5
+					]
+				}
+			}
+		}
+	}
+}

@@ -1,0 +1,96 @@
+{
+	"name": "1_TTCAderidoColeta_PPL",
+	"properties": {
+		"activities": [
+			{
+				"name": "SET_Folder_Date",
+				"description": "Set the Folder_Date variable.",
+				"type": "SetVariable",
+				"dependsOn": [],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "data",
+					"value": {
+						"value": "@replace(substring(utcnow(),0,10), '-', '')",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "TZ_HZ",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "SET_Folder_Date",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/Promax/TTCAderidoColeta/TZ_HZ_Promax_TTCAderidoColeta",
+					"baseParameters": {
+						"data": {
+							"value": "@variables('data')",
+							"type": "Expression"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "CommandCenterDatabricksPricing",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "HZ_CZ",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "TZ_HZ",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/Promax/TTCAderidoColeta/HZ_CZ_Promax_TtcAderidoColeta"
+				},
+				"linkedServiceName": {
+					"referenceName": "CommandCenterDatabricksPricing",
+					"type": "LinkedServiceReference"
+				}
+			}
+		],
+		"variables": {
+			"data": {
+				"type": "String"
+			}
+		},
+		"folder": {
+			"name": "Brazil/Promax/TTCAderidoColeta"
+		},
+		"annotations": [],
+		"lastPublishTime": "2023-06-06T18:12:00Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

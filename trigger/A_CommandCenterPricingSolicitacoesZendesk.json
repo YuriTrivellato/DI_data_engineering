@@ -1,0 +1,36 @@
+{
+	"name": "A_CommandCenterPricingSolicitacoesZendesk",
+	"properties": {
+		"description": "Trigger de execução do pipeline 0_SolicitacoesZendesk_Monitor_PPL",
+		"annotations": [],
+		"runtimeState": "Stopped",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "0_SolicitacoesZendesk_Monitor_PPL",
+					"type": "PipelineReference"
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Day",
+				"interval": 1,
+				"startTime": "2022-07-04T19:27:00",
+				"timeZone": "E. South America Standard Time",
+				"schedule": {
+					"minutes": [
+						0
+					],
+					"hours": [
+						3,
+						9,
+						15,
+						20
+					]
+				}
+			}
+		}
+	}
+}

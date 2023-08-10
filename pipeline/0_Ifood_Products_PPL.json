@@ -1,0 +1,133 @@
+{
+	"name": "0_Ifood_Products_PPL",
+	"properties": {
+		"activities": [
+			{
+				"name": "1_API_PZ_Ifood_Products_PPL",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "1_API_PZ_Ifood_Products_PPL",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "2_PZ_HZ_Ifood_Products_PPL",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "1_API_PZ_Ifood_Products_PPL",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "2_PZ_HZ_Ifood_Products_PPL",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "3_HZ_CZ_Ifood_Places_PPL",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "2_PZ_HZ_Ifood_Products_PPL",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "3_HZ_CZ_Ifood_Places_PPL",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "PipelineStatusMonitor",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "1_API_PZ_Ifood_Products_PPL",
+						"dependencyConditions": [
+							"Failed"
+						]
+					},
+					{
+						"activity": "2_PZ_HZ_Ifood_Products_PPL",
+						"dependencyConditions": [
+							"Failed"
+						]
+					},
+					{
+						"activity": "3_HZ_CZ_Ifood_Places_PPL",
+						"dependencyConditions": [
+							"Failed",
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Operation/Monitor/PipelineStatusMonitor"
+				},
+				"linkedServiceName": {
+					"referenceName": "DigitalInsightsDatabricks",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "IfoodQueryMonitor",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "3_HZ_CZ_Ifood_Places_PPL",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Operation/Brazil/DigitalInsights/Rtm/ExternalBases/IfoodQueryMonitor"
+				},
+				"linkedServiceName": {
+					"referenceName": "DigitalInsightsDatabricks",
+					"type": "LinkedServiceReference"
+				}
+			}
+		],
+		"folder": {
+			"name": "Brazil/DigitalInsights/RTM/ExternalBases/Ifood"
+		},
+		"annotations": [],
+		"lastPublishTime": "2022-09-28T17:39:20Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

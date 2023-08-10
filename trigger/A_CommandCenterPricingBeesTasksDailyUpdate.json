@@ -1,0 +1,36 @@
+{
+	"name": "A_CommandCenterPricingBeesTasksDailyUpdate",
+	"properties": {
+		"description": "Fluxo de execução diário",
+		"annotations": [],
+		"runtimeState": "Stopped",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "0_Tasks_Daily_Update_Monitor_PPL",
+					"type": "PipelineReference"
+				},
+				"parameters": {
+					"current_date": "@trigger().scheduledTime"
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Day",
+				"interval": 1,
+				"startTime": "2022-02-25T17:00:00",
+				"timeZone": "E. South America Standard Time",
+				"schedule": {
+					"minutes": [
+						0
+					],
+					"hours": [
+						15
+					]
+				}
+			}
+		}
+	}
+}

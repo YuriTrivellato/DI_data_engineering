@@ -1,0 +1,62 @@
+{
+	"name": "2_DI_Revenue_PromoEngine_Global_PPL",
+	"properties": {
+		"activities": [
+			{
+				"name": "CZ_Global_PromoEngine_Integration",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.00:30:00",
+					"retry": 2,
+					"retryIntervalInSeconds": 600,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "ParquetSource",
+						"storeSettings": {
+							"type": "AzureBlobFSReadSettings",
+							"recursive": true,
+							"wildcardFileName": "*.parquet",
+							"enablePartitionDiscovery": false
+						},
+						"formatSettings": {
+							"type": "ParquetReadSettings"
+						}
+					},
+					"sink": {
+						"type": "ParquetSink",
+						"storeSettings": {
+							"type": "AzureBlobFSWriteSettings"
+						},
+						"formatSettings": {
+							"type": "ParquetWriteSettings"
+						}
+					},
+					"enableStaging": false
+				},
+				"inputs": [
+					{
+						"referenceName": "DataLake_Revenue_PromoEngine_DTS",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "Sink_Global_Revenue_PromoEngine_Recomendations_DTS",
+						"type": "DatasetReference"
+					}
+				]
+			}
+		],
+		"folder": {
+			"name": "Brazil/DigitalInsights/RevenueManagement/Exports"
+		},
+		"annotations": [],
+		"lastPublishTime": "2023-08-01T18:56:31Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

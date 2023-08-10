@@ -1,0 +1,36 @@
+{
+	"name": "A_CommandCenterDigitalInsightsFlexibleDeliveryMultiDdcCustomers",
+	"properties": {
+		"description": "Trigger para execução do pipeline que cria a base com informações sobre clientes multi cdd da Squad Flexible Delivery",
+		"annotations": [],
+		"runtimeState": "Stopped",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "0_DI_FlexibleDelivery_MultiDdcCustomers_PPL",
+					"type": "PipelineReference"
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Week",
+				"interval": 1,
+				"startTime": "2023-04-25T20:39:00Z",
+				"timeZone": "UTC",
+				"schedule": {
+					"minutes": [
+						0
+					],
+					"hours": [
+						5
+					],
+					"weekDays": [
+						"Sunday"
+					]
+				}
+			}
+		}
+	}
+}

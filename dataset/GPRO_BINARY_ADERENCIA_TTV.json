@@ -1,0 +1,21 @@
+{
+	"name": "GPRO_BINARY_ADERENCIA_TTV",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "CommandCenterFileServer_GPRO",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "Brazil/GPRO/Aderencia_TTV"
+		},
+		"annotations": [],
+		"type": "Binary",
+		"typeProperties": {
+			"location": {
+				"type": "FileServerLocation",
+				"folderPath": "GPRO/ADNF_DIARIO_JSON"
+			}
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

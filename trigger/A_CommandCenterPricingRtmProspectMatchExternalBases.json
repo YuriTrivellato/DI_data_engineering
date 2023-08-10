@@ -1,0 +1,32 @@
+{
+	"name": "A_CommandCenterPricingRtmProspectMatchExternalBases",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Stopped",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "0_Match_ExternalBases_Monitor_PPL",
+					"type": "PipelineReference"
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Month",
+				"interval": 1,
+				"startTime": "2023-06-07T12:15:00",
+				"timeZone": "E. South America Standard Time",
+				"schedule": {
+					"hours": [
+						21
+					],
+					"monthDays": [
+						10
+					]
+				}
+			}
+		}
+	}
+}

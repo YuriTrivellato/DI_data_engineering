@@ -1,0 +1,33 @@
+{
+	"name": "1_BeesForce_MsTasks_Monitor_PPL",
+	"properties": {
+		"activities": [
+			{
+				"name": "CZ_CZ_BeesForce_MsTasks",
+				"type": "DatabricksNotebook",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.02:00:00",
+					"retry": 3,
+					"retryIntervalInSeconds": 600,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/DigitalInsights/TasksBeesForce/MsTasks/CZ_CZ_BeesForce_MsTasks"
+				},
+				"linkedServiceName": {
+					"referenceName": "DigitalInsightsDatabricks",
+					"type": "LinkedServiceReference"
+				}
+			}
+		],
+		"folder": {
+			"name": "Brazil/DigitalInsights/BeesForce/MsTasks"
+		},
+		"annotations": [],
+		"lastPublishTime": "2022-12-20T16:04:04Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

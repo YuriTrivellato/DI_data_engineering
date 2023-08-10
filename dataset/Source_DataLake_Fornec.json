@@ -1,0 +1,39 @@
+{
+	"name": "Source_DataLake_Fornec",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "DataLakePlatform",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "Brazil/PCA"
+		},
+		"annotations": [],
+		"type": "Parquet",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileSystem": {
+					"value": "@concat('historyzone/Brazil/PCA/ControleSellin/folder_date=' , formatDateTime( addhours(utcnow(),-3) , 'yyyy-MM-dd'))",
+					"type": "Expression"
+				}
+			},
+			"compressionCodec": "snappy"
+		},
+		"schema": [
+			{
+				"name": "tipo_base",
+				"type": "UTF8"
+			},
+			{
+				"name": "flag_processamento",
+				"type": "INT32"
+			},
+			{
+				"name": "folder_date",
+				"type": "UTF8"
+			}
+		]
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

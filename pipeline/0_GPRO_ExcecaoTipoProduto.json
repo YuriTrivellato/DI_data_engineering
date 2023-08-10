@@ -1,0 +1,151 @@
+{
+	"name": "0_GPRO_ExcecaoTipoProduto",
+	"properties": {
+		"activities": [
+			{
+				"name": "copy_excecao_tipo_produto_ccttv",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "Set Data",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 3,
+					"retryIntervalInSeconds": 120,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "SqlServerSource",
+						"sqlReaderQuery": "select * from CCTTV_EXCECAO_TIPO_PRODUTO",
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"sink": {
+						"type": "AvroSink",
+						"storeSettings": {
+							"type": "AzureBlobFSWriteSettings"
+						},
+						"formatSettings": {
+							"type": "AvroWriteSettings"
+						}
+					},
+					"enableStaging": false
+				},
+				"inputs": [
+					{
+						"referenceName": "Source_CommandCenterOpigServer_DTS",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "Sink_GPRO_Ccttv_DTS",
+						"type": "DatasetReference",
+						"parameters": {
+							"path_pz": {
+								"value": "@concat('Brazil/Gpro/ExcecaoTipoProdutoCcttv/', formatDateTime(utcnow(), 'yyyyMMdd'), '/', formatDateTime(utcnow(), 'HHmmss'))",
+								"type": "Expression"
+							}
+						}
+					}
+				]
+			},
+			{
+				"name": "PZ_HZ",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "copy_excecao_tipo_produto_ccttv",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/GPRO/CCTTV/ExcecaoTipoProdutoCCTTV/PZ_HZ_GPRO_ExcecaoTipoProdutoCCTTV",
+					"baseParameters": {
+						"data": {
+							"value": "@variables('data')",
+							"type": "Expression"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "CommandCenterDatabricksPricing",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "HZ_CZ",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "PZ_HZ",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/GPRO/CCTTV/ExcecaoTipoProdutoCCTTV/HZ_CZ_GPRO_ExcecaoTipoProdutoCCTTV"
+				},
+				"linkedServiceName": {
+					"referenceName": "CommandCenterDatabricksPricing",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "Set Data",
+				"type": "SetVariable",
+				"dependsOn": [],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "data",
+					"value": {
+						"value": "@formatDateTime(utcnow(), 'yyyyMMdd')",
+						"type": "Expression"
+					}
+				}
+			}
+		],
+		"variables": {
+			"data": {
+				"type": "String"
+			}
+		},
+		"folder": {
+			"name": "Brazil/GPRO/CCTTV"
+		},
+		"annotations": [],
+		"lastPublishTime": "2022-08-08T15:38:36Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

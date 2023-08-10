@@ -1,0 +1,68 @@
+{
+	"name": "1_BeesForce_HistoryTasksUnbProfile_PPL",
+	"properties": {
+		"activities": [
+			{
+				"name": "CZ_CZ_HistoryTasksUnbProfile",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "ingestion_date",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/DigitalInsights/TasksBeesForce/HistoryTasks/CZ_CZ_HistoryTasksUnbProfile",
+					"baseParameters": {
+						"ingestion_date": {
+							"value": "@variables('last_day_of_the_month')",
+							"type": "Expression"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "DigitalInsightsDatabricks",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "ingestion_date",
+				"type": "SetVariable",
+				"dependsOn": [],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "last_day_of_the_month",
+					"value": {
+						"value": "@convertTimeZone(utcNow(), 'UTC', 'E. South America Standard Time', 'yyyy-MM-dd')",
+						"type": "Expression"
+					}
+				}
+			}
+		],
+		"variables": {
+			"last_day_of_the_month": {
+				"type": "String"
+			}
+		},
+		"folder": {
+			"name": "Brazil/DigitalInsights/BeesForce/HistoryTasks/HistoryTasksUnbProfile"
+		},
+		"annotations": [],
+		"lastPublishTime": "2023-07-19T18:12:05Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

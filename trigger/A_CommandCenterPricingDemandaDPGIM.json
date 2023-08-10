@@ -1,0 +1,28 @@
+{
+	"name": "A_CommandCenterPricingDemandaDPGIM",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Stopped",
+		"pipelines": [],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Day",
+				"interval": 1,
+				"startTime": "2023-04-17T20:00:00",
+				"timeZone": "E. South America Standard Time",
+				"schedule": {
+					"minutes": [
+						0
+					],
+					"hours": [
+						10,
+						13,
+						16,
+						18
+					]
+				}
+			}
+		}
+	}
+}

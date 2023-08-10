@@ -1,0 +1,63 @@
+{
+	"name": "VendaCerta_Manual_PPL",
+	"properties": {
+		"activities": [
+			{
+				"name": "Popup Incart",
+				"type": "DatabricksNotebook",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/BigData/PostgresBigData/CZ_postgres_bigdata_rec_popup_incart"
+				},
+				"linkedServiceName": {
+					"referenceName": "CommandCenterDatabricksPricing",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "Popup Slot Wait",
+				"description": "Notebook:\n/Brazil/BigData/PostgresBigData/CZ_postgres_bigdata_rec_popup_slot",
+				"type": "Wait",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"waitTimeInSeconds": 1
+				}
+			},
+			{
+				"name": "Quick Order Wait",
+				"description": "Notebook:\n/Brazil/BigData/PostgresBigData/CZ_postgres_bigdata_rec_quickorder",
+				"type": "Wait",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"waitTimeInSeconds": 1
+				}
+			},
+			{
+				"name": "Troca Produto Wait",
+				"description": "Notebook:\n/Brazil/BigData/PostgresBigData/CZ_postgres_bigdata_rec_troca_produto",
+				"type": "Wait",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"waitTimeInSeconds": 1
+				}
+			}
+		],
+		"folder": {
+			"name": "Brazil/BigData/Internalizacao_VendaCerta"
+		},
+		"annotations": [],
+		"lastPublishTime": "2022-09-19T19:51:16Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

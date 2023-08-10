@@ -1,0 +1,33 @@
+{
+	"name": "A_CommandCenterDigitalInsightsFlexibleDeliveryAvgOrdersCustomers",
+	"properties": {
+		"description": "Trigger para execução do pipeline que cria a base com métricas de faturamento dos clientes da Squad Flexible Delivery",
+		"annotations": [],
+		"runtimeState": "Stopped",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "0_DI_FlexibleDelivery_AvgOrdersCustomers_PPL",
+					"type": "PipelineReference"
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Day",
+				"interval": 1,
+				"startTime": "2023-04-25T16:30:00",
+				"timeZone": "E. South America Standard Time",
+				"schedule": {
+					"minutes": [
+						0
+					],
+					"hours": [
+						5
+					]
+				}
+			}
+		}
+	}
+}

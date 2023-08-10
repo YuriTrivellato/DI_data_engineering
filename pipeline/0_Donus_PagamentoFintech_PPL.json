@@ -1,0 +1,345 @@
+{
+	"name": "0_Donus_PagamentoFintech_PPL",
+	"properties": {
+		"activities": [
+			{
+				"name": "PZ_HZ",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "DL_PZ",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/Donus/PagamentoFintech/PZ_HZ_Donus_PagamentoFintech",
+					"baseParameters": {
+						"data": {
+							"value": "@variables('varLatestFolderName')",
+							"type": "Expression"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "CommandCenterDatabricksPricing",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "HZ_CZ",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "PZ_HZ",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/Donus/PagamentoFintech/HZ_CZ_Donus_PagamentoFintech"
+				},
+				"linkedServiceName": {
+					"referenceName": "CommandCenterDatabricksPricing",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "DL_PZ",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "Donus_DL",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/Donus/PagamentoFintech/DL_PZ_Donus_PagamentoFintech",
+					"baseParameters": {
+						"data": {
+							"value": "@variables('varLatestFolderName')",
+							"type": "Expression"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "CommandCenterDatabricksPricing",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "Donus_DL",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "loopThroughAllTheFiles",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "DelimitedTextSource",
+						"storeSettings": {
+							"type": "AzureBlobStorageReadSettings",
+							"recursive": true,
+							"wildcardFolderPath": {
+								"value": "@variables('varLatestFolderName')",
+								"type": "Expression"
+							},
+							"wildcardFileName": "revenue_management.csv",
+							"enablePartitionDiscovery": false
+						},
+						"formatSettings": {
+							"type": "DelimitedTextReadSettings"
+						}
+					},
+					"sink": {
+						"type": "DelimitedTextSink",
+						"storeSettings": {
+							"type": "AzureBlobFSWriteSettings",
+							"copyBehavior": "MergeFiles"
+						},
+						"formatSettings": {
+							"type": "DelimitedTextWriteSettings",
+							"quoteAllText": true,
+							"fileExtension": ".txt"
+						}
+					},
+					"enableStaging": false
+				},
+				"inputs": [
+					{
+						"referenceName": "Source_Donus_PagamentoFintech_DTS",
+						"type": "DatasetReference",
+						"parameters": {
+							"ds_inputFolderName": {
+								"value": "@concat(variables('varLatestFolderName'), 'revenue_managment.csv')",
+								"type": "Expression"
+							}
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "Sink_Donus_PagamentoFintech_DTS",
+						"type": "DatasetReference",
+						"parameters": {
+							"ds_inputFolderName": {
+								"value": "@variables('varLatestFolderName')",
+								"type": "Expression"
+							}
+						}
+					}
+				]
+			},
+			{
+				"name": "getListOfFolderNames",
+				"type": "GetMetadata",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataset": {
+						"referenceName": "Source_MetaData_Donus_PagamentoFintech_DTS",
+						"type": "DatasetReference"
+					},
+					"fieldList": [
+						"childItems"
+					],
+					"storeSettings": {
+						"type": "AzureBlobStorageReadSettings",
+						"recursive": true,
+						"enablePartitionDiscovery": false
+					},
+					"formatSettings": {
+						"type": "DelimitedTextReadSettings"
+					}
+				}
+			},
+			{
+				"name": "loopThroughAllTheFiles",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "getListOfFolderNames",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@activity('getListOfFolderNames').output.childItems",
+						"type": "Expression"
+					},
+					"activities": [
+						{
+							"name": "conditionToCheckIfFileDateGreaterThanSetDate",
+							"type": "IfCondition",
+							"dependsOn": [
+								{
+									"activity": "getLastModifiedDateOfTheCurrentIterationFile",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"expression": {
+									"value": "@greater(\nticks(formatDateTime(activity('getLastModifiedDateOfTheCurrentIterationFile').output.lastModified)),\nticks(formatDateTime(variables('varReferenceDateTime'))))",
+									"type": "Expression"
+								},
+								"ifTrueActivities": [
+									{
+										"name": "setFolderLastModifiedDate",
+										"type": "SetVariable",
+										"dependsOn": [],
+										"policy": {
+											"secureOutput": false,
+											"secureInput": false
+										},
+										"userProperties": [],
+										"typeProperties": {
+											"variableName": "varReferenceDateTime",
+											"value": {
+												"value": "@activity('getLastModifiedDateOfTheCurrentIterationFile').output.lastModified",
+												"type": "Expression"
+											}
+										}
+									},
+									{
+										"name": "setLatestFolderName",
+										"type": "SetVariable",
+										"dependsOn": [
+											{
+												"activity": "setFolderLastModifiedDate",
+												"dependencyConditions": [
+													"Succeeded"
+												]
+											}
+										],
+										"policy": {
+											"secureOutput": false,
+											"secureInput": false
+										},
+										"userProperties": [],
+										"typeProperties": {
+											"variableName": "varLatestFolderName",
+											"value": {
+												"value": "@item().name",
+												"type": "Expression"
+											}
+										}
+									}
+								]
+							}
+						},
+						{
+							"name": "getLastModifiedDateOfTheCurrentIterationFile",
+							"type": "GetMetadata",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [
+								{
+									"name": "zsfasf",
+									"value": "zzzsf"
+								}
+							],
+							"typeProperties": {
+								"dataset": {
+									"referenceName": "Source_Donus_PagamentoFintech_DTS",
+									"type": "DatasetReference",
+									"parameters": {
+										"ds_inputFolderName": {
+											"value": "@item().name",
+											"type": "Expression"
+										}
+									}
+								},
+								"fieldList": [
+									"itemName",
+									"lastModified"
+								],
+								"storeSettings": {
+									"type": "AzureBlobStorageReadSettings",
+									"recursive": true,
+									"enablePartitionDiscovery": false
+								},
+								"formatSettings": {
+									"type": "DelimitedTextReadSettings"
+								}
+							}
+						}
+					]
+				}
+			}
+		],
+		"variables": {
+			"varReferenceDateTime": {
+				"type": "String",
+				"defaultValue": "1900-01-01 00:00:00"
+			},
+			"varLatestFolderName": {
+				"type": "String"
+			}
+		},
+		"folder": {
+			"name": "Brazil/Donus/PagamentoFintech"
+		},
+		"annotations": [],
+		"lastPublishTime": "2022-09-19T19:51:18Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

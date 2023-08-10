@@ -1,0 +1,33 @@
+{
+	"name": "1_Rewards_ChallengesOrchestrator",
+	"properties": {
+		"activities": [
+			{
+				"name": "CZ_CZ_Rewards_ChallengesOrchestrator",
+				"type": "DatabricksNotebook",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 1,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/DigitalInsights/Rewards/Algo_Challenge/Orchestrator/CZ_CZ_Rewards_ChallengesOrchestrator"
+				},
+				"linkedServiceName": {
+					"referenceName": "DigitalInsightsDatabricks",
+					"type": "LinkedServiceReference"
+				}
+			}
+		],
+		"folder": {
+			"name": "Brazil/DigitalInsights/Rewards/AlgoChallenge/Orchestrator"
+		},
+		"annotations": [],
+		"lastPublishTime": "2023-01-10T15:43:06Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

@@ -1,0 +1,123 @@
+{
+	"name": "1_VendaCerta_Semanal_PPL",
+	"properties": {
+		"activities": [
+			{
+				"name": "PesquisaSv",
+				"type": "DatabricksNotebook",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/BigData/PostgresBigData/bigdata_pesquisa_sv"
+				},
+				"linkedServiceName": {
+					"referenceName": "CommandCenterDatabricksPricing",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "Produto",
+				"type": "DatabricksNotebook",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/BigData/PostgresBigData/bigdata_produto"
+				},
+				"linkedServiceName": {
+					"referenceName": "CommandCenterDatabricksPricing",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "EstruturaComercial_Wait",
+				"description": "Notebook:\n/Brazil/BigData/PostgresBigData/bigdata_estrutura_comercial",
+				"type": "Wait",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"waitTimeInSeconds": 1
+				}
+			},
+			{
+				"name": "EstruturaEquipe_Wait",
+				"description": "Notebook: /Brazil/BigData/PostgresBigData/bigdata_estrutura_equipe",
+				"type": "Wait",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"waitTimeInSeconds": 1
+				}
+			},
+			{
+				"name": "EstruturaSetor_Wait",
+				"description": "Notebook:\n/Brazil/BigData/PostgresBigData/bigdata_estrutura_setor",
+				"type": "Wait",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"waitTimeInSeconds": 1
+				}
+			},
+			{
+				"name": "PDVCondPgto_Wait",
+				"description": "Notebook: /Brazil/BigData/PostgresBigData/bigdata_pdv_cond_pgto",
+				"type": "Wait",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"waitTimeInSeconds": 1
+				}
+			},
+			{
+				"name": "PDVLatLong_Wait",
+				"description": "Notebook:\n/Brazil/BigData/PostgresBigData/bigdata_pdv_latlong",
+				"type": "Wait",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"waitTimeInSeconds": 1
+				}
+			},
+			{
+				"name": "PDVMatchSetor_Wait",
+				"description": "Notebook:\n/Brazil/BigData/PostgresBigData/bigdata_pdv_match_setor",
+				"type": "Wait",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"waitTimeInSeconds": 1
+				}
+			},
+			{
+				"name": "Rota_Wait",
+				"description": "Notebook:\n/Brazil/BigData/PostgresBigData/bigdata_rota",
+				"type": "Wait",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"waitTimeInSeconds": 1
+				}
+			}
+		],
+		"folder": {
+			"name": "Brazil/BigData/Internalizacao_VendaCerta/VendaCerta_Semanal"
+		},
+		"annotations": [],
+		"lastPublishTime": "2022-09-19T19:51:16Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

@@ -1,0 +1,26 @@
+{
+	"name": "D_CommandCenterDigitalInsightsRevenueManagementPromoEngineV0",
+	"properties": {
+		"description": "Starts Digital Insights Promo Engine V0 pipeline",
+		"annotations": [],
+		"runtimeState": "Stopped",
+		"pipelines": [],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Day",
+				"interval": 1,
+				"startTime": "2022-11-20T00:35:00",
+				"timeZone": "E. South America Standard Time",
+				"schedule": {
+					"minutes": [
+						30
+					],
+					"hours": [
+						21
+					]
+				}
+			}
+		}
+	}
+}

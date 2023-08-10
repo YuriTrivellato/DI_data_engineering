@@ -1,0 +1,33 @@
+{
+	"name": "1_Rewards_B2OCobertura_PPL",
+	"properties": {
+		"activities": [
+			{
+				"name": "CZ_CZ_Rewards_B2OCobertura",
+				"type": "DatabricksNotebook",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.1:30:00",
+					"retry": 1,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Brazil/DigitalInsights/Rewards/Purchase_B2O/CZ_CZ_Rewards_B2OCobertura"
+				},
+				"linkedServiceName": {
+					"referenceName": "DigitalInsightsDatabricks",
+					"type": "LinkedServiceReference"
+				}
+			}
+		],
+		"folder": {
+			"name": "Brazil/DigitalInsights/Rewards/B2O"
+		},
+		"annotations": [],
+		"lastPublishTime": "2023-01-03T16:11:03Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

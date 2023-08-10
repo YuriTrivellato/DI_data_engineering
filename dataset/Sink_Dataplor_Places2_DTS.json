@@ -1,0 +1,26 @@
+{
+	"name": "Sink_Dataplor_Places2_DTS",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "DataLakePlatform",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "Brazil/DigitalInsights/Rtm"
+		},
+		"annotations": [],
+		"type": "Avro",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"folderPath": {
+					"value": "@concat('Brazil/Sales/DigitalInsights/Rtm/ExternalBases/Dataplor/', formatDateTime(utcnow(),'yyyy/MM/dd'))",
+					"type": "Expression"
+				},
+				"fileSystem": "prelandingzone"
+			}
+		},
+		"schema": {}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

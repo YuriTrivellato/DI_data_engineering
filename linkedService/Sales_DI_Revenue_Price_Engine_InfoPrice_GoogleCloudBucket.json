@@ -1,0 +1,24 @@
+{
+	"name": "Sales_DI_Revenue_Price_Engine_InfoPrice_GoogleCloudBucket",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"annotations": [],
+		"type": "GoogleCloudStorage",
+		"typeProperties": {
+			"serviceUrl": "https://storage.googleapis.com",
+			"accessKeyId": "GOOG1EM3HBLRP3ZFXIZUXZ2KQZM5WSKZW6RYZIBV6QIY6W4UF4VYASP2GIZIQ",
+			"secretAccessKey": {
+				"type": "AzureKeyVaultSecret",
+				"store": {
+					"referenceName": "KeyVault",
+					"type": "LinkedServiceReference"
+				},
+				"secretName": "DigitalInsightsInfoPriceGoogleBucketKey"
+			}
+		},
+		"connectVia": {
+			"referenceName": "AutoResolveIntegrationRuntime",
+			"type": "IntegrationRuntimeReference"
+		}
+	}
+}
